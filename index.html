@@ -332,9 +332,7 @@ function avH(p,sz){return'<div class="av '+(sz||'av-md')+' '+avc(p.id||'x')+'">'
 var A={
   db:null,players:[],sessions:[],hands:[],
   notes:{},aiProfiles:{},
-  apiKey:LS('pkl-aikey')||'sk-ant-api03-_Mr3KchjgmE8ygRtOqeaP-M0uqq3b
-QCwem-i2BaC3PdsD5vggM1X7yjL5XF8m_Lp3fuPHpG
-huMgti44AL8FQ_Q-pmZrbwAA',
+  apiKey:LS('pkl-aikey')||'',
   tab:'dashboard',
   activeSessId:null,
   // Live hand state
@@ -460,23 +458,28 @@ async function savePlayer(p){try{await setDoc(doc(A.db,'players',p.id),p);}catch
 async function saveMeta(key,val){try{await setDoc(doc(A.db,'meta',key),{value:val,updatedAt:serverTimestamp()});}catch(e){console.error(e);}}
 async function savePlayerNote(pid,note){A.notes[pid]=note;await saveMeta('note_'+pid,note);}
 
+function sortByCreated(arr){return arr.sort(function(a,b){var ta=a.createdAt&&a.createdAt.toMillis?a.createdAt.toMillis():(a.createdAt&&a.createdAt.seconds?a.createdAt.seconds*1000:0);var tb=b.createdAt&&b.createdAt.toMillis?b.createdAt.toMillis():(b.createdAt&&b.createdAt.seconds?b.createdAt.seconds*1000:0);return tb-ta;});}
+
 function startListeners(){
-  onSnapshot(query(collection(A.db,'sessions'),orderBy('createdAt','desc')),function(snap){
-    A.sessions=snap.docs.map(function(d){var x=d.data();x.id=d.id;return x;});
+  onSnapshot(collection(A.db,'sessions'),function(snap){
+    A.sessions=sortByCreated(snap.docs.map(function(d){var x=d.data();x.id=d.id;return x;}));
     var active=A.sessions.find(function(s){return s.status==='active';});
-    if(active){
-      if(A.activeSessId!==active.id){
-        A.activeSessId=active.id;
-        A.liveBuyins=JSON.parse(JSON.stringify(active.buyins||{}));
-      }
-    } else {
-      A.activeSessId=null;
-    }
+    if(active){if(A.activeSessId!==active.id){A.activeSessId=active.id;A.liveBuyins=JSON.parse(JSON.stringify(active.buyins||{}));}}
+    else{A.activeSessId=null;}
     render();sync('ok');
-  },function(){sync('err');});
-  onSnapshot(query(collection(A.db,'hands'),orderBy('createdAt','desc')),function(snap){A.hands=snap.docs.map(function(d){var x=d.data();x.id=d.id;return x;});render();});
-  onSnapshot(collection(A.db,'players'),function(snap){if(!snap.empty){A.players=snap.docs.map(function(d){var x=d.data();x.id=d.id;return x;}).sort(function(a,b){return(a.order||0)-(b.order||0);});}render();});
-  onSnapshot(collection(A.db,'meta'),function(snap){snap.docs.forEach(function(d){var key=d.id,val=d.data().value;if(key.startsWith('note_'))A.notes[key.slice(5)]=val;else if(key.startsWith('aiProfile_'))A.aiProfiles[key.slice(10)]=val;});render();});
+  },function(e){console.error('sessions',e);sync('err','DB error - check Firestore rules');});
+  onSnapshot(collection(A.db,'hands'),function(snap){
+    A.hands=sortByCreated(snap.docs.map(function(d){var x=d.data();x.id=d.id;return x;}));
+    render();
+  },function(e){console.error('hands',e);});
+  onSnapshot(collection(A.db,'players'),function(snap){
+    if(!snap.empty){A.players=snap.docs.map(function(d){var x=d.data();x.id=d.id;return x;}).sort(function(a,b){return(a.order||0)-(b.order||0);});}
+    render();
+  },function(e){console.error('players',e);});
+  onSnapshot(collection(A.db,'meta'),function(snap){
+    snap.docs.forEach(function(d){var key=d.id,val=d.data().value;if(key.startsWith('note_'))A.notes[key.slice(5)]=val;else if(key.startsWith('aiProfile_'))A.aiProfiles[key.slice(10)]=val;});
+    render();
+  },function(e){console.error('meta',e);});
 }
 
 async function seedPlayers(){
@@ -493,16 +496,21 @@ async function initApp(){
   try{
     var fbApp=initializeApp(FB_CONFIG);
     A.db=getFirestore(fbApp);
+    // Show app shell immediately — don't wait for data
     el('loading-pg').style.display='none';
     el('main-pg').style.display='block';
     sync('saving','Connecting...');
-    await seedPlayers();
-    startListeners();
     buildNav();
     el('btn-new').addEventListener('click',openStartModal);
     el('mover').addEventListener('click',function(e){if(e.target===el('mover'))closeModal();});
+    // Start listeners first (they will trigger render when data arrives)
+    startListeners();
+    // Seed players in background — won't block UI
+    seedPlayers().catch(function(e){console.error('seedPlayers',e);});
   }catch(e){
-    el('loading-pg').innerHTML='<div style="text-align:center;padding:40px"><div style="font-size:32px;margin-bottom:12px">&#9888;</div><div style="color:var(--red);font-size:14px">Connection failed:<br>'+esc(e.message)+'</div></div>';
+    el('loading-pg').style.display='flex';
+    el('main-pg').style.display='none';
+    el('loading-pg').innerHTML='<div style="text-align:center;padding:40px 20px"><div style="font-size:40px;margin-bottom:16px">&#9888;</div><div style="color:var(--red);font-size:14px;margin-bottom:12px">Connection failed</div><div style="color:var(--t3);font-size:12px;line-height:1.6">'+esc(e.message)+'<br><br>Check your internet connection<br>and try refreshing.</div></div>';
   }
 }
 initApp();
