@@ -11,7 +11,7 @@
   --cream:#f5f0e8;--gold:#c9a84c;--gold2:#e8c96a;
   --green:#4a9e5c;--red:#c94a4a;--purple:#8b5cf6;
   --t1:#f5f0e8;--t2:#c8bfa8;--t3:#8a7f6a;--t4:#4a4035;
-  --card-bg:#1f3620;--card-border:#2d4a2d;--modal-bg:#162416;
+  --cb:#1f3620;--cbr:#2d4a2d;--mb:#162416;
 }
 html,body{background:var(--felt);color:var(--t1);font-family:Georgia,serif;min-height:100vh}
 body{overflow-y:scroll;-webkit-overflow-scrolling:touch}
@@ -23,338 +23,299 @@ body{overflow-y:scroll;-webkit-overflow-scrolling:touch}
 .av-md{width:44px;height:44px;font-size:14px}
 .av-lg{width:58px;height:58px;font-size:18px}
 .av-sel{border-color:var(--gold)!important;box-shadow:0 0 0 3px rgba(201,168,76,.3)}
-.av-c0{background:#2d6a4f;color:#95d5b2}
-.av-c1{background:#6b3d2e;color:#e8b4a0}
-.av-c2{background:#3d4a6b;color:#a0b4e8}
-.av-c3{background:#6b2d4f;color:#e8a0c8}
-.av-c4{background:#4a6b2d;color:#b4e8a0}
-.av-c5{background:#6b6b2d;color:#e8e0a0}
-.av-c6{background:#2d4a6b;color:#a0c8e8}
-.av-c7{background:#6b4a2d;color:#e8c8a0}
+.av-c0{background:#2d6a4f;color:#95d5b2}.av-c1{background:#6b3d2e;color:#e8b4a0}
+.av-c2{background:#3d4a6b;color:#a0b4e8}.av-c3{background:#6b2d4f;color:#e8a0c8}
+.av-c4{background:#4a6b2d;color:#b4e8a0}.av-c5{background:#6b6b2d;color:#e8e0a0}
+.av-c6{background:#2d4a6b;color:#a0c8e8}.av-c7{background:#6b4a2d;color:#e8c8a0}
 
 /* Header */
-.hdr{background:var(--felt2);border-bottom:1px solid var(--card-border);padding:14px 16px 0;position:sticky;top:0;z-index:50}
+.hdr{background:var(--felt2);border-bottom:1px solid var(--cbr);padding:14px 16px 0;position:sticky;top:0;z-index:50}
 .hdr-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
 .logo{font-size:19px;font-weight:900;color:var(--cream);letter-spacing:-.3px}
 .logo span{color:var(--gold)}
 .sync-bar{display:flex;align-items:center;gap:5px;font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--t3);padding:0 0 8px}
 .sdot{width:6px;height:6px;border-radius:50%;flex-shrink:0}
-.s-ok .sdot{background:var(--green)}
-.s-saving .sdot{background:var(--gold);animation:pulse .8s infinite}
-.s-err .sdot{background:var(--red)}
-@keyframes pulse{0%,100%{opacity:.3}50%{opacity:1}}
+.s-ok .sdot{background:var(--green)}.s-saving .sdot{background:var(--gold);animation:blink2 .8s infinite}.s-err .sdot{background:var(--red)}
+@keyframes blink2{0%,100%{opacity:.3}50%{opacity:1}}
 .pg{padding:14px 14px 0}
 
 /* Cards */
-.card{background:var(--card-bg);border:1px solid var(--card-border);border-radius:14px;padding:16px;margin-bottom:12px}
+.card{background:var(--cb);border:1px solid var(--cbr);border-radius:14px;padding:16px;margin-bottom:12px}
 .ct{font-size:9px;letter-spacing:.15em;text-transform:uppercase;color:var(--t3);margin-bottom:12px}
-.ct.gold{color:var(--gold)}
+.ct.g{color:var(--gold)}
 
 /* Buttons */
 .btn{border:none;cursor:pointer;font-family:Georgia,serif;font-weight:700;border-radius:10px;display:inline-flex;align-items:center;justify-content:center;gap:6px;transition:.15s}
-.b-gold{background:var(--gold);color:#1a1a0a;padding:10px 18px;font-size:13px}
-.b-gold:active{background:var(--gold2)}
-.b-dark{background:rgba(0,0,0,.3);color:var(--t2);padding:10px 18px;font-size:13px;border:1px solid var(--card-border)}
-.b-red{background:rgba(180,40,40,.2);color:var(--red);padding:12px 18px;font-size:13px;border:1px solid rgba(180,40,40,.3)}
-.b-green{background:rgba(74,158,92,.15);color:var(--green);padding:10px 18px;font-size:13px;border:1px solid rgba(74,158,92,.3)}
-.b-ai{background:linear-gradient(90deg,#4c1d95,#78350f);color:#fff;padding:10px 18px;font-size:13px}
+.bg{background:var(--gold);color:#1a1a0a;padding:10px 18px;font-size:13px}
+.bg:active{background:var(--gold2)}
+.bd{background:rgba(0,0,0,.3);color:var(--t2);padding:10px 18px;font-size:13px;border:1px solid var(--cbr)}
+.br{background:rgba(180,40,40,.2);color:var(--red);padding:12px 18px;font-size:13px;border:1px solid rgba(180,40,40,.3)}
+.bai{background:linear-gradient(90deg,#4c1d95,#78350f);color:#fff;padding:10px 18px;font-size:13px}
 .fw{width:100%;padding:13px}
-.dashed{background:none;border:2px dashed var(--card-border);color:var(--t3);width:100%;padding:11px;font-size:13px;border-radius:10px;font-family:Georgia,serif;cursor:pointer}
+.dsh{background:none;border:2px dashed var(--cbr);color:var(--t3);width:100%;padding:11px;font-size:13px;border-radius:10px;font-family:Georgia,serif;cursor:pointer}
+.dsh:active{border-color:var(--gold);color:var(--gold)}
 
 /* Hero */
-.hero{background:linear-gradient(160deg,var(--felt3),var(--felt));border:1px solid var(--card-border);border-radius:18px;padding:22px 16px;margin-bottom:14px;position:relative;overflow:hidden}
+.hero{background:linear-gradient(160deg,var(--felt3),var(--felt));border:1px solid var(--cbr);border-radius:18px;padding:22px 16px;margin-bottom:14px;position:relative;overflow:hidden}
 .hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 30% 50%,rgba(201,168,76,.06),transparent 70%);pointer-events:none}
 .hero-lbl{font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--t3);margin-bottom:6px}
 .hero-amt{font-size:42px;font-weight:900;line-height:1;letter-spacing:-1px}
-.hero-change{display:inline-flex;align-items:center;gap:3px;font-size:11px;font-weight:700;padding:2px 7px;border-radius:20px;margin-top:6px}
-.hero-change.pos{background:rgba(74,158,92,.2);color:var(--green)}
-.hero-change.neg{background:rgba(201,74,74,.2);color:var(--red)}
+.hchg{display:inline-flex;align-items:center;font-size:11px;font-weight:700;padding:2px 7px;border-radius:20px;margin-top:6px}
+.hchg.pos{background:rgba(74,158,92,.2);color:var(--green)}
+.hchg.neg{background:rgba(201,74,74,.2);color:var(--red)}
 
 /* Pills */
 .pills{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;padding-bottom:4px;margin-bottom:14px}
 .pills::-webkit-scrollbar{display:none}
-.pill{background:var(--card-bg);border:1px solid var(--card-border);border-radius:10px;padding:10px 14px;min-width:80px;text-align:center;flex-shrink:0}
+.pill{background:var(--cb);border:1px solid var(--cbr);border-radius:10px;padding:10px 14px;min-width:80px;text-align:center;flex-shrink:0}
 .pill-l{font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:var(--t3);margin-bottom:3px}
 .pill-v{font-size:14px;font-weight:700}
 
 /* Chart */
-.chart-wrap{position:relative;height:80px;margin:4px 0 2px}
-.chart-zero{position:absolute;left:0;right:0;top:50%;border-top:1px dashed rgba(201,168,76,.2)}
-.chart-lbls{display:flex;justify-content:space-between;margin-top:3px}
+.ch-wrap{position:relative;height:80px;margin:4px 0 2px}
+.ch-zero{position:absolute;left:0;right:0;top:50%;border-top:1px dashed rgba(201,168,76,.2)}
+.ch-lbls{display:flex;justify-content:space-between;margin-top:3px}
 
 /* Session rows */
-.srow{background:var(--card-bg);border:1px solid var(--card-border);border-radius:14px;margin-bottom:10px;overflow:hidden}
+.srow{background:var(--cb);border:1px solid var(--cbr);border-radius:14px;margin-bottom:10px;overflow:hidden}
+.srow.act{border-color:var(--gold);box-shadow:0 0 0 2px rgba(201,168,76,.15)}
 .shdr{display:flex;align-items:center;justify-content:space-between;padding:13px 14px;cursor:pointer}
 .shdr:active{background:var(--felt3)}
 .smeta{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
-.sbody{padding:13px 14px;border-top:1px solid var(--card-border);display:none}
+.sbody{padding:13px 14px;border-top:1px solid var(--cbr);display:none}
 .pres{background:rgba(0,0,0,.2);border-radius:10px;padding:10px 12px;margin-bottom:8px}
 .pres-top{display:flex;align-items:center;gap:10px}
-.pres-right{flex:1;display:flex;justify-content:space-between;align-items:center}
-.pnote{font-size:11px;color:var(--t3);font-style:italic;margin-top:7px;padding-top:7px;border-top:1px solid var(--card-border)}
+.pres-r{flex:1;display:flex;justify-content:space-between;align-items:center}
+.pnote{font-size:11px;color:var(--t3);font-style:italic;margin-top:7px;padding-top:7px;border-top:1px solid var(--cbr)}
 .snote{background:rgba(0,0,0,.2);border-radius:10px;padding:10px 12px;font-size:11px;font-style:italic;color:var(--t3);margin-top:8px}
 
 /* Settlement */
-.stl-title{font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:var(--t3);margin:12px 0 7px}
+.stl-t{font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:var(--t3);margin:12px 0 7px}
 .txn{display:flex;align-items:center;justify-content:space-between;background:rgba(0,0,0,.2);border-radius:10px;padding:10px 13px;margin-bottom:6px}
-.all-sq{background:rgba(74,158,92,.1);border:1px solid rgba(74,158,92,.3);border-radius:10px;padding:10px;text-align:center;color:var(--green);font-size:13px;margin-top:8px}
+.allsq{background:rgba(74,158,92,.1);border:1px solid rgba(74,158,92,.3);border-radius:10px;padding:10px;text-align:center;color:var(--green);font-size:13px;margin-top:8px}
 
 /* AI */
 .ai-box{background:linear-gradient(135deg,rgba(76,29,149,.12),rgba(120,53,15,.08));border:1px solid rgba(139,92,246,.25);border-radius:12px;padding:14px;margin-top:10px}
-.ai-box-title{font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:#a78bfa;margin-bottom:8px}
-.ai-box-body{font-size:13px;color:var(--t2);line-height:1.7;white-space:pre-wrap}
-.ai-profile{background:linear-gradient(135deg,rgba(76,29,149,.1),transparent);border:1px solid rgba(139,92,246,.2);border-radius:10px;padding:12px;margin-top:10px}
-.ai-profile-lbl{font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:#a78bfa;margin-bottom:6px}
-.ai-profile-text{font-size:12px;color:var(--t2);line-height:1.6;white-space:pre-wrap}
+.ai-t{font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:#a78bfa;margin-bottom:8px}
+.ai-body{font-size:13px;color:var(--t2);line-height:1.7;white-space:pre-wrap}
+.ai-prof{background:linear-gradient(135deg,rgba(76,29,149,.1),transparent);border:1px solid rgba(139,92,246,.2);border-radius:10px;padding:12px;margin-top:10px}
+.ai-prof-l{font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:#a78bfa;margin-bottom:6px}
+.ai-prof-t{font-size:12px;color:var(--t2);line-height:1.6;white-space:pre-wrap}
 .thinking{display:flex;align-items:center;gap:8px;color:#a78bfa;font-size:12px;font-style:italic;padding:4px 0}
 .dots span{width:5px;height:5px;background:#a78bfa;border-radius:50%;display:inline-block;margin:0 1px;animation:blink 1.2s infinite}
-.dots span:nth-child(2){animation-delay:.2s}
-.dots span:nth-child(3){animation-delay:.4s}
+.dots span:nth-child(2){animation-delay:.2s}.dots span:nth-child(3){animation-delay:.4s}
 @keyframes blink{0%,80%,100%{opacity:.15}40%{opacity:1}}
 
 /* Balance */
 .bal{border-radius:10px;padding:11px 14px;display:flex;justify-content:space-between;align-items:center;font-size:13px;margin-bottom:10px}
-.bal-ok{background:rgba(74,158,92,.1);border:1px solid rgba(74,158,92,.3)}
-.bal-err{background:rgba(201,74,74,.1);border:1px solid rgba(201,74,74,.3)}
+.bok{background:rgba(74,158,92,.1);border:1px solid rgba(74,158,92,.3)}
+.berr{background:rgba(201,74,74,.1);border:1px solid rgba(201,74,74,.3)}
 
-/* ── LIVE HAND LOGGER ── */
-.live-header{background:linear-gradient(135deg,var(--felt3),var(--felt2));border:1px solid var(--card-border);border-radius:14px;padding:14px;margin-bottom:12px;display:flex;align-items:center;justify-content:space-between}
-.live-dot{width:8px;height:8px;border-radius:50%;background:var(--red);animation:pulse .8s infinite;margin-right:6px;display:inline-block}
-.hand-counter{font-size:28px;font-weight:900;color:var(--gold);line-height:1}
+/* Active session banner */
+.act-banner{background:rgba(201,168,76,.08);border:1px solid rgba(201,168,76,.3);border-radius:14px;padding:14px;margin-bottom:12px;display:flex;align-items:center;justify-content:space-between}
+.live-dot{width:7px;height:7px;border-radius:50%;background:var(--red);animation:blink2 .8s infinite;display:inline-block;margin-right:5px}
+
+/* ── LIVE TAB ── */
+.live-hdr{background:linear-gradient(135deg,var(--felt3),var(--felt2));border:1px solid var(--cbr);border-radius:14px;padding:14px;margin-bottom:12px}
+.hand-num{font-size:28px;font-weight:900;color:var(--gold);line-height:1}
 .hand-sub{font-size:10px;color:var(--t3);letter-spacing:.1em;text-transform:uppercase;margin-top:2px}
-
-/* Street progress bar */
 .street-bar{display:flex;gap:4px;margin-bottom:16px}
-.street-step{flex:1;height:4px;border-radius:2px;background:var(--card-border);transition:.2s}
-.street-step.done{background:var(--green)}
-.street-step.active{background:var(--gold)}
+.ss{flex:1;height:4px;border-radius:2px;background:var(--cbr);transition:.2s}
+.ss.done{background:var(--green)}.ss.active{background:var(--gold)}
+.slbl{font-size:16px;font-weight:900;color:var(--cream);margin-bottom:14px;letter-spacing:-.2px}
 
-/* Street label */
-.street-label{font-size:16px;font-weight:900;color:var(--cream);letter-spacing:-.2px;margin-bottom:14px;display:flex;align-items:center;gap:8px}
-.street-badge{font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:var(--t3);background:rgba(0,0,0,.3);border:1px solid var(--card-border);border-radius:20px;padding:3px 9px;font-weight:700}
+/* Player toggle */
+.pl-tgl{display:flex;align-items:center;justify-content:space-between;padding:10px 12px;border:1px solid var(--cbr);border-radius:10px;margin-bottom:8px;cursor:pointer;transition:.15s}
+.pl-tgl.on{background:rgba(201,168,76,.07);border-color:rgba(201,168,76,.35)}
+.pl-tgl.off{opacity:.5}
+.tgl{width:38px;height:22px;border-radius:11px;background:var(--cbr);position:relative;flex-shrink:0;transition:.2s;cursor:pointer}
+.tgl.on{background:var(--green)}
+.tgl::after{content:'';position:absolute;top:3px;left:3px;width:16px;height:16px;border-radius:50%;background:#fff;transition:.2s}
+.tgl.on::after{left:19px}
 
-/* Dealer selector */
-.dealer-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-bottom:8px}
-.dealer-btn{display:flex;flex-direction:column;align-items:center;gap:5px;background:none;border:none;cursor:pointer;padding:6px 4px;border-radius:10px;transition:.15s}
-.dealer-btn:active{background:rgba(201,168,76,.1)}
-.dealer-name{font-size:10px;color:var(--t3);text-align:center;letter-spacing:-.2px;line-height:1.2}
+/* Rebuy row */
+.rebuy-row{display:flex;align-items:center;justify-content:space-between;padding:12px 14px;background:rgba(0,0,0,.2);border:1px solid var(--cbr);border-radius:12px;margin-bottom:8px}
+.rebuy-left{display:flex;align-items:center;gap:10px;flex:1;min-width:0}
+.rebuy-name{font-size:14px;font-weight:700;color:var(--cream)}
+.rebuy-invested{font-size:11px;color:var(--t3);margin-top:2px}
 
-/* Card display */
-.board-cards{display:flex;gap:6px;margin-bottom:16px;flex-wrap:wrap}
-.playing-card{width:42px;height:58px;border-radius:6px;background:var(--cream);border:1px solid var(--cream3);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:900;flex-shrink:0;position:relative;cursor:pointer;transition:.15s}
-.playing-card:active{transform:scale(.95)}
-.playing-card.empty{background:rgba(0,0,0,.2);border:2px dashed var(--card-border);color:var(--t3);font-size:18px}
-.playing-card.red-card{color:#c94a4a}
-.playing-card.black-card{color:#1a2e1a}
-.card-val{font-size:14px;font-weight:900;line-height:1}
-.card-suit{font-size:12px;line-height:1}
+/* Stepper */
+.stp{display:flex;align-items:center;gap:4px;background:rgba(0,0,0,.3);border:1px solid var(--cbr);border-radius:8px;padding:3px}
+.sb{width:32px;height:32px;border-radius:6px;background:rgba(201,168,76,.15);border:none;color:var(--gold);font-size:20px;font-weight:900;cursor:pointer;display:flex;align-items:center;justify-content:center;line-height:1;font-family:Georgia,serif;flex-shrink:0}
+.sb:active{background:var(--gold);color:#1a1a0a}
+.sv{width:26px;text-align:center;font-size:15px;font-weight:700;color:var(--cream)}
 
-/* Card picker modal content */
+/* Dealer grid */
+.dealer-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin-bottom:12px}
+.dealer-btn{display:flex;flex-direction:column;align-items:center;gap:4px;background:none;border:none;cursor:pointer;padding:6px 2px;border-radius:10px}
+.dealer-name{font-size:10px;color:var(--t3);text-align:center;line-height:1.2}
+
+/* Cards */
+.brd-cards{display:flex;gap:6px;margin-bottom:14px;flex-wrap:wrap}
+.pcard{width:42px;height:58px;border-radius:6px;background:var(--cream);display:flex;flex-direction:column;align-items:center;justify-content:center;flex-shrink:0;cursor:pointer;transition:.15s}
+.pcard:active{transform:scale(.95)}
+.pcard.empty{background:rgba(0,0,0,.2);border:2px dashed var(--cbr);color:var(--t3);font-size:20px}
+.pcard.red{color:#c94a4a}.pcard.blk{color:#1a2e1a}
+.cv{font-size:14px;font-weight:900;line-height:1}
+.cs{font-size:11px;line-height:1}
 .suit-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:16px}
-.suit-btn{height:56px;border-radius:10px;background:rgba(0,0,0,.3);border:1px solid var(--card-border);font-size:24px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:.15s}
+.suit-btn{height:56px;border-radius:10px;background:rgba(0,0,0,.3);border:1px solid var(--cbr);font-size:24px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:.15s}
 .suit-btn:active,.suit-btn.sel{background:rgba(201,168,76,.2);border-color:var(--gold)}
-.suit-btn.red{color:#c94a4a}
-.suit-btn.black{color:var(--cream)}
+.suit-btn.red{color:#c94a4a}.suit-btn.blk{color:var(--cream)}
 .val-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:6px}
-.val-btn{height:44px;border-radius:8px;background:rgba(0,0,0,.3);border:1px solid var(--card-border);font-size:13px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--t2);transition:.15s}
+.val-btn{height:44px;border-radius:8px;background:rgba(0,0,0,.3);border:1px solid var(--cbr);font-size:13px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--t2);transition:.15s}
 .val-btn:active,.val-btn.sel{background:rgba(201,168,76,.2);border-color:var(--gold);color:var(--gold)}
 
 /* Action rows */
-.action-rows{display:flex;flex-direction:column;gap:8px;margin-bottom:14px}
-.action-row{background:rgba(0,0,0,.2);border:1px solid var(--card-border);border-radius:12px;padding:10px 12px;display:flex;align-items:center;gap:10px}
-.action-row-name{font-size:13px;font-weight:700;color:var(--cream);flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.action-btns{display:flex;gap:5px;flex-wrap:wrap;justify-content:flex-end}
-.act-btn{font-size:11px;font-weight:700;padding:6px 10px;border-radius:7px;border:1px solid var(--card-border);background:rgba(0,0,0,.3);color:var(--t3);cursor:pointer;font-family:Georgia,serif;transition:.15s;white-space:nowrap}
-.act-btn.sel-check{background:rgba(74,158,92,.2);border-color:var(--green);color:var(--green)}
-.act-btn.sel-call{background:rgba(74,158,92,.2);border-color:var(--green);color:var(--green)}
-.act-btn.sel-fold{background:rgba(201,74,74,.2);border-color:var(--red);color:var(--red)}
-.act-btn.sel-raise{background:rgba(201,168,76,.2);border-color:var(--gold);color:var(--gold)}
-.act-btn.sel-bet{background:rgba(201,168,76,.2);border-color:var(--gold);color:var(--gold)}
-.act-btn.sel-allin{background:rgba(139,92,246,.2);border-color:var(--purple);color:var(--purple)}
-.raise-input{width:72px;background:rgba(0,0,0,.4);border:1px solid var(--card-border);border-radius:6px;padding:5px 7px;color:var(--t1);font-family:Georgia,serif;font-size:12px;display:none}
-.raise-input.show{display:block}
+.act-rows{display:flex;flex-direction:column;gap:8px;margin-bottom:14px}
+.act-row{background:rgba(0,0,0,.2);border:1px solid var(--cbr);border-radius:12px;padding:10px 12px;display:flex;align-items:center;gap:10px}
+.act-row-name{font-size:13px;font-weight:700;color:var(--cream);flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.act-btns{display:flex;gap:4px;flex-wrap:wrap;justify-content:flex-end}
+.abt2{font-size:11px;font-weight:700;padding:6px 9px;border-radius:7px;border:1px solid var(--cbr);background:rgba(0,0,0,.3);color:var(--t3);cursor:pointer;font-family:Georgia,serif;transition:.15s}
+.abt2.sc,.abt2.sl{background:rgba(74,158,92,.2);border-color:var(--green);color:var(--green)}
+.abt2.sf{background:rgba(201,74,74,.2);border-color:var(--red);color:var(--red)}
+.abt2.sr,.abt2.sb2{background:rgba(201,168,76,.2);border-color:var(--gold);color:var(--gold)}
+.abt2.sa{background:rgba(139,92,246,.2);border-color:var(--purple);color:var(--purple)}
+.amt-inp{width:80px;background:rgba(0,0,0,.4);border:1px solid var(--cbr);border-radius:6px;padding:5px 7px;color:var(--t1);font-family:Georgia,serif;font-size:12px;display:none}
+.amt-inp.show{display:block}
 
 /* Showdown */
-.winner-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-bottom:14px}
-.winner-btn{display:flex;flex-direction:column;align-items:center;gap:5px;background:rgba(0,0,0,.2);border:1px solid var(--card-border);border-radius:10px;padding:8px 4px;cursor:pointer;transition:.15s}
-.winner-btn:active,.winner-btn.sel{background:rgba(201,168,76,.15);border-color:var(--gold)}
+.winner-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin-bottom:14px}
+.wbtn{display:flex;flex-direction:column;align-items:center;gap:4px;background:rgba(0,0,0,.2);border:1px solid var(--cbr);border-radius:10px;padding:8px 4px;cursor:pointer;transition:.15s}
+.wbtn.sel{background:rgba(201,168,76,.15);border-color:var(--gold)}
 .winner-name{font-size:10px;color:var(--t3);text-align:center}
-.hand-input-row{display:flex;align-items:center;gap:8px;margin-bottom:8px;padding:8px 10px;background:rgba(0,0,0,.2);border:1px solid var(--card-border);border-radius:10px}
-.hand-input-name{font-size:12px;font-weight:700;color:var(--t2);flex:1}
-.hand-input-field{width:130px;background:rgba(0,0,0,.3);border:1px solid var(--card-border);border-radius:6px;padding:6px 8px;color:var(--t1);font-family:Georgia,serif;font-size:12px}
+.hcard-row{display:flex;align-items:center;gap:8px;margin-bottom:7px;padding:8px 10px;background:rgba(0,0,0,.2);border:1px solid var(--cbr);border-radius:10px}
+.hcard-name{font-size:12px;font-weight:700;color:var(--t2);flex:1}
+.hcard-inp{width:110px;background:rgba(0,0,0,.3);border:1px solid var(--cbr);border-radius:6px;padding:6px 8px;color:var(--t1);font-family:Georgia,serif;font-size:12px}
 
-/* Hand history in sessions */
-.hand-log{background:rgba(0,0,0,.15);border-radius:10px;padding:10px 12px;margin-bottom:6px;font-size:12px}
-.hand-log-header{display:flex;justify-content:space-between;margin-bottom:6px;font-size:11px;color:var(--t3)}
-.hand-log-street{margin-bottom:4px}
-.hand-log-street-name{font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);margin-bottom:2px}
-.board-mini{display:flex;gap:3px;margin:4px 0}
-.mini-card{padding:2px 5px;border-radius:4px;font-size:11px;font-weight:700;background:var(--cream);display:inline-block}
-.mini-card.red{color:#c94a4a}
-.mini-card.black{color:#1a2e1a}
-.action-chip{display:inline-flex;align-items:center;gap:3px;font-size:10px;padding:2px 7px;border-radius:10px;margin:2px 2px 0 0}
-.chip-check{background:rgba(74,158,92,.15);color:var(--green)}
-.chip-call{background:rgba(74,158,92,.15);color:var(--green)}
-.chip-fold{background:rgba(201,74,74,.15);color:var(--red)}
-.chip-raise{background:rgba(201,168,76,.15);color:var(--gold)}
-.chip-bet{background:rgba(201,168,76,.15);color:var(--gold)}
-.chip-allin{background:rgba(139,92,246,.15);color:var(--purple)}
+/* Hand log */
+.hlog{background:rgba(0,0,0,.15);border-radius:10px;padding:10px 12px;margin-bottom:6px;font-size:12px}
+.hlog-hdr{display:flex;justify-content:space-between;margin-bottom:5px;font-size:11px;color:var(--t3)}
+.sname{font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);margin:5px 0 2px}
+.brd-mini{display:flex;gap:3px;margin:3px 0}
+.mc{padding:2px 5px;border-radius:4px;font-size:11px;font-weight:700;background:var(--cream);display:inline-block}
+.mc.red{color:#c94a4a}.mc.blk{color:#1a2e1a}
+.chip{display:inline-flex;align-items:center;font-size:10px;padding:2px 7px;border-radius:10px;margin:2px 2px 0 0}
+.chk,.cll{background:rgba(74,158,92,.15);color:var(--green)}
+.fld{background:rgba(201,74,74,.15);color:var(--red)}
+.rse,.bet{background:rgba(201,168,76,.15);color:var(--gold)}
+.ali{background:rgba(139,92,246,.15);color:var(--purple)}
 .win-chip{background:rgba(201,168,76,.2);color:var(--gold);font-size:10px;padding:2px 8px;border-radius:10px;font-weight:700;display:inline-block;margin-top:4px}
 
-/* Tendency cards */
-.tend-card{background:rgba(0,0,0,.2);border:1px solid var(--card-border);border-radius:10px;padding:10px 12px;margin-bottom:8px}
-.tend-name{font-size:12px;font-weight:700;color:var(--cream);margin-bottom:6px}
+/* Cashout modal rows */
+.co-row{display:flex;align-items:center;gap:10px;padding:11px 12px;background:rgba(0,0,0,.2);border:1px solid var(--cbr);border-radius:12px;margin-bottom:8px}
+.co-info{flex:1;min-width:0}
+.co-name{font-size:13px;font-weight:700;color:var(--cream)}
+.co-inv{font-size:11px;color:var(--t3);margin-top:1px}
+.co-inp{width:90px;text-align:center;font-size:14px;font-weight:700;background:rgba(0,0,0,.4)!important}
+.co-pnl{font-size:13px;font-weight:700;min-width:70px;text-align:right}
+
+/* Tendency */
+.tend-card{background:rgba(0,0,0,.2);border:1px solid var(--cbr);border-radius:10px;padding:10px 12px;margin-bottom:8px}
 .tend-stat{display:flex;justify-content:space-between;font-size:11px;padding:3px 0;border-bottom:1px solid rgba(45,74,45,.5)}
 .tend-stat:last-child{border-bottom:none}
-.tend-label{color:var(--t3)}
-.tend-val{color:var(--t2);font-weight:700}
+.tl{color:var(--t3)}.tv{color:var(--t2);font-weight:700}
 
-/* Bottom nav */
-.bnav{position:fixed;bottom:0;left:0;right:0;background:var(--felt2);border-top:1px solid var(--card-border);display:flex;z-index:40;max-width:430px;margin:0 auto}
-.bnav-btn{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:9px 4px 13px;border:none;background:none;color:var(--t3);cursor:pointer;font-family:Georgia,serif;font-size:9px;letter-spacing:.06em;text-transform:uppercase;gap:4px;transition:.15s}
-.bnav-btn.on{color:var(--gold)}
-.bnav-icon{font-size:17px;line-height:1}
-
-/* Modal */
-.mover{position:fixed;inset:0;background:rgba(0,0,0,.87);z-index:200;display:none;align-items:flex-end;justify-content:center}
-.mover.show{display:flex}
-.mbox{background:var(--modal-bg);border:1px solid var(--card-border);border-radius:22px 22px 0 0;width:100%;max-width:430px;max-height:93vh;overflow-y:auto;padding:20px 16px 36px;-webkit-overflow-scrolling:touch}
-.mt{font-size:18px;font-weight:900;color:var(--cream);margin-bottom:18px;letter-spacing:-.3px}
-
-/* Form */
-.fg2{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px}
-.fl{font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:var(--t3);display:block;margin-bottom:5px}
-input,textarea{background:rgba(0,0,0,.3);border:1px solid var(--card-border);border-radius:8px;padding:10px 12px;color:var(--t1);font-family:Georgia,serif;font-size:13px;width:100%}
-input:focus,textarea:focus{outline:none;border-color:var(--gold)}
-textarea{resize:none}
-input[type=password]{letter-spacing:.05em}
-
-/* Player row in session form */
-.prow{background:rgba(0,0,0,.25);border:1px solid var(--card-border);border-radius:14px;padding:13px;margin-bottom:10px}
-.prow-header{display:flex;align-items:center;gap:10px;margin-bottom:10px}
-.prow-info{flex:1;min-width:0}
-.prow-name{font-size:14px;font-weight:700;color:var(--cream)}
-.prow-invested{font-size:11px;color:var(--t3);margin-top:1px}
-.prow-controls{display:flex;align-items:center;gap:8px}
-.prow-bottom{display:grid;grid-template-columns:auto 1fr;gap:8px;align-items:center}
-.prow-cashout-lbl{font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:var(--t3);white-space:nowrap}
-.prow-note-area{margin-top:8px}
-.prow-note-toggle{background:none;border:none;color:var(--t3);font-size:11px;cursor:pointer;font-family:Georgia,serif;padding:0;display:flex;align-items:center;gap:4px}
-.prow-note-input{margin-top:6px;font-size:12px;height:52px;color:var(--t2)}
-
-/* Stepper */
-.stp{display:flex;align-items:center;gap:6px;background:rgba(0,0,0,.3);border:1px solid var(--card-border);border-radius:8px;padding:4px}
-.sb{width:30px;height:30px;border-radius:6px;background:rgba(201,168,76,.15);border:none;color:var(--gold);font-size:20px;font-weight:900;cursor:pointer;display:flex;align-items:center;justify-content:center;line-height:1;font-family:Georgia,serif;flex-shrink:0}
-.sb:active{background:var(--gold);color:#1a1a0a}
-.sv{width:28px;text-align:center;font-size:15px;font-weight:700;color:var(--cream)}
-
-/* Player cards */
-.pc{background:var(--card-bg);border:1px solid var(--card-border);border-radius:14px;padding:14px;margin-bottom:10px}
+/* Players tab */
+.pc{background:var(--cb);border:1px solid var(--cbr);border-radius:14px;padding:14px;margin-bottom:10px}
 .pc-top{display:flex;align-items:flex-start;gap:12px;margin-bottom:10px}
 .pc-info{flex:1;min-width:0}
 .pc-name{font-size:16px;font-weight:900;color:var(--cream);letter-spacing:-.2px}
 .ptag{display:inline-flex;font-size:9px;border:1px solid;border-radius:20px;padding:2px 8px;margin-top:5px;letter-spacing:.05em}
 .pc-acts{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
-.abt{background:rgba(0,0,0,.2);border:1px solid var(--card-border);border-radius:8px;padding:5px 10px;cursor:pointer;font-family:Georgia,serif;font-size:11px;color:var(--t2)}
-.abt.gold{color:var(--gold);border-color:rgba(201,168,76,.3)}
-.abt.purple{color:#a78bfa;border-color:rgba(139,92,246,.3)}
-.abt.red{color:var(--red);border-color:rgba(201,74,74,.3)}
+.abt{background:rgba(0,0,0,.2);border:1px solid var(--cbr);border-radius:8px;padding:5px 10px;cursor:pointer;font-family:Georgia,serif;font-size:11px;color:var(--t2)}
+.abt.gld{color:var(--gold);border-color:rgba(201,168,76,.3)}
+.abt.prp{color:#a78bfa;border-color:rgba(139,92,246,.3)}
+.abt.rrd{color:var(--red);border-color:rgba(201,74,74,.3)}
 .pc-bio{font-size:13px;color:var(--t2);line-height:1.6}
 .pc-bio.em{color:var(--t4);font-style:italic}
-.name-edit-row{display:flex;align-items:center;gap:6px;flex:1}
-.name-edit-row input{flex:1;padding:7px 10px;font-size:13px}
-.ns-btn{background:var(--gold);color:#1a1a0a;border:none;border-radius:8px;padding:7px 12px;font-size:11px;font-weight:700;cursor:pointer;white-space:nowrap;font-family:Georgia,serif}
+.ne-row{display:flex;align-items:center;gap:6px;flex:1}
+.ne-row input{flex:1;padding:7px 10px;font-size:13px}
+.ns-btn{background:var(--gold);color:#1a1a0a;border:none;border-radius:8px;padding:7px 12px;font-size:11px;font-weight:700;cursor:pointer;font-family:Georgia,serif}
 
 /* Leaderboard */
-.podium{display:flex;align-items:flex-end;justify-content:center;gap:8px;margin-bottom:20px;padding:10px 0 0}
+.podium{display:flex;align-items:flex-end;justify-content:center;gap:8px;margin-bottom:20px;padding-top:10px}
 .pod{display:flex;flex-direction:column;align-items:center;flex:1;max-width:110px}
-.pod-bar{width:100%;border-radius:8px 8px 0 0;min-height:30px;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;padding-bottom:8px}
-.pod-1{background:linear-gradient(180deg,rgba(201,168,76,.3),rgba(201,168,76,.1));border:1px solid rgba(201,168,76,.4)}
-.pod-2{background:linear-gradient(180deg,rgba(180,180,180,.2),rgba(180,180,180,.05));border:1px solid rgba(180,180,180,.25)}
-.pod-3{background:linear-gradient(180deg,rgba(150,100,50,.2),rgba(150,100,50,.05));border:1px solid rgba(150,100,50,.25)}
+.pod-bar{width:100%;border-radius:8px 8px 0 0;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;padding-bottom:8px}
+.p1{background:linear-gradient(180deg,rgba(201,168,76,.3),rgba(201,168,76,.1));border:1px solid rgba(201,168,76,.4)}
+.p2{background:linear-gradient(180deg,rgba(180,180,180,.2),rgba(180,180,180,.05));border:1px solid rgba(180,180,180,.25)}
+.p3{background:linear-gradient(180deg,rgba(150,100,50,.2),rgba(150,100,50,.05));border:1px solid rgba(150,100,50,.25)}
 .pod-name{font-size:11px;color:var(--t2);margin-top:4px;text-align:center;font-weight:700}
 .pod-amt{font-size:12px;font-weight:900;margin-top:2px}
-.lb-row{display:flex;align-items:center;gap:10px;padding:10px 0;border-top:1px solid var(--card-border)}
+.lb-row{display:flex;align-items:center;gap:10px;padding:10px 0;border-top:1px solid var(--cbr)}
 .lb-row:first-child{border-top:none}
-.lb-rank{font-size:13px;font-weight:900;width:20px;flex-shrink:0;color:var(--t3);text-align:center}
 .lb-bar{height:4px;border-radius:2px;margin:4px 0;min-width:2px}
 .lb-meta{display:flex;gap:8px;flex-wrap:wrap}
 .lb-meta span{font-size:10px;color:var(--t3)}
 table{width:100%;border-collapse:collapse;font-size:11px}
-th{color:var(--t3);font-weight:normal;padding-bottom:8px;text-align:right;font-family:Georgia,serif;font-size:10px;letter-spacing:.05em}
+th{color:var(--t3);font-weight:normal;padding-bottom:8px;text-align:right;font-family:Georgia,serif;font-size:10px}
 th:first-child{text-align:left}
 td{padding:6px 3px;text-align:right;font-weight:600;font-family:Georgia,serif}
 td:first-child{text-align:left;color:var(--t2);font-weight:normal}
-tr+tr{border-top:1px solid var(--card-border)}
-.tr-tot td{border-top:2px solid var(--card-border);color:var(--gold);font-weight:900}
+tr+tr{border-top:1px solid var(--cbr)}
+.tr-tot td{border-top:2px solid var(--cbr);color:var(--gold);font-weight:900}
 
-/* Setup */
-.setup{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:30px 20px;text-align:center;background:var(--felt)}
-.setup-logo{font-size:52px;margin-bottom:16px}
-.setup-title{font-size:24px;font-weight:900;color:var(--cream);margin-bottom:8px;letter-spacing:-.3px}
-.setup-sub{font-size:13px;color:var(--t2);line-height:1.7;margin-bottom:28px}
-.setup-card{background:var(--card-bg);border:1px solid var(--card-border);border-radius:16px;padding:20px;width:100%;text-align:left;margin-bottom:12px}
-.setup-step{font-size:9px;letter-spacing:.15em;text-transform:uppercase;color:var(--gold);margin-bottom:8px}
+/* Bottom nav */
+.bnav{position:fixed;bottom:0;left:0;right:0;background:var(--felt2);border-top:1px solid var(--cbr);display:flex;z-index:40;max-width:430px;margin:0 auto}
+.bnav-btn{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:9px 4px 13px;border:none;background:none;color:var(--t3);cursor:pointer;font-family:Georgia,serif;font-size:9px;letter-spacing:.06em;text-transform:uppercase;gap:4px;transition:.15s;position:relative}
+.bnav-btn.on{color:var(--gold)}
+.bnav-icon{font-size:17px;line-height:1}
+.live-badge{position:absolute;top:6px;right:calc(50% - 14px);width:7px;height:7px;background:var(--red);border-radius:50%;animation:blink2 .8s infinite}
 
-/* Utils */
-.g{color:var(--green)}.r{color:var(--red)}.gold{color:var(--gold)}
-.fw7{font-weight:700}
-.empty{text-align:center;padding:60px 20px;color:var(--t3)}
-.empty-ic{font-size:44px;margin-bottom:12px}
+/* Modal */
+.mover{position:fixed;inset:0;background:rgba(0,0,0,.87);z-index:200;display:none;align-items:flex-end;justify-content:center}
+.mover.show{display:flex}
+.mbox{background:var(--mb);border:1px solid var(--cbr);border-radius:22px 22px 0 0;width:100%;max-width:430px;max-height:93vh;overflow-y:auto;padding:20px 16px 36px;-webkit-overflow-scrolling:touch}
+.mt{font-size:18px;font-weight:900;color:var(--cream);margin-bottom:18px;letter-spacing:-.3px}
+.fg2{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px}
+.fl{font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:var(--t3);display:block;margin-bottom:5px}
+input,textarea{background:rgba(0,0,0,.3);border:1px solid var(--cbr);border-radius:8px;padding:10px 12px;color:var(--t1);font-family:Georgia,serif;font-size:13px;width:100%}
+input:focus,textarea:focus{outline:none;border-color:var(--gold)}
+textarea{resize:none}
 .row2{display:flex;gap:10px;margin-top:14px}
 .row2 .btn{flex:1}
 .ginput{display:flex;gap:8px;margin-bottom:10px}
 .ginput input{flex:1}
-.rmg{background:none;border:none;color:var(--t3);cursor:pointer;font-size:14px;padding:0 0 0 4px;font-family:Georgia,serif;vertical-align:middle}
-.sep{height:1px;background:var(--card-border);margin:12px 0}
+.rmg{background:none;border:none;color:var(--t3);cursor:pointer;font-size:14px;padding:0 0 0 4px;font-family:Georgia,serif}
+.gld{color:var(--gold)}.grn{color:var(--green)}.rrd{color:var(--red)}.fw7{font-weight:700}
+.empty{text-align:center;padding:60px 20px;color:var(--t3)}
+.empty-ic{font-size:44px;margin-bottom:12px}
 </style>
 </head>
 <body>
-
-<!-- Setup -->
-<div id="setup-pg">
-  <div class="setup">
-    <div class="setup-logo">&#9824;</div>
-    <div class="setup-title">MyPokerTable</div>
-    <div class="setup-sub">Connect Firebase to save all your sessions permanently. One-time setup.</div>
-    <div class="setup-card">
-      <div class="setup-step">Firebase Config</div>
-      <p style="font-size:12px;color:var(--t2);line-height:1.7;margin-bottom:10px">Go to <strong style="color:var(--gold)">console.firebase.google.com</strong> → your project → Web app → copy config. Then enable Firestore in test mode.</p>
-      <textarea id="fb-config-input" style="height:130px;font-size:11px;font-family:monospace;margin-bottom:10px" placeholder='{"apiKey":"AIza...","authDomain":"xxx.firebaseapp.com","projectId":"xxx","storageBucket":"xxx.appspot.com","messagingSenderId":"123","appId":"1:123:web:abc"}'></textarea>
-      <button class="btn b-gold fw" id="setup-btn">Connect Firebase &rarr;</button>
-      <p id="setup-err" style="color:var(--red);font-size:12px;margin-top:8px;display:none"></p>
-    </div>
-    <div class="setup-card">
-      <div class="setup-step">Claude AI Key (Optional)</div>
-      <p style="font-size:12px;color:var(--t2);line-height:1.6;margin-bottom:8px">For automatic coaching. Free key at <strong style="color:var(--gold)">console.anthropic.com</strong></p>
-      <input type="password" id="ai-key-setup" placeholder="sk-ant-...">
-    </div>
-  </div>
-</div>
-
-<!-- Main App -->
 <div id="main-pg" style="display:none">
   <div class="app">
     <div class="hdr">
       <div class="hdr-row">
         <div class="logo">My<span>Poker</span>Table</div>
-        <button class="btn b-gold" id="btn-new" style="padding:9px 16px;font-size:13px">+ Session</button>
+        <button class="btn bg" id="btn-new" style="padding:9px 16px;font-size:13px">+ Session</button>
       </div>
-      <div id="sync-bar" class="sync-bar s-ok">
-        <div class="sdot"></div><span id="sync-txt">Connected</span>
-      </div>
+      <div id="sync-bar" class="sync-bar s-ok"><div class="sdot"></div><span id="sync-txt">Connected</span></div>
     </div>
     <div class="pg" id="pg"></div>
   </div>
   <div class="bnav" id="bnav"></div>
 </div>
-
-<!-- Modal -->
+<div id="loading-pg" style="min-height:100vh;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:12px">
+  <div style="font-size:48px">&#9824;</div>
+  <div style="font-size:18px;font-weight:900;color:var(--gold)">MyPokerTable</div>
+  <div style="font-size:12px;color:var(--t3)">Connecting...</div>
+</div>
 <div class="mover" id="mover"><div class="mbox" id="mbox"></div></div>
 
 <script type="module">
 import{initializeApp}from'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
 import{getFirestore,collection,doc,getDocs,addDoc,setDoc,deleteDoc,onSnapshot,orderBy,query,serverTimestamp}from'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
+
+// ── Firebase Config (hardcoded) ───────────────────────────────
+const FB_CONFIG={
+  apiKey:"AIzaSyBe8U6T4v9pFlNBRXxI5PhHCijhR8WGb-g",
+  authDomain:"mypokertable-5fea4.firebaseapp.com",
+  projectId:"mypokertable-5fea4",
+  storageBucket:"mypokertable-5fea4.firebasestorage.app",
+  messagingSenderId:"454961955479",
+  appId:"1:454961955479:web:411d794b6a9751986d9fd2"
+};
 
 // ── Helpers ───────────────────────────────────────────────────
 function uid(){return'p'+Math.random().toString(36).slice(2,8);}
@@ -363,35 +324,33 @@ function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').
 function rs(n){n=Math.round(Number(n)||0);return(n>=0?'+':'-')+'Rs.'+Math.abs(n).toLocaleString('en-IN');}
 function LS(k,v){try{if(v===undefined)return localStorage.getItem(k);localStorage.setItem(k,v);}catch(e){return null;}}
 const AVC=['av-c0','av-c1','av-c2','av-c3','av-c4','av-c5','av-c6','av-c7'];
-function avc(id){var s=0;for(var i=0;i<id.length;i++)s+=id.charCodeAt(i);return AVC[s%AVC.length];}
-function initials(n){var p=(n||'').trim().split(/\s+/);return p.length>=2?(p[0][0]+p[1][0]).toUpperCase():(n||'?').slice(0,2).toUpperCase();}
-function avHTML(p,sz){sz=sz||'av-md';return'<div class="av '+sz+' '+avc(p.id||'x')+'">'+esc(initials(p.name))+'</div>';}
+function avc(id){var s=0;for(var i=0;i<(id||'').length;i++)s+=(id||'').charCodeAt(i);return AVC[s%AVC.length];}
+function ini(n){var p=(n||'').trim().split(/\s+/);return p.length>=2?(p[0][0]+p[1][0]).toUpperCase():(n||'?').slice(0,2).toUpperCase();}
+function avH(p,sz){return'<div class="av '+(sz||'av-md')+' '+avc(p.id||'x')+'">'+esc(ini(p.name))+'</div>';}
 
-// ── State ─────────────────────────────────────────────────────
-var APP={
+// ── App State ─────────────────────────────────────────────────
+var A={
   db:null,players:[],sessions:[],hands:[],
   notes:{},aiProfiles:{},
-  apiKey:LS('pkl-aikey')||'',
+  apiKey:LS('pkl-aikey')||'sk-ant-api03-_Mr3KchjgmE8ygRtOqeaP-M0uqq3b
+QCwem-i2BaC3PdsD5vggM1X7yjL5XF8m_Lp3fuPHpG
+huMgti44AL8FQ_Q-pmZrbwAA',
   tab:'dashboard',
-  // Live hand logger state
-  liveHand:{
-    step:0, // 0=dealer, 1=preflop, 2=flop, 3=turn, 4=river, 5=showdown
-    dealer:null,
-    preflop:{},flop:{},turn:{},river:{},
-    flopCards:[null,null,null],turnCard:null,riverCard:null,
-    winner:null,winnerHand:'',losingHands:{},
-    handCount:0
-  },
-  activeSessionId:null
+  activeSessId:null,
+  // Live hand state
+  lh:{step:'dealer',dealer:null,pre:{},flop:{},turn:{},river:{},fc:[null,null,null],tc:null,rc:null,winner:null,hcards:{},count:0},
+  // Session start form
+  sf:{playerIds:[],guests:[],buyinAmt:500,date:''},
+  // Buyins during live session (updated in real time)
+  liveBuyins:{}
 };
 
-const STREETS=['dealer','preflop','flop','turn','river','showdown'];
-const ACTIONS_PREFLOP=['Fold','Call','Raise','All-In'];
-const ACTIONS_POST=['Check','Fold','Call','Bet','Raise','All-In'];
-const CARD_VALS=['A','2','3','4','5','6','7','8','9','10','J','Q','K'];
+const ACTS_PRE=['Fold','Call','Raise','All-In'];
+const ACTS_POST=['Check','Fold','Call','Bet','Raise','All-In'];
+const CVALS=['A','2','3','4','5','6','7','8','9','10','J','Q','K'];
 const SUITS=[{s:'♠',r:false},{s:'♥',r:true},{s:'♦',r:true},{s:'♣',r:false}];
 
-// ── Sync ──────────────────────────────────────────────────────
+// ── Sync status ───────────────────────────────────────────────
 function sync(state,msg){
   var bar=el('sync-bar'),txt=el('sync-txt');if(!bar)return;
   bar.className='sync-bar s-'+state;
@@ -400,39 +359,34 @@ function sync(state,msg){
 
 // ── Settlement ────────────────────────────────────────────────
 function calcSettle(results,pl){
-  pl=pl||APP.players;
+  pl=pl||A.players;
   var bal=[];
   Object.keys(results||{}).forEach(function(id){var a=Math.round(Number(results[id])||0);if(Math.abs(a)>0)bal.push({id:id,amt:a});});
   var cr=bal.filter(function(x){return x.amt>0;}).sort(function(a,b){return b.amt-a.amt;}).map(function(x){return{id:x.id,amt:x.amt};});
   var db=bal.filter(function(x){return x.amt<0;}).sort(function(a,b){return a.amt-b.amt;}).map(function(x){return{id:x.id,amt:x.amt};});
   var txns=[];var i=0,j=0;
-  while(i<cr.length&&j<db.length){
-    var a=Math.min(cr[i].amt,Math.abs(db[j].amt));
-    if(a>0)txns.push({from:db[j].id,to:cr[i].id,amount:a});
-    cr[i].amt-=a;db[j].amt+=a;
-    if(Math.abs(cr[i].amt)<1)i++;if(Math.abs(db[j].amt)<1)j++;
-  }
+  while(i<cr.length&&j<db.length){var a=Math.min(cr[i].amt,Math.abs(db[j].amt));if(a>0)txns.push({from:db[j].id,to:cr[i].id,amount:a});cr[i].amt-=a;db[j].amt+=a;if(Math.abs(cr[i].amt)<1)i++;if(Math.abs(db[j].amt)<1)j++;}
   return txns;
 }
-function settlHTML(results,pl){
-  pl=pl||APP.players;
+function settlH(results,pl){
+  pl=pl||A.players;
   var txns=calcSettle(results,pl);
-  if(!txns.length)return'<div class="all-sq">&#10003; All square — no payments needed</div>';
-  var h='<div class="stl-title">Who Pays Who</div>';
+  if(!txns.length)return'<div class="allsq">&#10003; All square — no payments needed</div>';
+  var h='<div class="stl-t">Who Pays Who</div>';
   txns.forEach(function(t){
     var fn=((pl.find(function(p){return p.id===t.from;})||{}).name)||t.from;
     var tn=((pl.find(function(p){return p.id===t.to;})||{}).name)||t.to;
-    h+='<div class="txn"><span><span class="r fw7">'+esc(fn)+'</span><span style="color:var(--t3);margin:0 7px">&rarr;</span><span class="g fw7">'+esc(tn)+'</span></span><span class="gold fw7">Rs.'+t.amount.toLocaleString('en-IN')+'</span></div>';
+    h+='<div class="txn"><span><span class="rrd fw7">'+esc(fn)+'</span><span style="color:var(--t3);margin:0 7px">&rarr;</span><span class="grn fw7">'+esc(tn)+'</span></span><span class="gld fw7">Rs.'+t.amount.toLocaleString('en-IN')+'</span></div>';
   });
   return h;
 }
 
-// ── AI ────────────────────────────────────────────────────────
+// ── Claude AI ─────────────────────────────────────────────────
 function callClaude(prompt,onChunk,onDone,onErr){
-  if(!APP.apiKey){onErr('No API key. Add in Settings.');return;}
+  if(!A.apiKey){onErr('No API key set. Go to Settings tab and add your Claude API key (sk-ant-...).');return;}
   fetch('https://api.anthropic.com/v1/messages',{
     method:'POST',
-    headers:{'Content-Type':'application/json','x-api-key':APP.apiKey,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
+    headers:{'Content-Type':'application/json','x-api-key':A.apiKey,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
     body:JSON.stringify({model:'claude-haiku-4-5-20251001',max_tokens:1000,stream:true,messages:[{role:'user',content:prompt}]})
   }).then(function(res){
     if(!res.ok){return res.json().then(function(e){onErr((e.error&&e.error.message)||'API error '+res.status);});}
@@ -442,11 +396,7 @@ function callClaude(prompt,onChunk,onDone,onErr){
         if(result.done){onDone();return;}
         buf+=decoder.decode(result.value,{stream:true});
         var lines=buf.split('\n');buf=lines.pop();
-        lines.forEach(function(line){
-          if(!line.startsWith('data:'))return;
-          var data=line.slice(5).trim();
-          try{var j=JSON.parse(data);if(j.type==='content_block_delta'&&j.delta&&j.delta.text)onChunk(j.delta.text);}catch(e){}
-        });
+        lines.forEach(function(line){if(!line.startsWith('data:'))return;var d=line.slice(5).trim();try{var j=JSON.parse(d);if(j.type==='content_block_delta'&&j.delta&&j.delta.text)onChunk(j.delta.text);}catch(e){}});
         read();
       }).catch(function(e){onErr(e.message);});
     }
@@ -454,51 +404,27 @@ function callClaude(prompt,onChunk,onDone,onErr){
   }).catch(function(e){onErr(e.message);});
 }
 
-function buildSessPrompt(s,sessionHands){
-  var pl=s.players||APP.players;
+function buildSessPrompt(s,sHands){
+  var pl=s.players||A.players;
   var lines=pl.map(function(p){var r=(s.results&&s.results[p.id])||0;var note=s.sessionNotes&&s.sessionNotes[p.id];return p.name+': '+(s.buyins&&s.buyins[p.id]||0)+' buyins, P&L='+rs(r)+(note?' | '+note:'');});
   var handSummary='';
-  if(sessionHands&&sessionHands.length){
-    handSummary='HAND DATA ('+sessionHands.length+' hands logged):\n';
-    // Aggregate tendencies
-    var stats={};
-    APP.players.forEach(function(p){stats[p.id]={raises:0,folds:0,calls:0,checks:0,bets:0,wins:0,hands:0};});
-    sessionHands.forEach(function(h){
-      var allActions=[h.preflop||{},h.flop||{},h.turn||{},h.river||{}];
-      allActions.forEach(function(street){
-        Object.keys(street).forEach(function(pid){
-          if(!stats[pid])stats[pid]={raises:0,folds:0,calls:0,checks:0,bets:0,wins:0,hands:0};
-          var act=(street[pid].action||'').toLowerCase();
-          stats[pid].hands++;
-          if(act==='raise'||act==='all-in')stats[pid].raises++;
-          else if(act==='fold')stats[pid].folds++;
-          else if(act==='call')stats[pid].calls++;
-          else if(act==='check')stats[pid].checks++;
-          else if(act==='bet')stats[pid].bets++;
-        });
-      });
-      if(h.winner)stats[h.winner]&&stats[h.winner].wins++;
-    });
-    APP.players.forEach(function(p){
-      var st=stats[p.id];if(!st||!st.hands)return;
-      handSummary+=p.name+': '+st.hands+' actions, '+st.raises+' raises, '+st.folds+' folds, '+st.calls+' calls, '+st.wins+' pots won\n';
-    });
+  if(sHands&&sHands.length){
+    var stats={};A.players.forEach(function(p){stats[p.id]={r:0,f:0,c:0,w:0,t:0};});
+    sHands.forEach(function(h){[h.pre||{},h.flop||{},h.turn||{},h.river||{}].forEach(function(st){Object.keys(st).forEach(function(pid){if(!stats[pid])stats[pid]={r:0,f:0,c:0,w:0,t:0};var a=(st[pid].action||'').toLowerCase();stats[pid].t++;if(a==='raise'||a==='all-in')stats[pid].r++;else if(a==='fold')stats[pid].f++;else if(a==='call')stats[pid].c++;});});if(h.winner&&stats[h.winner])stats[h.winner].w++;});
+    handSummary='HAND DATA ('+sHands.length+' hands):\n';
+    A.players.forEach(function(p){var st=stats[p.id];if(!st||!st.t)return;handSummary+=p.name+': '+st.t+' actions, '+st.r+' raises, '+st.f+' folds, '+st.w+' pots won\n';});
   }
-  var hist=APP.sessions.slice(0,4).map(function(h){if(h.id===s.id)return'';var pl2=h.players||APP.players;return(h.date||'')+': '+pl2.map(function(p){return p.name+'='+rs((h.results&&h.results[p.id])||0);}).join(', ');}).filter(Boolean).join('\n');
-  var profStr=APP.players.map(function(p){return APP.aiProfiles[p.id]?p.name+': '+APP.aiProfiles[p.id]:'';}).filter(Boolean).join('\n');
-  return'You are an elite poker coach.\n\nDATE: '+s.date+'\nBUYIN: Rs.'+(s.buyinAmt||500)+'\n\nRESULTS:\n'+lines.join('\n')+'\n\n'+handSummary+(s.notes?'NOTES: '+s.notes+'\n\n':'')+(hist?'HISTORY:\n'+hist+'\n\n':'')+(profStr?'PROFILES:\n'+profStr+'\n\n':'')+'Provide:\n1. KUNAL COACHING (4-5 lines): specific patterns from hand data and results. One concrete adjustment.\n2. PLAYER UPDATES (one line each "Name: note"): key tendencies revealed today.\n3. TABLE READS (3-4 lines): exact exploits for next session based on observed patterns.\n\nBe specific, reference actual numbers and actions observed.';
+  var hist=A.sessions.filter(function(x){return x.status!=='active'&&x.id!==s.id;}).slice(0,4).map(function(h){var pl2=h.players||A.players;return(h.date||'')+': '+pl2.map(function(p){return p.name+'='+rs((h.results&&h.results[p.id])||0);}).join(', ');}).join('\n');
+  var profStr=A.players.map(function(p){return A.aiProfiles[p.id]?p.name+': '+A.aiProfiles[p.id]:'';}).filter(Boolean).join('\n');
+  return'You are an elite poker coach.\n\nDATE: '+s.date+'\nBUYIN: Rs.'+(s.buyinAmt||500)+'\n\nRESULTS:\n'+lines.join('\n')+'\n\n'+handSummary+(s.notes?'NOTES: '+s.notes+'\n\n':'')+(hist?'HISTORY:\n'+hist+'\n\n':'')+(profStr?'PROFILES:\n'+profStr+'\n\n':'')+'Provide:\n1. KUNAL COACHING (4-5 lines): patterns from hand data and P&L. One concrete adjustment.\n2. PLAYER UPDATES (one line each "Name: note"): tendencies revealed today.\n3. TABLE READS (3-4 lines): exact exploits for next session.\nBe specific and reference actual numbers.';
 }
 
 function profilePrompt(pid){
-  var player=APP.players.find(function(p){return p.id===pid;});if(!player)return null;
-  var sess=APP.sessions.filter(function(s){return s.results&&s.results[pid]!==undefined;});if(!sess.length)return null;
-  var handStats={raises:0,folds:0,calls:0,wins:0,total:0};
-  APP.hands.filter(function(h){return h.sessionId&&sess.find(function(s){return s.id===h.sessionId;});}).forEach(function(h){
-    var allA=[h.preflop||{},h.flop||{},h.turn||{},h.river||{}];
-    allA.forEach(function(st){if(st[pid]){var a=(st[pid].action||'').toLowerCase();handStats.total++;if(a==='raise'||a==='all-in')handStats.raises++;else if(a==='fold')handStats.folds++;else if(a==='call')handStats.calls++;}});
-    if(h.winner===pid)handStats.wins++;
-  });
-  return'You are an elite poker coach.\n\nPLAYER: '+player.name+'\nMANUAL NOTES: '+(APP.notes[pid]||'None')+'\nHAND STATS: '+handStats.total+' actions, '+handStats.raises+' raises ('+(handStats.total?Math.round(handStats.raises/handStats.total*100):0)+'%), '+handStats.folds+' folds, '+handStats.calls+' calls, '+handStats.wins+' pots won\n\nSESSION HISTORY:\n'+sess.map(function(s){return(s.date||'')+': '+(s.buyins&&s.buyins[pid]||0)+'x buyin, P&L='+rs((s.results&&s.results[pid])||0);}).join('\n')+'\n\nWrite a 5-6 line STAR profile: showdown tendencies, raise frequency and what it means, fold patterns, key exploit, warning. Under 120 words. Very specific and actionable.';
+  var player=A.players.find(function(p){return p.id===pid;});if(!player)return null;
+  var sess=A.sessions.filter(function(s){return s.status!=='active'&&s.results&&s.results[pid]!==undefined;});if(!sess.length)return null;
+  var hs={r:0,f:0,c:0,w:0,t:0};
+  A.hands.forEach(function(h){[h.pre||{},h.flop||{},h.turn||{},h.river||{}].forEach(function(st){if(st[pid]){var a=(st[pid].action||'').toLowerCase();hs.t++;if(a==='raise'||a==='all-in')hs.r++;else if(a==='fold')hs.f++;else if(a==='call')hs.c++;}});if(h.winner===pid)hs.w++;});
+  return'You are an elite poker coach. PLAYER: '+player.name+'\nNOTES: '+(A.notes[pid]||'None')+'\nSTATS: '+hs.t+' actions, '+hs.r+' raises ('+(hs.t?Math.round(hs.r/hs.t*100):0)+'%), '+hs.f+' folds, '+hs.c+' calls, '+hs.w+' pots won\n\nSESSIONS:\n'+sess.map(function(s){return(s.date||'')+': '+(s.buyins&&s.buyins[pid]||0)+'x, P&L='+rs((s.results&&s.results[pid])||0);}).join('\n')+'\n\nWrite a 5-6 line STAR profile: showdown tendencies, raise frequency meaning, fold patterns, key exploit, warning. Under 120 words. Very specific and actionable.';
 }
 
 function extractUpdates(text,players){
@@ -509,7 +435,7 @@ function extractUpdates(text,players){
     if(!inSec||!line.trim())return;
     players.forEach(function(p){
       var re=new RegExp('^-?\\s*'+p.name.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')+'\\s*[:\\-]\\s*','i');
-      if(re.test(line)){var note=line.replace(re,'').trim();var date=new Date().toLocaleDateString('en-IN');if(note){APP.aiProfiles[p.id]=(APP.aiProfiles[p.id]?APP.aiProfiles[p.id]+'\n':'')+'['+date+'] '+note;saveProfile(p.id);}}
+      if(re.test(line)){var note=line.replace(re,'').trim();var date=new Date().toLocaleDateString('en-IN');if(note){A.aiProfiles[p.id]=(A.aiProfiles[p.id]?A.aiProfiles[p.id]+'\n':'')+'['+date+'] '+note;saveMeta('aiProfile_'+p.id,A.aiProfiles[p.id]);}}
     });
   });
 }
@@ -518,696 +444,795 @@ function extractUpdates(text,players){
 async function saveSess(data){
   sync('saving');
   try{
-    if(data.id){var id=data.id;var d={};Object.keys(data).forEach(function(k){if(k!=='id')d[k]=data[k];});await setDoc(doc(APP.db,'sessions',id),d);}
-    else{data.createdAt=serverTimestamp();var ref=await addDoc(collection(APP.db,'sessions'),data);data.id=ref.id;}
+    if(data.id){var id=data.id;var d={};Object.keys(data).forEach(function(k){if(k!=='id')d[k]=data[k];});await setDoc(doc(A.db,'sessions',id),d);}
+    else{data.createdAt=serverTimestamp();var ref=await addDoc(collection(A.db,'sessions'),data);data.id=ref.id;}
     sync('ok');return data;
   }catch(e){sync('err');throw e;}
 }
-async function delSess(id){sync('saving');try{await deleteDoc(doc(APP.db,'sessions',id));sync('ok');}catch(e){sync('err');}}
+async function delSess(id){sync('saving');try{await deleteDoc(doc(A.db,'sessions',id));sync('ok');}catch(e){sync('err');}}
 async function saveHand(data){
   try{
-    if(data.id){var id=data.id;var d={};Object.keys(data).forEach(function(k){if(k!=='id')d[k]=data[k];});await setDoc(doc(APP.db,'hands',id),d);}
-    else{data.createdAt=serverTimestamp();var ref=await addDoc(collection(APP.db,'hands'),data);data.id=ref.id;}
-    return data;
+    if(data.id){var id=data.id;var d={};Object.keys(data).forEach(function(k){if(k!=='id')d[k]=data[k];});await setDoc(doc(A.db,'hands',id),d);return data;}
+    var ref=await addDoc(collection(A.db,'hands'),data);data.id=ref.id;return data;
   }catch(e){console.error('saveHand',e);}
 }
-async function savePlayer(p){try{await setDoc(doc(APP.db,'players',p.id),p);}catch(e){console.error(e);}}
-async function saveMeta(key,val){try{await setDoc(doc(APP.db,'meta',key),{value:val,updatedAt:serverTimestamp()});}catch(e){console.error(e);}}
-async function saveProfile(pid){await saveMeta('aiProfile_'+pid,APP.aiProfiles[pid]||'');}
-async function savePlayerNote(pid,note){APP.notes[pid]=note;await saveMeta('note_'+pid,note);}
+async function savePlayer(p){try{await setDoc(doc(A.db,'players',p.id),p);}catch(e){console.error(e);}}
+async function saveMeta(key,val){try{await setDoc(doc(A.db,'meta',key),{value:val,updatedAt:serverTimestamp()});}catch(e){console.error(e);}}
+async function savePlayerNote(pid,note){A.notes[pid]=note;await saveMeta('note_'+pid,note);}
 
 function startListeners(){
-  onSnapshot(query(collection(APP.db,'sessions'),orderBy('createdAt','desc')),function(snap){APP.sessions=snap.docs.map(function(d){var x=d.data();x.id=d.id;return x;});render();sync('ok');},function(){sync('err');});
-  onSnapshot(query(collection(APP.db,'hands'),orderBy('createdAt','desc')),function(snap){APP.hands=snap.docs.map(function(d){var x=d.data();x.id=d.id;return x;});render();});
-  onSnapshot(collection(APP.db,'players'),function(snap){if(!snap.empty){APP.players=snap.docs.map(function(d){var x=d.data();x.id=d.id;return x;}).sort(function(a,b){return(a.order||0)-(b.order||0);});}render();});
-  onSnapshot(collection(APP.db,'meta'),function(snap){snap.docs.forEach(function(d){var key=d.id,val=d.data().value;if(key.startsWith('note_'))APP.notes[key.slice(5)]=val;else if(key.startsWith('aiProfile_'))APP.aiProfiles[key.slice(10)]=val;});render();});
+  onSnapshot(query(collection(A.db,'sessions'),orderBy('createdAt','desc')),function(snap){
+    A.sessions=snap.docs.map(function(d){var x=d.data();x.id=d.id;return x;});
+    var active=A.sessions.find(function(s){return s.status==='active';});
+    if(active){
+      if(A.activeSessId!==active.id){
+        A.activeSessId=active.id;
+        A.liveBuyins=JSON.parse(JSON.stringify(active.buyins||{}));
+      }
+    } else {
+      A.activeSessId=null;
+    }
+    render();sync('ok');
+  },function(){sync('err');});
+  onSnapshot(query(collection(A.db,'hands'),orderBy('createdAt','desc')),function(snap){A.hands=snap.docs.map(function(d){var x=d.data();x.id=d.id;return x;});render();});
+  onSnapshot(collection(A.db,'players'),function(snap){if(!snap.empty){A.players=snap.docs.map(function(d){var x=d.data();x.id=d.id;return x;}).sort(function(a,b){return(a.order||0)-(b.order||0);});}render();});
+  onSnapshot(collection(A.db,'meta'),function(snap){snap.docs.forEach(function(d){var key=d.id,val=d.data().value;if(key.startsWith('note_'))A.notes[key.slice(5)]=val;else if(key.startsWith('aiProfile_'))A.aiProfiles[key.slice(10)]=val;});render();});
 }
 
 async function seedPlayers(){
-  var snap=await getDocs(collection(APP.db,'players'));
-  if(!snap.empty){APP.players=snap.docs.map(function(d){var x=d.data();x.id=d.id;return x;}).sort(function(a,b){return(a.order||0)-(b.order||0);});return;}
+  var snap=await getDocs(collection(A.db,'players'));
+  if(!snap.empty){A.players=snap.docs.map(function(d){var x=d.data();x.id=d.id;return x;}).sort(function(a,b){return(a.order||0)-(b.order||0);});return;}
   var defs=[{id:'p1',name:'Kunal',order:0},{id:'p2',name:'Nit Guy',order:1},{id:'p3',name:'Aggro Guy',order:2},{id:'p4',name:'Girl 1',order:3},{id:'p5',name:'Girl 2',order:4}];
   var defN={p1:'Hero. Improving every session.',p2:'Only plays strong hands. Folds to small raises. When he calls believe him.',p3:'Bets frequently. Moderate bluffer. Let him bluff into you.',p4:'Calls everything. Shows sets, straights. NEVER bluff her.',p5:'Calls only with a pair. Bluff on high boards she missed.'};
   for(var i=0;i<defs.length;i++){await savePlayer(defs[i]);await savePlayerNote(defs[i].id,defN[defs[i].id]);}
-  APP.players=defs;Object.keys(defN).forEach(function(k){APP.notes[k]=defN[k];});
+  A.players=defs;Object.keys(defN).forEach(function(k){A.notes[k]=defN[k];});
 }
 
 // ── Init ──────────────────────────────────────────────────────
-async function initApp(config){
+async function initApp(){
   try{
-    var fbApp=initializeApp(config);
-    APP.db=getFirestore(fbApp);
-    el('setup-pg').style.display='none';
+    var fbApp=initializeApp(FB_CONFIG);
+    A.db=getFirestore(fbApp);
+    el('loading-pg').style.display='none';
     el('main-pg').style.display='block';
     sync('saving','Connecting...');
     await seedPlayers();
     startListeners();
     buildNav();
-    el('btn-new').addEventListener('click',openForm);
+    el('btn-new').addEventListener('click',openStartModal);
     el('mover').addEventListener('click',function(e){if(e.target===el('mover'))closeModal();});
-  }catch(e){var err=el('setup-err');if(err){err.style.display='block';err.textContent='Failed: '+e.message;}}
+  }catch(e){
+    el('loading-pg').innerHTML='<div style="text-align:center;padding:40px"><div style="font-size:32px;margin-bottom:12px">&#9888;</div><div style="color:var(--red);font-size:14px">Connection failed:<br>'+esc(e.message)+'</div></div>';
+  }
 }
-
-var saved=LS('pkl-fbconfig');
-if(saved){try{initApp(JSON.parse(saved));}catch(e){el('setup-pg').style.display='block';}}
-else el('setup-pg').style.display='block';
-
-el('setup-btn').addEventListener('click',function(){
-  var raw=(el('fb-config-input').value||'').trim();
-  var aiKey=(el('ai-key-setup').value||'').trim();
-  if(!raw){showSetupErr('Please paste your Firebase config.');return;}
-  try{
-    var cleaned=raw.replace(/\/\/.*/g,'').replace(/([{,]\s*)([a-zA-Z_]\w*)\s*:/g,'$1"$2":').replace(/'/g,'"').replace(/,(\s*[}\]])/g,'$1');
-    var config=JSON.parse(cleaned);
-    if(!config.apiKey||!config.projectId)throw new Error('Missing apiKey or projectId');
-    LS('pkl-fbconfig',JSON.stringify(config));
-    if(aiKey.startsWith('sk-ant')){LS('pkl-aikey',aiKey);APP.apiKey=aiKey;}
-    initApp(config);
-  }catch(e){showSetupErr('Invalid config: '+e.message);}
-});
-function showSetupErr(msg){var e=el('setup-err');if(e){e.style.display='block';e.textContent=msg;}}
+initApp();
 
 // ── Navigation ────────────────────────────────────────────────
-var TABS=[{id:'dashboard',label:'Home',icon:'&#9824;'},{id:'live',label:'Live',icon:'&#127183;'},{id:'sessions',label:'Sessions',icon:'&#9830;'},{id:'leaderboard',label:'Leaders',icon:'&#127942;'},{id:'players',label:'Players',icon:'&#128100;'}];
+var TABS=[{id:'dashboard',label:'Home',icon:'&#9824;'},{id:'live',label:'Live',icon:'&#127183;'},{id:'sessions',label:'Sessions',icon:'&#9830;'},{id:'leaderboard',label:'Leaders',icon:'&#127942;'},{id:'players',label:'Players',icon:'&#128100;'},{id:'settings',label:'Settings',icon:'&#9881;'}];
 
 function buildNav(){
-  var bnav=el('bnav');
-  bnav.innerHTML=TABS.map(function(t){return'<button class="bnav-btn'+(APP.tab===t.id?' on':'')+'" data-tab="'+t.id+'"><span class="bnav-icon">'+t.icon+'</span>'+t.label+'</button>';}).join('');
-  bnav.querySelectorAll('[data-tab]').forEach(function(btn){btn.addEventListener('click',function(){APP.tab=btn.dataset.tab;buildNav();render();});});
+  var bnav=el('bnav');var hasActive=!!A.activeSessId;
+  bnav.innerHTML=TABS.map(function(t){
+    var isLive=t.id==='live';
+    return'<button class="bnav-btn'+(A.tab===t.id?' on':'')+'" data-tab="'+t.id+'"><span class="bnav-icon">'+t.icon+'</span>'+(isLive&&hasActive?'<span class="live-badge"></span>':'')+t.label+'</button>';
+  }).join('');
+  bnav.querySelectorAll('[data-tab]').forEach(function(btn){btn.addEventListener('click',function(){A.tab=btn.dataset.tab;buildNav();render();});});
 }
 
 function render(){
   var pg=el('pg');if(!pg)return;
-  if(APP.tab==='dashboard')pg.innerHTML=pgDash();
-  else if(APP.tab==='live'){pg.innerHTML=pgLive();bindLive();}
-  else if(APP.tab==='sessions'){pg.innerHTML=pgSessions();bindSessBtns();}
-  else if(APP.tab==='leaderboard')pg.innerHTML=pgLeader();
-  else if(APP.tab==='players'){pg.innerHTML=pgPlayers();bindPlayers();}
-  else if(APP.tab==='settings'){pg.innerHTML=pgSettings();bindSettings();}
+  if(A.tab==='dashboard')pg.innerHTML=pgDash();
+  else if(A.tab==='live'){pg.innerHTML=pgLive();bindLive();}
+  else if(A.tab==='sessions'){pg.innerHTML=pgSessions();bindSessBtns();}
+  else if(A.tab==='leaderboard')pg.innerHTML=pgLeader();
+  else if(A.tab==='players'){pg.innerHTML=pgPlayers();bindPlayers();}
+  else if(A.tab==='settings'){pg.innerHTML=pgSettings();bindSettings();}
 }
 
 // ── Dashboard ─────────────────────────────────────────────────
 function pgDash(){
-  var myP=APP.players.find(function(p){return p.name==='Kunal';})||APP.players[0];
+  var myP=A.players.find(function(p){return p.name==='Kunal';})||A.players[0];
   var mid=myP?myP.id:'';
-  var total=0,wins=0,n=APP.sessions.length,best=0,worst=0;
-  APP.sessions.forEach(function(s){var r=(s.results&&s.results[mid])||0;total+=r;if(r>0)wins++;if(r>best)best=r;if(r<worst)worst=r;});
-  var cd=[],run=0;
-  [].concat(APP.sessions).reverse().slice(-12).forEach(function(s){run+=(s.results&&s.results[mid])||0;cd.push({date:s.date,r:run});});
+  var done=A.sessions.filter(function(s){return s.status!=='active';});
+  var total=0,wins=0,n=done.length,best=0,worst=0;
+  done.forEach(function(s){var r=(s.results&&s.results[mid])||0;total+=r;if(r>0)wins++;if(r>best)best=r;if(r<worst)worst=r;});
+  var cd=[],run=0;[].concat(done).reverse().slice(-12).forEach(function(s){run+=(s.results&&s.results[mid])||0;cd.push({date:s.date,r:run});});
   var maxV=1;cd.forEach(function(d){if(Math.abs(d.r)>maxV)maxV=Math.abs(d.r);});
   var chartH='';
   if(cd.length>1){
     var col=total>=0?'#4a9e5c':'#c94a4a';
     var pts=cd.map(function(d,i){return i+','+(50-(d.r/maxV)*44);}).join(' ');
     var dots=cd.map(function(d,i){return'<circle cx="'+i+'" cy="'+(50-(d.r/maxV)*44)+'" r="2.5" fill="'+(d.r>=0?'#4a9e5c':'#c94a4a')+'"/>';}).join('');
-    chartH='<div class="card" style="margin-bottom:12px"><div class="ct">Cumulative P&amp;L</div><div class="chart-wrap"><div class="chart-zero"></div><svg width="100%" height="100%" viewBox="0 0 '+(cd.length-1)+' 100" preserveAspectRatio="none"><polyline points="'+pts+'" fill="none" stroke="'+col+'" stroke-width="0.6" vector-effect="non-scaling-stroke"/>'+dots+'</svg></div><div class="chart-lbls">'+cd.map(function(d){return'<span style="font-size:9px;color:var(--t4)">'+(d.date||'').slice(5)+'</span>';}).join('')+'</div></div>';
+    chartH='<div class="card" style="margin-bottom:12px"><div class="ct">Running P&amp;L</div><div class="ch-wrap"><div class="ch-zero"></div><svg width="100%" height="100%" viewBox="0 0 '+(cd.length-1)+' 100" preserveAspectRatio="none"><polyline points="'+pts+'" fill="none" stroke="'+col+'" stroke-width="0.6" vector-effect="non-scaling-stroke"/>'+dots+'</svg></div><div class="ch-lbls">'+cd.map(function(d){return'<span style="font-size:9px;color:var(--t4)">'+(d.date||'').slice(5)+'</span>';}).join('')+'</div></div>';
   }
-  var lastR=n?(APP.sessions[0].results&&APP.sessions[0].results[mid]||0):0;
-  var heroH='<div class="hero"><div style="display:flex;align-items:center;gap:12px;margin-bottom:12px">'+(myP?avHTML(myP,'av-lg'):'')+'<div><div class="hero-lbl">'+(n?n+' Sessions':'No sessions yet')+'</div><div style="font-size:22px;font-weight:900;color:var(--cream)">'+(myP?esc(myP.name):'')+'</div></div></div><div class="hero-lbl">Lifetime P&amp;L</div><div class="hero-amt '+(total>=0?'g':'r')+'">'+(total>=0?'+':'')+'Rs.'+Math.abs(Math.round(total)).toLocaleString('en-IN')+'</div>'+(lastR&&n?'<div class="hero-change '+(lastR>=0?'pos':'neg')+'">'+(lastR>=0?'+':'')+rs(lastR)+' last session</div>':'')+'</div>';
-  var statsH='<div class="pills"><div class="pill"><div class="pill-l">Win Rate</div><div class="pill-v gold">'+(n?Math.round(wins/n*100)+'%':'—')+'</div></div><div class="pill"><div class="pill-l">Best</div><div class="pill-v g">'+(n?rs(best):'—')+'</div></div><div class="pill"><div class="pill-l">Worst</div><div class="pill-v r">'+(n?rs(worst):'—')+'</div></div><div class="pill"><div class="pill-l">Avg</div><div class="pill-v" style="color:var(--t2)">'+(n?rs(Math.round(total/n)):'—')+'</div></div><div class="pill"><div class="pill-l">Hands</div><div class="pill-v gold">'+APP.hands.length+'</div></div></div>';
-  var recH=n?'<div class="card"><div class="ct gold">Recent Sessions</div>'+APP.sessions.slice(0,4).map(function(s){var r=(s.results&&s.results[mid])||0;var hCount=APP.hands.filter(function(h){return h.sessionId===s.id;}).length;return'<div style="display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--card-border)"><div><div style="font-size:13px;color:var(--cream);font-weight:700">'+(s.date||'')+'</div><div style="font-size:11px;color:var(--t3);margin-top:1px">Rs.'+(s.buyinAmt||500)+'/buyin'+(hCount?' &middot; '+hCount+' hands logged':'')+'</div></div><span class="'+(r>=0?'g':'r')+' fw7" style="font-size:15px">'+rs(r)+'</span></div>';}).join('')+'</div>'
+  var lastR=n?(done[0].results&&done[0].results[mid]||0):0;
+  var heroH='<div class="hero"><div style="display:flex;align-items:center;gap:12px;margin-bottom:12px">'+(myP?avH(myP,'av-lg'):'')+'<div><div class="hero-lbl">'+(n?n+' Sessions':'No sessions yet')+'</div><div style="font-size:22px;font-weight:900;color:var(--cream)">'+(myP?esc(myP.name):'')+'</div></div></div><div class="hero-lbl">Lifetime P&amp;L</div><div class="hero-amt '+(total>=0?'grn':'rrd')+'">'+(total>=0?'+':'')+'Rs.'+Math.abs(Math.round(total)).toLocaleString('en-IN')+'</div>'+(lastR&&n?'<div class="hchg '+(lastR>=0?'pos':'neg')+'">'+(lastR>=0?'+':'')+rs(lastR)+' last session</div>':'')+'</div>';
+  var statsH='<div class="pills"><div class="pill"><div class="pill-l">Win Rate</div><div class="pill-v gld">'+(n?Math.round(wins/n*100)+'%':'—')+'</div></div><div class="pill"><div class="pill-l">Best</div><div class="pill-v grn">'+(n?rs(best):'—')+'</div></div><div class="pill"><div class="pill-l">Worst</div><div class="pill-v rrd">'+(n?rs(worst):'—')+'</div></div><div class="pill"><div class="pill-l">Avg</div><div class="pill-v" style="color:var(--t2)">'+(n?rs(Math.round(total/n)):'—')+'</div></div><div class="pill"><div class="pill-l">Hands</div><div class="pill-v gld">'+A.hands.length+'</div></div></div>';
+
+  // Active session banner
+  var activeSess=A.sessions.find(function(s){return s.status==='active';});
+  var activeH=activeSess?'<div class="act-banner"><div><div style="font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);margin-bottom:4px"><span class="live-dot"></span>Game In Progress</div><div style="font-size:14px;font-weight:700;color:var(--cream)">'+(activeSess.date||'')+'</div><div style="font-size:11px;color:var(--t3)">Rs.'+(activeSess.buyinAmt||500)+'/buyin &middot; '+((activeSess.players||[]).length)+' players</div></div><button class="btn bg" id="go-live-dash" style="padding:9px 14px;font-size:12px">Go Live &rarr;</button></div>':'';
+
+  var recH=n?'<div class="card"><div class="ct g">Recent Sessions</div>'+done.slice(0,4).map(function(s){var r=(s.results&&s.results[mid])||0;var hc=A.hands.filter(function(h){return h.sessionId===s.id;}).length;return'<div style="display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--cbr)"><div><div style="font-size:13px;color:var(--cream);font-weight:700">'+(s.date||'')+'</div><div style="font-size:11px;color:var(--t3);margin-top:1px">Rs.'+(s.buyinAmt||500)+'/buyin'+(hc?' &middot; '+hc+' hands':'')+'</div></div><span class="'+(r>=0?'grn':'rrd')+' fw7" style="font-size:15px">'+rs(r)+'</span></div>';}).join('')+'</div>'
     :'<div class="empty"><div class="empty-ic">&#9824;</div><div>No sessions yet.<br>Tap + Session to start.</div></div>';
 
-  // Tendency quick summary
+  // Tendency summary
   var tendH='';
-  if(APP.hands.length>5){
-    var stats={};APP.players.forEach(function(p){stats[p.id]={r:0,f:0,c:0,w:0,t:0};});
-    APP.hands.forEach(function(h){
-      var allA=[h.preflop||{},h.flop||{},h.turn||{},h.river||{}];
-      allA.forEach(function(st){Object.keys(st).forEach(function(pid){if(!stats[pid])return;var a=(st[pid].action||'').toLowerCase();stats[pid].t++;if(a==='raise'||a==='all-in')stats[pid].r++;else if(a==='fold')stats[pid].f++;else if(a==='call')stats[pid].c++;});});
-      if(h.winner&&stats[h.winner])stats[h.winner].w++;
-    });
-    tendH='<div class="card"><div class="ct gold">&#128200; Tendency Summary</div>';
-    APP.players.forEach(function(p){
-      var st=stats[p.id];if(!st||st.t<3)return;
-      var rp=Math.round(st.r/st.t*100);var fp=Math.round(st.f/st.t*100);
-      tendH+='<div class="tend-card"><div class="tend-name">'+avHTML(p,'av-sm')+'<span style="margin-left:8px;vertical-align:middle">'+esc(p.name)+'</span></div>'
-        +'<div class="tend-stat"><span class="tend-label">Raise frequency</span><span class="tend-val '+(rp>40?'gold':rp>20?'':'')+'">'+(rp>40?'&#128308; High':'&#128992; '+(rp>15?'Medium':'Low'))+' ('+rp+'%)</span></div>'
-        +'<div class="tend-stat"><span class="tend-label">Fold frequency</span><span class="tend-val">'+(fp>50?'&#128994; Folds a lot':'&#128308; Rarely folds')+' ('+fp+'%)</span></div>'
-        +'<div class="tend-stat"><span class="tend-label">Pots won</span><span class="tend-val gold">'+st.w+' of '+APP.hands.length+'</span></div>'
-        +'</div>';
-    });
+  if(A.hands.length>4){
+    var stats={};A.players.forEach(function(p){stats[p.id]={r:0,f:0,c:0,w:0,t:0};});
+    A.hands.forEach(function(h){[h.pre||{},h.flop||{},h.turn||{},h.river||{}].forEach(function(st){Object.keys(st).forEach(function(pid){if(!stats[pid])return;var a=(st[pid].action||'').toLowerCase();stats[pid].t++;if(a==='raise'||a==='all-in')stats[pid].r++;else if(a==='fold')stats[pid].f++;else if(a==='call')stats[pid].c++;});});if(h.winner&&stats[h.winner])stats[h.winner].w++;});
+    tendH='<div class="card"><div class="ct g">&#128200; Tendency Summary</div>';
+    A.players.forEach(function(p){var st=stats[p.id];if(!st||st.t<3)return;var rp=Math.round(st.r/st.t*100);var fp=Math.round(st.f/st.t*100);tendH+='<div class="tend-card"><div style="display:flex;align-items:center;gap:8px;margin-bottom:7px">'+avH(p,'av-sm')+'<span style="font-size:13px;font-weight:700;color:var(--cream)">'+esc(p.name)+'</span></div><div class="tend-stat"><span class="tl">Raise frequency</span><span class="tv '+(rp>40?'gld':'')+'">+'+(rp>40?'&#128308; High':'&#128993; '+(rp>15?'Medium':'Low'))+' ('+rp+'%)</span></div><div class="tend-stat"><span class="tl">Fold frequency</span><span class="tv">'+(fp>50?'&#128994; Folds often':'&#128308; Rarely folds')+' ('+fp+'%)</span></div><div class="tend-stat"><span class="tl">Pots won</span><span class="tv gld">'+st.w+' of '+A.hands.length+'</span></div></div>';});
     tendH+='</div>';
   }
-  return heroH+statsH+chartH+recH+tendH;
+  return heroH+statsH+activeH+chartH+recH+tendH;
 }
 
-// ── LIVE HAND LOGGER ──────────────────────────────────────────
-function pgLive(){
-  var lh=APP.liveHand;
-  var sessionCount=APP.sessions.length;
-  var todayHands=APP.activeSessionId?APP.hands.filter(function(h){return h.sessionId===APP.activeSessionId;}).length:0;
-
-  // Header
-  var h='<div class="live-header">';
-  h+='<div><div style="font-size:12px;color:var(--t3);margin-bottom:2px"><span class="live-dot"></span>LIVE TRACKING</div>';
-  if(APP.activeSessionId){var s=APP.sessions.find(function(x){return x.id===APP.activeSessionId;});h+='<div style="font-size:13px;color:var(--t2)">'+(s?esc(s.date)+' session':'Active session')+'</div>';}
-  else h+='<div style="font-size:13px;color:var(--t3)">No active session</div>';
-  h+='</div>';
-  h+='<div style="text-align:right"><div class="hand-counter">'+(lh.handCount+1)+'</div><div class="hand-sub">Hand #</div></div></div>';
-
-  // Session selector if none active
-  if(!APP.activeSessionId){
-    h+='<div class="card"><div class="ct gold">Select Active Session</div>';
-    if(!sessionCount){h+='<p style="font-size:13px;color:var(--t3)">Create a session first using + Session button.</p>';}
-    else{APP.sessions.slice(0,5).forEach(function(s){h+='<button class="btn b-dark fw" data-selses="'+s.id+'" style="margin-bottom:8px;justify-content:space-between">'+esc(s.date)+' &mdash; Rs.'+(s.buyinAmt||500)+'/buyin <span class="gold">Select &rarr;</span></button>';});}
-    h+='</div>';
-    return h;
+// ── START SESSION MODAL ───────────────────────────────────────
+function openStartModal(){
+  // Check if there is already an active session
+  var existing=A.sessions.find(function(s){return s.status==='active';});
+  if(existing){
+    if(confirm('There is already an active session on '+existing.date+'. End it first or continue it?\n\nOK = Continue active session\nCancel = Do nothing')){
+      A.tab='live';buildNav();render();
+    }
+    return;
   }
+  A.sf={
+    playerIds:A.players.map(function(p){return p.id;}), // all on by default
+    guests:[],
+    buyinAmt:500,
+    date:new Date().toISOString().split('T')[0]
+  };
+  drawStartModal();
+}
+
+function drawStartModal(){
+  var sf=A.sf;
+  var playerRows=A.players.map(function(p){
+    var on=sf.playerIds.indexOf(p.id)>-1;
+    return'<div class="pl-tgl'+(on?' on':' off')+'" data-ptgl="'+p.id+'"><div style="display:flex;align-items:center;gap:10px">'+avH(p,'av-sm')+'<span style="font-size:13px;font-weight:700;color:var(--cream)">'+esc(p.name)+'</span></div><div class="tgl'+(on?' on':'')+'" id="tgl-'+p.id+'"></div></div>';
+  }).join('');
+
+  var guestRows=sf.guests.map(function(g,i){
+    return'<div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;background:rgba(139,92,246,.08);border:1px solid rgba(139,92,246,.2);border-radius:10px;padding:8px 12px"><span style="font-size:13px;color:var(--cream);flex:1">'+esc(g)+'</span><button class="rmg" data-rmguest="'+i+'">&#10005;</button></div>';
+  }).join('');
+
+  el('mbox').innerHTML='<div class="mt">&#9824; Start Session</div>'
+    +'<div class="fg2"><div><label class="fl">Date</label><input type="date" id="sf-date" value="'+sf.date+'"></div><div><label class="fl">Buyin Rs.</label><input type="number" id="sf-amt" value="'+sf.buyinAmt+'"></div></div>'
+    +'<div class="ct g" style="margin-bottom:10px">Who is playing today?</div>'
+    +playerRows
+    +(guestRows?'<div style="margin-top:8px">'+guestRows+'</div>':'')
+    +'<div id="guest-zone" style="margin-top:8px;margin-bottom:16px"></div>'
+    +'<div style="background:rgba(201,168,76,.08);border:1px solid rgba(201,168,76,.2);border-radius:10px;padding:12px;margin-bottom:16px;font-size:12px;color:var(--t2);line-height:1.6">'
+    +'&#9432; After starting, go to the <strong style="color:var(--gold)">Live tab</strong> to log hands and track rebuys. When the game ends, tap <strong style="color:var(--gold)">End Session</strong> there to enter cashouts.'
+    +'</div>'
+    +'<div class="row2"><button class="btn bd" id="sf-cancel">Cancel</button><button class="btn bg" id="sf-start" style="flex:2">&#127183; Start Session</button></div>';
+
+  el('mover').classList.add('show');
+  showGuestZone();
+  bindStartModal();
+}
+
+function bindStartModal(){
+  var sf=A.sf;
+  el('sf-date').addEventListener('change',function(){sf.date=this.value;});
+  el('sf-amt').addEventListener('change',function(){sf.buyinAmt=Number(this.value)||500;});
+  document.querySelectorAll('[data-ptgl]').forEach(function(row){
+    row.addEventListener('click',function(){
+      var pid=row.dataset.ptgl;
+      var idx=sf.playerIds.indexOf(pid);
+      if(idx>-1)sf.playerIds.splice(idx,1);
+      else sf.playerIds.push(pid);
+      drawStartModal();
+    });
+  });
+  document.querySelectorAll('[data-rmguest]').forEach(function(btn){
+    btn.addEventListener('click',function(){sf.guests.splice(parseInt(btn.dataset.rmguest),1);drawStartModal();});
+  });
+  el('sf-cancel').addEventListener('click',closeModal);
+  el('sf-start').addEventListener('click',doStartSession);
+}
+
+function showGuestZone(){
+  var gz=el('guest-zone');if(!gz)return;
+  gz.innerHTML='<button class="dsh" id="add-g-btn">+ Add Guest Player</button>';
+  el('add-g-btn').addEventListener('click',function(){
+    gz.innerHTML='<div class="ginput"><input type="text" id="g-in" placeholder="Guest name..."><button class="btn bg" id="g-ok" style="padding:10px 14px;white-space:nowrap">Add</button><button class="btn bd" id="g-x" style="padding:10px 12px">&#10005;</button></div>';
+    el('g-in').focus();
+    el('g-ok').addEventListener('click',doAddGuest);
+    el('g-in').addEventListener('keydown',function(e){if(e.key==='Enter')doAddGuest();});
+    el('g-x').addEventListener('click',function(){showGuestZone();});
+  });
+}
+
+function doAddGuest(){
+  var inp=el('g-in');var name=inp?inp.value.trim():'';if(!name)return;
+  A.sf.guests.push(name);drawStartModal();
+}
+
+async function doStartSession(){
+  var sf=A.sf;
+  var fd=el('sf-date');if(fd)sf.date=fd.value;
+  var fa=el('sf-amt');if(fa)sf.buyinAmt=Number(fa.value)||500;
+  if(!sf.playerIds.length&&!sf.guests.length){alert('Select at least one player.');return;}
+
+  // Build player list for this session
+  var sessionPlayers=[];
+  sf.playerIds.forEach(function(pid){var p=A.players.find(function(x){return x.id===pid;});if(p)sessionPlayers.push({id:p.id,name:p.name});});
+  sf.guests.forEach(function(name){sessionPlayers.push({id:uid(),name:name,isGuest:true});});
+
+  // Initial buyins = 1 each
+  var buyins={};sessionPlayers.forEach(function(p){buyins[p.id]=1;});
+
+  var sessData={
+    date:sf.date,
+    buyinAmt:sf.buyinAmt,
+    players:sessionPlayers,
+    buyins:buyins,
+    sessionNotes:{},
+    notes:'',
+    results:{},
+    status:'active',
+    createdAt:serverTimestamp()
+  };
+
+  closeModal();
+  var saved=await saveSess(sessData);
+  if(saved&&saved.id){
+    A.activeSessId=saved.id;
+    A.liveBuyins=JSON.parse(JSON.stringify(buyins));
+    A.lh={step:'dealer',dealer:null,pre:{},flop:{},turn:{},river:{},fc:[null,null,null],tc:null,rc:null,winner:null,hcards:{},count:0};
+    A.tab='live';buildNav();render();
+  }
+}
+
+// ── LIVE TAB ──────────────────────────────────────────────────
+function getActiveSess(){return A.sessions.find(function(s){return s.id===A.activeSessId;});}
+function getLivePlayers(){var s=getActiveSess();return s?s.players:[];}
+
+function pgLive(){
+  var lh=A.lh;
+  var sess=getActiveSess();
+  var sessHands=A.activeSessId?A.hands.filter(function(h){return h.sessionId===A.activeSessId;}):[];
+
+  if(!A.activeSessId||!sess){
+    return'<div class="empty"><div class="empty-ic">&#127183;</div><div>No active session.<br>Tap + Session to start a new game.</div></div>';
+  }
+
+  var pl=getLivePlayers();
+  var h='';
+
+  // Live header
+  h+='<div class="live-hdr"><div style="display:flex;align-items:center;justify-content:space-between"><div><div style="font-size:11px;color:var(--t3);margin-bottom:2px"><span class="live-dot"></span>LIVE &middot; '+esc(sess.date)+'</div><div style="font-size:13px;color:var(--t2)">Rs.'+(sess.buyinAmt||500)+'/buyin &middot; '+pl.length+' players</div></div><div style="text-align:right"><div class="hand-num">'+(lh.count+1)+'</div><div class="hand-sub">Hand #</div></div></div></div>';
+
+  // ── REBUY SECTION (always visible) ──
+  h+='<div class="card"><div class="ct g">&#128260; Rebuy Tracker</div>';
+  pl.forEach(function(p){
+    var cnt=A.liveBuyins[p.id]||1;
+    var invested=cnt*(sess.buyinAmt||500);
+    h+='<div class="rebuy-row"><div class="rebuy-left">'+avH(p,'av-sm')+'<div><div class="rebuy-name">'+esc(p.name)+'</div><div class="rebuy-invested">'+cnt+'&times; buyin &middot; Rs.'+invested.toLocaleString('en-IN')+' invested</div></div></div><div class="stp"><button class="sb" data-dec="'+p.id+'">&#8722;</button><span class="sv" id="lsv-'+p.id+'">'+cnt+'</span><button class="sb" data-inc="'+p.id+'">+</button></div></div>';
+  });
+  h+='</div>';
+
+  // ── HAND LOGGER ──
+  h+='<div class="card"><div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px"><div class="ct g" style="margin-bottom:0">Hand Logger</div><button class="btn bd" style="padding:6px 10px;font-size:11px" id="skip-hand-btn">Skip Hand</button></div>';
 
   // Street progress
-  var stepIdx=STREETS.indexOf(lh.step);
+  var stepIdx=['dealer','preflop','flop','turn','river','showdown'].indexOf(lh.step);
   h+='<div class="street-bar">';
-  ['Dealer','Preflop','Flop','Turn','River','Showdown'].forEach(function(s,i){h+='<div class="street-step'+(i<stepIdx?' done':i===stepIdx?' active':'')+'" title="'+s+'"></div>';});
+  ['Dealer','Pre','Flop','Turn','River','Show'].forEach(function(s,i){h+='<div class="ss'+(i<stepIdx?' done':i===stepIdx?' active':'')+'" title="'+s+'"></div>';});
   h+='</div>';
 
-  // Step content
-  if(lh.step==='dealer') h+=stepDealer();
-  else if(lh.step==='preflop') h+=stepActions('preflop','Preflop Actions',ACTIONS_PREFLOP,true);
-  else if(lh.step==='flop') h+=stepFlop();
-  else if(lh.step==='turn') h+=stepStreet('turn','Turn',lh.turnCard);
-  else if(lh.step==='river') h+=stepStreet('river','River',lh.riverCard);
-  else if(lh.step==='showdown') h+=stepShowdown();
+  if(lh.step==='dealer')h+=stepDealer(pl);
+  else if(lh.step==='preflop')h+=stepActions('preflop','Preflop',ACTS_PRE,true,pl);
+  else if(lh.step==='flop')h+=stepFlop(pl);
+  else if(lh.step==='turn')h+=stepStreet('turn','Turn',lh.tc,pl);
+  else if(lh.step==='river')h+=stepStreet('river','River',lh.rc,pl);
+  else if(lh.step==='showdown')h+=stepShowdown(pl);
 
-  // Logged hands this session
-  var sessionHands=APP.activeSessionId?APP.hands.filter(function(h){return h.sessionId===APP.activeSessionId;}).reverse():[];
-  if(sessionHands.length){
-    h+='<div class="card" style="margin-top:14px"><div class="ct gold">&#128221; Logged Hands ('+sessionHands.length+')</div>';
-    sessionHands.slice(0,10).forEach(function(hand,idx){h+=handLogHTML(hand,idx);});
-    if(sessionHands.length>10)h+='<div style="font-size:11px;color:var(--t3);text-align:center;padding:6px">...and '+(sessionHands.length-10)+' more</div>';
+  h+='</div>';
+
+  // ── END SESSION BUTTON ──
+  h+='<button class="btn br fw" id="end-sess-btn" style="margin-bottom:12px">&#9635; End Session &amp; Enter Cashouts</button>';
+
+  // ── LOGGED HANDS ──
+  if(sessHands.length){
+    h+='<div class="card"><div class="ct g">&#128221; Logged Hands ('+sessHands.length+')</div>';
+    sessHands.slice(0,8).forEach(function(hand,idx){h+=handLogHTML(hand,idx,pl);});
+    if(sessHands.length>8)h+='<div style="font-size:11px;color:var(--t3);text-align:center;padding:6px">...and '+(sessHands.length-8)+' more</div>';
     h+='</div>';
   }
   return h;
 }
 
-function stepDealer(){
-  var lh=APP.liveHand;
-  var h='<div class="card"><div class="street-label">&#9824; Select Dealer</div>';
-  h+='<div class="dealer-grid">';
-  APP.players.forEach(function(p){
+function stepDealer(pl){
+  var lh=A.lh;
+  var h='<div class="slbl">&#9824; Who is dealing?</div><div class="dealer-grid">';
+  pl.forEach(function(p){
     var sel=lh.dealer===p.id;
-    h+='<button class="dealer-btn" data-seldealer="'+p.id+'">'+avHTML({id:p.id,name:p.name},'av-md '+(sel?'av-sel':''))+'<span class="dealer-name">'+(p.name.split(' ')[0])+'</span>'+(sel?'<span style="font-size:9px;color:var(--gold)">&#9679; Dealer</span>':'')+'</button>';
+    h+='<button class="dealer-btn" data-seldealer="'+p.id+'">'+avH(p,'av-md '+(sel?'av-sel':''))+'<span class="dealer-name">'+esc(p.name.split(' ')[0])+'</span>'+(sel?'<span style="font-size:9px;color:var(--gold)">&#9679;</span>':'')+'</button>';
   });
-  h+='</div>';
-  h+='<button class="btn b-gold fw" id="step-next-dealer">Preflop &rarr;</button>';
-  h+='</div>';
+  h+='</div><button class="btn bg fw" id="step-dealer-next">Preflop &rarr;</button>';
   return h;
 }
 
-function stepActions(street,label,actions,isPreflop){
-  var lh=APP.liveHand;
-  var streetData=lh[street]||{};
-  var activePlayers=APP.players.filter(function(p){
-    if(!isPreflop){var pf=lh.preflop||{};return!pf[p.id]||pf[p.id].action!=='Fold';}
-    return true;
-  });
-  var h='<div class="card"><div class="street-label">'+label+'</div>';
-  h+='<div class="action-rows">';
-  activePlayers.forEach(function(p){
-    var cur=streetData[p.id]||{action:isPreflop?'Call':'Check'};
-    h+='<div class="action-row" id="arow-'+p.id+'">'+avHTML(p,'av-sm')+'<span class="action-row-name">'+esc(p.name.split(' ')[0])+'</span>';
-    h+='<div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px"><div class="action-btns">';
-    actions.forEach(function(a){h+='<button class="act-btn'+(cur.action===a?' sel-'+a.toLowerCase().replace('-',''):'')+'" data-actbtn="'+p.id+'" data-act="'+a+'" data-street="'+street+'">'+a+'</button>';});
-    h+='</div>';
-    var showAmt=(cur.action==='Raise'||cur.action==='Bet'||cur.action==='All-In');
-    h+='<input class="raise-input'+(showAmt?' show':'')+'" id="amt-'+street+'-'+p.id+'" type="number" placeholder="Rs. amount" value="'+(cur.amount||'')+'" data-amtfield="'+p.id+'" data-street="'+street+'">';
-    h+='</div></div>';
+function stepActions(street,label,actions,isPre,pl){
+  var lh=A.lh;
+  var streetData=lh[street==='preflop'?'pre':street]||{};
+  var activePl=isPre?pl:pl.filter(function(p){return!lh.pre[p.id]||lh.pre[p.id].action!=='Fold';});
+  var h='<div class="slbl">'+label+'</div><div class="act-rows">';
+  activePl.forEach(function(p){
+    var cur=streetData[p.id]||{action:isPre?'Call':'Check'};
+    var showAmt=cur.action==='Raise'||cur.action==='Bet'||cur.action==='All-In';
+    h+='<div class="act-row" id="arow-'+street+'-'+p.id+'">'+avH(p,'av-sm')+'<span class="act-row-name">'+esc(p.name.split(' ')[0])+'</span>';
+    h+='<div style="display:flex;flex-direction:column;align-items:flex-end;gap:5px"><div class="act-btns">';
+    actions.forEach(function(a){var cls=cur.action===a?(' s'+a.toLowerCase().replace(/[^a-z]/g,'').slice(0,2)):'';h+='<button class="abt2'+cls+'" data-ab="'+p.id+'" data-act="'+a+'" data-street="'+street+'">'+a+'</button>';});
+    h+='</div><input class="amt-inp'+(showAmt?' show':'')+'" id="amt-'+street+'-'+p.id+'" type="number" placeholder="Rs.amt" value="'+(cur.amount||'')+'" data-amtf="'+p.id+'" data-street="'+street+'"></div></div>';
   });
   h+='</div>';
-  // Navigation
-  var prevStep={preflop:'dealer',flop:'preflop',turn:'flop',river:'turn',showdown:'river'}[street]||'dealer';
-  var nextStep={preflop:'flop',flop:'turn',turn:'river',river:'showdown'}[street]||'showdown';
-  h+='<div style="display:flex;gap:8px">';
-  h+='<button class="btn b-dark" style="flex:1;padding:12px" data-stepgo="'+prevStep+'">&larr; Back</button>';
-  if(street==='river')h+='<button class="btn b-gold" style="flex:2;padding:12px" data-stepgo="showdown">Showdown &rarr;</button>';
-  else h+='<button class="btn b-gold" style="flex:2;padding:12px" data-stepgo="'+nextStep+'">Next &rarr;</button>';
-  h+='</div></div>';
+  var prev={preflop:'dealer',flop:'preflop',turn:'flop',river:'turn',showdown:'river'}[street]||'dealer';
+  var next={preflop:'flop',flop:'turn',turn:'river',river:'showdown'}[street]||'showdown';
+  h+='<div style="display:flex;gap:8px"><button class="btn bd" style="flex:1;padding:12px" data-stepgo="'+prev+'">&larr; Back</button><button class="btn bg" style="flex:2;padding:12px" data-stepgo="'+next+'">'+(street==='river'?'Showdown':'Next')+' &rarr;</button></div>';
   return h;
 }
 
-function stepFlop(){
-  var lh=APP.liveHand;
-  var h='<div class="card"><div class="street-label">Flop Cards</div>';
-  h+='<div class="board-cards">';
-  for(var i=0;i<3;i++){
-    var c=lh.flopCards[i];
-    if(c){h+='<div class="playing-card '+(c.suit==='♥'||c.suit==='♦'?'red-card':'black-card')+'" data-pickcard="flop-'+i+'"><div class="card-val">'+c.val+'</div><div class="card-suit">'+c.suit+'</div></div>';}
-    else{h+='<div class="playing-card empty" data-pickcard="flop-'+i+'">+</div>';}
-  }
+function stepFlop(pl){
+  var lh=A.lh;
+  var h='<div class="slbl">Flop Cards</div><div class="brd-cards">';
+  for(var i=0;i<3;i++){var c=lh.fc[i];h+=c?'<div class="pcard '+(c.r?'red':'blk')+'" data-pc="flop-'+i+'"><div class="cv">'+c.v+'</div><div class="cs">'+c.s+'</div></div>':'<div class="pcard empty" data-pc="flop-'+i+'">+</div>';}
   h+='</div>';
-  h+='<div style="display:flex;gap:8px;margin-bottom:14px">';
-  h+='<button class="btn b-dark" style="flex:1;padding:12px" data-stepgo="preflop">&larr; Back</button>';
-  h+='<button class="btn b-gold" style="flex:2;padding:12px" data-stepgo="flop-actions">Actions &rarr;</button>';
-  h+='</div></div>';
-  h+=stepActions('flop','Flop Actions',ACTIONS_POST,false);
+  h+=stepActions('flop','Flop Actions',ACTS_POST,false,pl);
   return h;
 }
 
-function stepStreet(street,label,card){
-  var h='<div class="card"><div class="street-label">'+label+' Card</div>';
-  h+='<div class="board-cards">';
-  if(card){h+='<div class="playing-card '+(card.suit==='♥'||card.suit==='♦'?'red-card':'black-card')+'" data-pickcard="'+street+'"><div class="card-val">'+card.val+'</div><div class="card-suit">'+card.suit+'</div></div>';}
-  else{h+='<div class="playing-card empty" data-pickcard="'+street+'">+</div>';}
-  h+='</div></div>';
-  h+=stepActions(street,label+' Actions',ACTIONS_POST,false);
-  return h;
-}
-
-function stepShowdown(){
-  var lh=APP.liveHand;
-  var h='<div class="card"><div class="street-label">&#127942; Showdown</div>';
-  h+='<div class="ct">Who won this hand?</div>';
-  h+='<div class="winner-grid">';
-  APP.players.forEach(function(p){
-    if(lh.preflop&&lh.preflop[p.id]&&lh.preflop[p.id].action==='Fold')return;
-    var sel=lh.winner===p.id;
-    h+='<button class="winner-btn'+(sel?' sel':'')+'" data-setwinner="'+p.id+'">'+avHTML(p,'av-sm')+'<span class="winner-name">'+esc(p.name.split(' ')[0])+'</span>'+(sel?'<span style="font-size:9px;color:var(--gold)">Winner</span>':'')+'</button>';
-  });
+function stepStreet(street,label,card,pl){
+  var h='<div class="slbl">'+label+' Card</div><div class="brd-cards">';
+  h+=card?'<div class="pcard '+(card.r?'red':'blk')+'" data-pc="'+street+'"><div class="cv">'+card.v+'</div><div class="cs">'+card.s+'</div></div>':'<div class="pcard empty" data-pc="'+street+'">+</div>';
   h+='</div>';
-  h+='<div class="ct" style="margin-top:8px">Hole cards shown (optional)</div>';
-  APP.players.forEach(function(p){
-    h+='<div class="hand-input-row">'+avHTML(p,'av-sm')+'<span class="hand-input-name">'+esc(p.name.split(' ')[0])+'</span><input class="hand-input-field" id="hcard-'+p.id+'" placeholder="e.g. A♠ K♥" value="'+(lh.losingHands&&lh.losingHands[p.id]||'')+'"></div>';
-  });
-  h+='<div style="display:flex;gap:8px;margin-top:14px">';
-  h+='<button class="btn b-dark" style="flex:1;padding:12px" data-stepgo="river">&larr; Back</button>';
-  h+='<button class="btn b-gold" style="flex:2;padding:12px" id="log-hand-btn">&#10003; Log Hand</button>';
-  h+='</div></div>';
+  h+=stepActions(street,label+' Actions',ACTS_POST,false,pl);
   return h;
 }
 
-function handLogHTML(hand,idx){
-  var pl=APP.players;
+function stepShowdown(pl){
+  var lh=A.lh;
+  var activePl=pl.filter(function(p){return!lh.pre[p.id]||lh.pre[p.id].action!=='Fold';});
+  var h='<div class="slbl">&#127942; Showdown — Who won?</div><div class="winner-grid">';
+  activePl.forEach(function(p){h+='<button class="wbtn'+(lh.winner===p.id?' sel':'')+'" data-setwinner="'+p.id+'">'+avH(p,'av-sm')+'<span class="winner-name">'+esc(p.name.split(' ')[0])+'</span>'+(lh.winner===p.id?'<span style="font-size:9px;color:var(--gold)">&#127942;</span>':'')+'</button>';});
+  h+='</div><div class="ct g" style="margin-top:8px">Hole cards (optional)</div>';
+  pl.forEach(function(p){h+='<div class="hcard-row">'+avH(p,'av-sm')+'<span class="hcard-name">'+esc(p.name.split(' ')[0])+'</span><input class="hcard-inp" id="hc-'+p.id+'" placeholder="A&#9824; K&#9829;" value="'+(lh.hcards&&lh.hcards[p.id]||'')+'"></div>';});
+  h+='<div style="display:flex;gap:8px;margin-top:14px"><button class="btn bd" style="flex:1;padding:12px" data-stepgo="river">&larr; Back</button><button class="btn bg" style="flex:2;padding:12px" id="log-hand-btn">&#10003; Log Hand</button></div>';
+  return h;
+}
+
+function handLogHTML(hand,idx,pl){
+  pl=pl||getLivePlayers();
   var nameOf=function(id){return((pl.find(function(p){return p.id===id;})||{}).name)||id;};
-  var h='<div class="hand-log">';
-  h+='<div class="hand-log-header"><span>Hand #'+(idx+1)+'</span><span>'+(nameOf(hand.dealer)||'')+(hand.dealer?' (Dealer)':'')+'</span></div>';
-  // Board cards
+  var h='<div class="hlog"><div class="hlog-hdr"><span>Hand #'+(hand.handNumber||idx+1)+'</span>'+(hand.dealer?'<span>'+esc(nameOf(hand.dealer))+' deals</span>':'')+'</div>';
   var allCards=[];
-  if(hand.flopCards)hand.flopCards.forEach(function(c){if(c)allCards.push(c);});
-  if(hand.turnCard)allCards.push(hand.turnCard);
-  if(hand.riverCard)allCards.push(hand.riverCard);
-  if(allCards.length){
-    h+='<div class="board-mini">';
-    allCards.forEach(function(c){h+='<span class="mini-card'+(c.suit==='♥'||c.suit==='♦'?' red':'black')+'">'+c.val+c.suit+'</span>';});
-    h+='</div>';
-  }
-  // Actions per street
-  ['preflop','flop','turn','river'].forEach(function(street){
+  if(hand.fc)hand.fc.forEach(function(c){if(c)allCards.push(c);});
+  if(hand.tc)allCards.push(hand.tc);if(hand.rc)allCards.push(hand.rc);
+  if(allCards.length){h+='<div class="brd-mini">';allCards.forEach(function(c){h+='<span class="mc '+(c.r?'red':'blk')+'">'+c.v+c.s+'</span>';});h+='</div>';}
+  ['pre','flop','turn','river'].forEach(function(street){
     var sd=hand[street];if(!sd||!Object.keys(sd).length)return;
-    h+='<div class="hand-log-street"><div class="hand-log-street-name">'+street.toUpperCase()+'</div>';
+    h+='<div class="sname">'+{pre:'PREFLOP',flop:'FLOP',turn:'TURN',river:'RIVER'}[street]+'</div>';
     Object.keys(sd).forEach(function(pid){
       var act=sd[pid];if(!act||!act.action)return;
-      var a=act.action.toLowerCase().replace('-','');
-      h+='<span class="action-chip chip-'+a+'">'+nameOf(pid).split(' ')[0]+' '+act.action+(act.amount?' Rs.'+act.amount:'')+'</span>';
+      var a=act.action.toLowerCase().replace(/-/g,'');
+      var cls={fold:'fld',call:'cll',check:'chk',raise:'rse',bet:'bet',allin:'ali'}[a]||'chk';
+      h+='<span class="chip '+cls+'">'+esc(nameOf(pid).split(' ')[0])+' '+act.action+(act.amount?' Rs.'+act.amount:'')+'</span>';
     });
-    h+='</div>';
   });
-  // Winner
-  if(hand.winner){
-    h+='<div class="win-chip">&#127942; '+nameOf(hand.winner)+' won';
-    if(hand.losingHands&&hand.losingHands[hand.winner]) h+=' ('+hand.losingHands[hand.winner]+')';
-    h+='</div>';
-    // Other hands shown
-    Object.keys(hand.losingHands||{}).forEach(function(pid){if(pid!==hand.winner&&hand.losingHands[pid])h+='<span style="font-size:10px;color:var(--t3);margin-left:6px">'+nameOf(pid).split(' ')[0]+': '+hand.losingHands[pid]+'</span>';});
-  }
+  if(hand.winner){var wcard=(hand.hcards&&hand.hcards[hand.winner])?' ('+esc(hand.hcards[hand.winner])+')':'';h+='<div class="win-chip">&#127942; '+esc(nameOf(hand.winner))+' won'+wcard+'</div>';}
+
+  // show other revealed hands
+  if(hand.hcards)Object.keys(hand.hcards).forEach(function(pid){if(pid!==hand.winner&&hand.hcards[pid])h+='<span style="font-size:10px;color:var(--t3);margin-left:6px">'+esc(nameOf(pid).split(' ')[0])+': '+esc(hand.hcards[pid])+'</span>';});
   h+='</div>';
   return h;
 }
 
 function bindLive(){
-  // Session selector
-  document.querySelectorAll('[data-selses]').forEach(function(btn){
-    btn.addEventListener('click',function(){APP.activeSessionId=btn.dataset.selses;APP.liveHand={step:'dealer',dealer:null,preflop:{},flop:{},turn:{},river:{},flopCards:[null,null,null],turnCard:null,riverCard:null,winner:null,winnerHand:'',losingHands:{},handCount:0};render();});
+  var lh=A.lh;
+  var pl=getLivePlayers();
+  var sess=getActiveSess();
+  if(!sess)return;
+
+  // Go live button from dashboard
+  var goLiveBtn=el('go-live-dash');
+  if(goLiveBtn)goLiveBtn.addEventListener('click',function(){A.tab='live';buildNav();render();});
+
+  // Rebuy steppers
+  document.querySelectorAll('[data-inc]').forEach(function(btn){
+    btn.addEventListener('click',function(){
+      var id=btn.dataset.inc;
+      A.liveBuyins[id]=(A.liveBuyins[id]||1)+1;
+      var sv=el('lsv-'+id);if(sv)sv.textContent=A.liveBuyins[id];
+      updateLiveBuyins(sess);
+    });
+  });
+  document.querySelectorAll('[data-dec]').forEach(function(btn){
+    btn.addEventListener('click',function(){
+      var id=btn.dataset.dec;
+      A.liveBuyins[id]=Math.max(1,(A.liveBuyins[id]||1)-1);
+      var sv=el('lsv-'+id);if(sv)sv.textContent=A.liveBuyins[id];
+      updateLiveBuyins(sess);
+    });
+  });
+
+  // Skip hand
+  var skipBtn=el('skip-hand-btn');
+  if(skipBtn)skipBtn.addEventListener('click',function(){
+    lh.step='dealer';lh.dealer=null;lh.pre={};lh.flop={};lh.turn={};lh.river={};
+    lh.fc=[null,null,null];lh.tc=null;lh.rc=null;lh.winner=null;lh.hcards={};
+    lh.count++;render();
   });
 
   // Dealer selection
   document.querySelectorAll('[data-seldealer]').forEach(function(btn){
-    btn.addEventListener('click',function(){APP.liveHand.dealer=btn.dataset.seldealer;render();});
+    btn.addEventListener('click',function(){lh.dealer=btn.dataset.seldealer;render();});
+  });
+  var dealerNext=el('step-dealer-next');
+  if(dealerNext)dealerNext.addEventListener('click',function(){lh.step='preflop';render();});
+
+  // Step navigation
+  document.querySelectorAll('[data-stepgo]').forEach(function(btn){
+    btn.addEventListener('click',function(){lh.step=btn.dataset.stepgo;render();});
   });
 
-  // Next from dealer
-  var dealerNext=el('step-next-dealer');
-  if(dealerNext)dealerNext.addEventListener('click',function(){APP.liveHand.step='preflop';render();});
-
   // Action buttons
-  document.querySelectorAll('[data-actbtn]').forEach(function(btn){
+  document.querySelectorAll('[data-ab]').forEach(function(btn){
     btn.addEventListener('click',function(){
-      var pid=btn.dataset.actbtn,act=btn.dataset.act,street=btn.dataset.street;
-      if(!APP.liveHand[street])APP.liveHand[street]={};
-      APP.liveHand[street][pid]=APP.liveHand[street][pid]||{};
-      APP.liveHand[street][pid].action=act;
-      // Show/hide amount input
-      var amtInput=el('amt-'+street+'-'+pid);
-      if(amtInput){if(act==='Raise'||act==='Bet'||act==='All-In')amtInput.classList.add('show');else amtInput.classList.remove('show');}
-      // Update button styles
-      var row=document.getElementById('arow-'+pid);
-      if(row){row.querySelectorAll('[data-actbtn="'+pid+'"]').forEach(function(b){b.className='act-btn'+(b.dataset.act===act?' sel-'+act.toLowerCase().replace('-',''):'');});}
+      var pid=btn.dataset.ab,act=btn.dataset.act,street=btn.dataset.street;
+      var key=street==='preflop'?'pre':street;
+      if(!lh[key])lh[key]={};
+      lh[key][pid]=lh[key][pid]||{};
+      lh[key][pid].action=act;
+      var amtInp=el('amt-'+street+'-'+pid);
+      if(amtInp){if(act==='Raise'||act==='Bet'||act==='All-In')amtInp.classList.add('show');else amtInp.classList.remove('show');}
+      var row=el('arow-'+street+'-'+pid);
+      if(row){row.querySelectorAll('[data-ab="'+pid+'"]').forEach(function(b){var cls=b.dataset.act===act?(' s'+act.toLowerCase().replace(/[^a-z]/g,'').slice(0,2)):'';b.className='abt2'+cls;});}
     });
   });
 
   // Amount inputs
-  document.querySelectorAll('[data-amtfield]').forEach(function(inp){
+  document.querySelectorAll('[data-amtf]').forEach(function(inp){
     inp.addEventListener('input',function(){
-      var pid=inp.dataset.amtfield,street=inp.dataset.street;
-      if(!APP.liveHand[street])APP.liveHand[street]={};
-      if(!APP.liveHand[street][pid])APP.liveHand[street][pid]={};
-      APP.liveHand[street][pid].amount=inp.value;
-    });
-  });
-
-  // Step navigation
-  document.querySelectorAll('[data-stepgo]').forEach(function(btn){
-    btn.addEventListener('click',function(){
-      var s=btn.dataset.stepgo;
-      if(s==='flop-actions')return; // handled inline
-      APP.liveHand.step=s;
-      render();
+      var pid=inp.dataset.amtf,street=inp.dataset.street;
+      var key=street==='preflop'?'pre':street;
+      if(!lh[key])lh[key]={};if(!lh[key][pid])lh[key][pid]={};
+      lh[key][pid].amount=inp.value;
     });
   });
 
   // Card picker
-  document.querySelectorAll('[data-pickcard]').forEach(function(btn){
-    btn.addEventListener('click',function(){openCardPicker(btn.dataset.pickcard);});
+  document.querySelectorAll('[data-pc]').forEach(function(btn){
+    btn.addEventListener('click',function(){openCardPicker(btn.dataset.pc);});
   });
 
-  // Winner selection
+  // Winner
   document.querySelectorAll('[data-setwinner]').forEach(function(btn){
-    btn.addEventListener('click',function(){APP.liveHand.winner=btn.dataset.setwinner;render();});
+    btn.addEventListener('click',function(){lh.winner=btn.dataset.setwinner;render();});
   });
 
-  // Hole card inputs
-  APP.players.forEach(function(p){
-    var inp=el('hcard-'+p.id);
-    if(inp)inp.addEventListener('input',function(){if(!APP.liveHand.losingHands)APP.liveHand.losingHands={};APP.liveHand.losingHands[p.id]=inp.value;});
-  });
+  // Hole cards
+  pl.forEach(function(p){var inp=el('hc-'+p.id);if(inp)inp.addEventListener('input',function(){if(!lh.hcards)lh.hcards={};lh.hcards[p.id]=inp.value;});});
 
   // Log hand
   var logBtn=el('log-hand-btn');
   if(logBtn)logBtn.addEventListener('click',doLogHand);
+
+  // End session
+  var endBtn=el('end-sess-btn');
+  if(endBtn)endBtn.addEventListener('click',openCashoutModal);
+}
+
+async function updateLiveBuyins(sess){
+  // Save updated buyins to Firebase immediately
+  try{
+    await setDoc(doc(A.db,'sessions',sess.id),Object.assign({},sess,{buyins:JSON.parse(JSON.stringify(A.liveBuyins))}),{merge:true});
+  }catch(e){console.error('updateBuyins',e);}
 }
 
 async function doLogHand(){
-  var lh=APP.liveHand;
+  var lh=A.lh;var pl=getLivePlayers();
   if(!lh.winner){alert('Please select the winner first.');return;}
-  // Collect final hole card values
-  APP.players.forEach(function(p){var inp=el('hcard-'+p.id);if(inp&&inp.value){if(!lh.losingHands)lh.losingHands={};lh.losingHands[p.id]=inp.value;}});
+  pl.forEach(function(p){var inp=el('hc-'+p.id);if(inp&&inp.value){if(!lh.hcards)lh.hcards={};lh.hcards[p.id]=inp.value;}});
   var handData={
-    sessionId:APP.activeSessionId,
+    sessionId:A.activeSessId,
     dealer:lh.dealer,
-    preflop:JSON.parse(JSON.stringify(lh.preflop||{})),
+    pre:JSON.parse(JSON.stringify(lh.pre||{})),
     flop:JSON.parse(JSON.stringify(lh.flop||{})),
     turn:JSON.parse(JSON.stringify(lh.turn||{})),
     river:JSON.parse(JSON.stringify(lh.river||{})),
-    flopCards:lh.flopCards,
-    turnCard:lh.turnCard,
-    riverCard:lh.riverCard,
+    fc:lh.fc,tc:lh.tc,rc:lh.rc,
     winner:lh.winner,
-    losingHands:lh.losingHands||{},
-    handNumber:lh.handCount+1
+    hcards:JSON.parse(JSON.stringify(lh.hcards||{})),
+    handNumber:lh.count+1
   };
   await saveHand(handData);
-  // Reset for next hand, preserve dealer rotation
-  var newCount=lh.handCount+1;
-  APP.liveHand={step:'dealer',dealer:null,preflop:{},flop:{},turn:{},river:{},flopCards:[null,null,null],turnCard:null,riverCard:null,winner:null,winnerHand:'',losingHands:{},handCount:newCount};
+  // Reset for next hand
+  A.lh={step:'dealer',dealer:null,pre:{},flop:{},turn:{},river:{},fc:[null,null,null],tc:null,rc:null,winner:null,hcards:{},count:lh.count+1};
   render();
 }
 
-// Card picker
-var cardPickTarget=null;
-var pickedSuit=null;
+// ── CARD PICKER ───────────────────────────────────────────────
+var cardTarget=null,pickedSuit=null;
 
 function openCardPicker(target){
-  cardPickTarget=target;pickedSuit=null;
-  el('mbox').innerHTML='<div class="mt">Select Card</div>'
-    +'<div class="ct">Suit</div><div class="suit-grid">'
-    +SUITS.map(function(s){return'<button class="suit-btn '+(s.r?'red':'black')+'" data-suit="'+s.s+'">'+s.s+'</button>';}).join('')
-    +'</div>'
-    +'<div class="ct">Value</div><div class="val-grid">'
-    +CARD_VALS.map(function(v){return'<button class="val-btn" data-val="'+v+'">'+v+'</button>';}).join('')
-    +'</div>'
-    +'<div class="row2" style="margin-top:14px"><button class="btn b-dark fw" id="card-cancel">Cancel</button></div>';
+  cardTarget=target;pickedSuit=null;
+  el('mbox').innerHTML='<div class="mt">Pick Card</div>'
+    +'<div class="ct g">Suit</div><div class="suit-grid">'
+    +SUITS.map(function(s){return'<button class="suit-btn '+(s.r?'red':'blk')+'" data-suit="'+s.s+'" data-red="'+s.r+'">'+s.s+'</button>';}).join('')
+    +'</div><div class="ct g">Value</div><div class="val-grid">'
+    +CVALS.map(function(v){return'<button class="val-btn" data-val="'+v+'">'+v+'</button>';}).join('')
+    +'</div><div class="row2" style="margin-top:14px"><button class="btn bd fw" id="cp-cancel">Cancel</button></div>';
   el('mover').classList.add('show');
-
-  el('card-cancel').addEventListener('click',closeModal);
-
+  el('cp-cancel').addEventListener('click',closeModal);
   document.querySelectorAll('[data-suit]').forEach(function(btn){
     btn.addEventListener('click',function(){
-      pickedSuit=btn.dataset.suit;
+      pickedSuit={s:btn.dataset.suit,r:btn.dataset.red==='true'};
       document.querySelectorAll('[data-suit]').forEach(function(b){b.classList.remove('sel');});
       btn.classList.add('sel');
     });
   });
-
   document.querySelectorAll('[data-val]').forEach(function(btn){
     btn.addEventListener('click',function(){
       if(!pickedSuit){alert('Pick a suit first.');return;}
-      var val=btn.dataset.val;
-      var card={suit:pickedSuit,val:val};
-      applyCard(cardPickTarget,card);
-      closeModal();
+      var card={v:btn.dataset.val,s:pickedSuit.s,r:pickedSuit.r};
+      applyCard(cardTarget,card);closeModal();
     });
   });
 }
 
 function applyCard(target,card){
-  var lh=APP.liveHand;
-  if(target.startsWith('flop-')){var idx=parseInt(target.split('-')[1]);lh.flopCards[idx]=card;}
-  else if(target==='turn')lh.turnCard=card;
-  else if(target==='river')lh.riverCard=card;
+  var lh=A.lh;
+  if(target.startsWith('flop-')){lh.fc[parseInt(target.split('-')[1])]=card;}
+  else if(target==='turn')lh.tc=card;
+  else if(target==='river')lh.rc=card;
   render();
 }
 
-// ── Sessions ──────────────────────────────────────────────────
+// ── CASHOUT MODAL (End Session) ───────────────────────────────
+function openCashoutModal(){
+  var sess=getActiveSess();if(!sess)return;
+  var pl=sess.players||A.players;
+  var buyins=A.liveBuyins;
+  var cashouts={};pl.forEach(function(p){cashouts[p.id]='';});
+  var sessionNotes={};pl.forEach(function(p){sessionNotes[p.id]='';});
+
+  drawCashoutModal(sess,pl,buyins,cashouts,sessionNotes,'');
+}
+
+function drawCashoutModal(sess,pl,buyins,cashouts,sessionNotes,globalNote){
+  var buyinAmt=sess.buyinAmt||500;
+  var results={};
+  pl.forEach(function(p){results[p.id]=(Number(cashouts[p.id])||0)-(buyins[p.id]||1)*buyinAmt;});
+  var totalIn=pl.reduce(function(s,p){return s+(buyins[p.id]||1)*buyinAmt;},0);
+  var totalOut=pl.reduce(function(s,p){return s+(Number(cashouts[p.id])||0);},0);
+  var diff=Math.abs(totalOut-totalIn);var balanced=diff<1;
+
+  var rows=pl.map(function(p){
+    var cnt=buyins[p.id]||1;
+    var invested=cnt*buyinAmt;
+    var co=cashouts[p.id];
+    var pnl=co!==''?(Number(co)||0)-invested:null;
+    return'<div class="co-row">'+avH(p,'av-sm')+'<div class="co-info"><div class="co-name">'+esc(p.name)+'</div><div class="co-inv">'+cnt+'&times; buyin &middot; Rs.'+invested.toLocaleString('en-IN')+' invested</div></div><input class="co-inp" type="number" min="0" placeholder="0" id="co-'+p.id+'" value="'+esc(co||'')+'" style="width:90px;text-align:center"><div class="co-pnl '+(pnl!==null?(pnl>=0?'grn':'rrd'):'')+'">'+(pnl!==null?rs(pnl):'')+'</div></div>';
+  }).join('');
+
+  el('mbox').innerHTML='<div class="mt">&#9635; End Session</div>'
+    +'<div style="font-size:12px;color:var(--t3);margin-bottom:14px">'+esc(sess.date)+' &middot; Rs.'+buyinAmt+'/buyin</div>'
+    +'<div class="ct g">Enter Cashout Amounts</div>'
+    +rows
+    +'<div class="bal '+(balanced?'bok':'berr')+'" style="margin-top:10px"><span style="color:var(--t2)">Balance Check</span><span class="'+(balanced?'grn':'rrd')+'">'+(balanced?'&#10003; Balanced':'Off by Rs.'+diff.toFixed(0))+'</span></div>'
+    +settlH(results,pl)
+    +'<div style="margin-top:14px"><label class="fl">Session Notes</label><textarea id="end-notes" style="height:52px" placeholder="Key observations...">'+esc(globalNote)+'</textarea></div>'
+    +'<div class="row2"><button class="btn bd" id="end-cancel">Cancel</button><button class="btn bg" style="flex:2" id="end-save">Save &amp; End Session</button></div>';
+
+  el('mover').classList.add('show');
+
+  // Live P&L update on input
+  pl.forEach(function(p){
+    var inp=el('co-'+p.id);
+    if(inp)inp.addEventListener('input',function(){
+      cashouts[p.id]=inp.value;
+      drawCashoutModal(sess,pl,buyins,cashouts,sessionNotes,(el('end-notes')||{}).value||'');
+    });
+  });
+
+  el('end-cancel').addEventListener('click',closeModal);
+  el('end-save').addEventListener('click',async function(){
+    // Read final values
+    pl.forEach(function(p){var inp=el('co-'+p.id);if(inp)cashouts[p.id]=inp.value;});
+    var gn=(el('end-notes')||{}).value||'';
+    var finalResults={};
+    pl.forEach(function(p){finalResults[p.id]=(Number(cashouts[p.id])||0)-(buyins[p.id]||1)*buyinAmt;});
+    var sn={};
+    // Carry over any existing session notes
+    pl.forEach(function(p){sn[p.id]=sess.sessionNotes&&sess.sessionNotes[p.id]||'';});
+
+    await saveSess({
+      id:sess.id,
+      date:sess.date,buyinAmt:buyinAmt,
+      players:pl,buyins:buyins,
+      cashouts:cashouts,
+      sessionNotes:sn,
+      notes:gn,
+      results:finalResults,
+      status:'done',
+      createdAt:sess.createdAt
+    });
+    A.activeSessId=null;
+    closeModal();
+    A.tab='sessions';buildNav();render();
+  });
+}
+
+// ── SESSIONS TAB ──────────────────────────────────────────────
 function pgSessions(){
-  if(!APP.sessions.length)return'<div class="empty"><div class="empty-ic">&#9830;</div><div>No sessions yet.</div></div>';
-  return APP.sessions.map(function(s,i){return sessRowHTML(s,i);}).join('');
+  var all=A.sessions;
+  if(!all.length)return'<div class="empty"><div class="empty-ic">&#9830;</div><div>No sessions yet.</div></div>';
+  return all.map(function(s,i){return sessRowHTML(s,i);}).join('');
 }
 
 function sessRowHTML(s,i){
-  var pl=s.players||APP.players;
+  var pl=s.players||A.players;
   var myP=pl.find(function(p){return p.name==='Kunal';})||pl[0];
   var mid=myP?myP.id:'';
   var r=(s.results&&s.results[mid])||0;
-  var sessionHands=APP.hands.filter(function(h){return h.sessionId===s.id;});
+  var isActive=s.status==='active';
+  var sessHands=A.hands.filter(function(h){return h.sessionId===s.id;});
   var bodyH='';
-  pl.forEach(function(p){
-    var pr=(s.results&&s.results[p.id])||0;
-    var note=s.sessionNotes&&s.sessionNotes[p.id];
-    bodyH+='<div class="pres"><div class="pres-top">'+avHTML(p,'av-sm')+'<div class="pres-right"><span class="fw7" style="font-size:13px;color:var(--cream)">'+esc(p.name)+(p.isGuest?' &#128100;':'')+'</span><div style="display:flex;align-items:center;gap:8px"><span style="font-size:11px;color:var(--t3)">'+(s.buyins&&s.buyins[p.id]||0)+'&times;</span><span class="'+(pr>=0?'g':'r')+' fw7" style="font-size:14px">'+rs(pr)+'</span></div></div></div>'+(note?'<div class="pnote">&#128221; '+esc(note)+'</div>':'')+'</div>';
-  });
-  bodyH+=settlHTML(s.results||{},pl);
-  if(s.notes)bodyH+='<div class="snote">&#128203; '+esc(s.notes)+'</div>';
-  // Hand logs
-  if(sessionHands.length){
-    bodyH+='<div style="margin-top:10px"><div class="ct gold">'+sessionHands.length+' Hands Logged</div>';
-    sessionHands.slice(0,5).forEach(function(hand,hi){bodyH+=handLogHTML(hand,hi);});
-    if(sessionHands.length>5)bodyH+='<div style="font-size:11px;color:var(--t3);text-align:center;padding-top:6px">...'+(sessionHands.length-5)+' more in Live tab</div>';
-    bodyH+='</div>';
+
+  if(isActive){
+    // Active session — show rebuy counts and button to go live
+    bodyH+='<div style="background:rgba(201,168,76,.08);border:1px solid rgba(201,168,76,.2);border-radius:10px;padding:12px;margin-bottom:10px"><div style="font-size:12px;color:var(--gold);font-weight:700;margin-bottom:6px"><span class="live-dot"></span>Game in progress</div>';
+    pl.forEach(function(p){bodyH+='<div style="display:flex;align-items:center;justify-content:space-between;padding:5px 0;border-bottom:1px solid rgba(201,168,76,.1)"><div style="display:flex;align-items:center;gap:8px">'+avH(p,'av-sm')+'<span style="font-size:13px;font-weight:700;color:var(--cream)">'+esc(p.name)+'</span></div><span style="font-size:12px;color:var(--t3)">'+(s.buyins&&s.buyins[p.id]||1)+'&times; buyin</span></div>';});
+    bodyH+='</div><div style="display:flex;gap:8px"><button class="btn bg fw" id="sess-go-live-'+i+'">Go Live &rarr;</button><button class="btn br" id="sess-end-'+i+'">End Session</button></div>';
+  } else {
+    pl.forEach(function(p){
+      var pr=(s.results&&s.results[p.id])||0;
+      var note=s.sessionNotes&&s.sessionNotes[p.id];
+      bodyH+='<div class="pres"><div class="pres-top">'+avH(p,'av-sm')+'<div class="pres-r"><span class="fw7" style="font-size:13px;color:var(--cream)">'+esc(p.name)+(p.isGuest?' &#128100;':'')+'</span><div style="display:flex;align-items:center;gap:8px"><span style="font-size:11px;color:var(--t3)">'+(s.buyins&&s.buyins[p.id]||1)+'&times;</span><span class="'+(pr>=0?'grn':'rrd')+' fw7" style="font-size:14px">'+rs(pr)+'</span></div></div></div>'+(note?'<div class="pnote">&#128221; '+esc(note)+'</div>':'')+'</div>';
+    });
+    bodyH+=settlH(s.results||{},pl);
+    if(s.notes)bodyH+='<div class="snote">&#128203; '+esc(s.notes)+'</div>';
+    if(sessHands.length){
+      bodyH+='<div style="margin-top:10px"><div class="ct g">'+sessHands.length+' Hands Logged</div>';
+      sessHands.slice(0,4).forEach(function(hand,hi){bodyH+=handLogHTML(hand,hi,pl);});
+      if(sessHands.length>4)bodyH+='<div style="font-size:11px;color:var(--t3);text-align:center;padding-top:6px">+more — see Live tab</div>';
+      bodyH+='</div>';
+    }
+    if(s.aiAnalysis){bodyH+='<div class="ai-box"><div class="ai-t">&#9889; AI Coaching</div><div class="ai-body">'+esc(s.aiAnalysis)+'</div></div>';}
+    else if(A.apiKey){bodyH+='<button class="btn bai" data-airun="'+i+'" style="width:100%;margin-top:10px;padding:12px">&#9889; Generate AI Coaching</button>';}
   }
-  if(s.aiAnalysis){bodyH+='<div class="ai-box"><div class="ai-box-title">&#9889; AI Coaching</div><div class="ai-box-body">'+esc(s.aiAnalysis)+'</div></div>';}
-  else if(APP.apiKey){bodyH+='<button class="btn b-ai" data-airun="'+i+'" style="width:100%;margin-top:10px;padding:12px">&#9889; Generate AI Coaching</button>';}
-  return'<div class="srow"><div class="shdr" onclick="togS('+i+')">'
-    +'<div class="smeta">'+avHTML(myP,'av-sm')+'<div><div style="font-size:13px;font-weight:700;color:var(--cream)">'+(s.date||'')+'</div><div style="font-size:11px;color:var(--t3)">Rs.'+(s.buyinAmt||500)+'/buyin &middot; '+pl.length+' players'+(sessionHands.length?' &middot; '+sessionHands.length+' hands':'')+'</div></div>'+(s.aiAnalysis?'<span style="font-size:9px;color:#a78bfa;background:rgba(139,92,246,.15);padding:2px 7px;border-radius:10px">AI</span>':'')+'</div>'
-    +'<div style="display:flex;align-items:center;gap:8px"><span class="'+(r>=0?'g':'r')+' fw7" style="font-size:15px">'+rs(r)+'</span><span id="ar'+i+'" style="color:var(--t3);font-size:12px">&#9660;</span><button data-delsess="'+i+'" style="background:none;border:none;color:var(--t3);cursor:pointer;font-size:14px;padding:4px 6px">&#10005;</button></div>'
+
+  return'<div class="srow'+(isActive?' act':'')+'" id="sr'+i+'"><div class="shdr" onclick="togS('+i+')">'
+    +'<div class="smeta">'+avH(myP,'av-sm')+'<div><div style="font-size:13px;font-weight:700;color:var(--cream)">'+(s.date||'')+(isActive?' <span style="font-size:9px;color:var(--gold);background:rgba(201,168,76,.15);padding:2px 7px;border-radius:10px">LIVE</span>':'')+'</div><div style="font-size:11px;color:var(--t3)">Rs.'+(s.buyinAmt||500)+'/buyin &middot; '+pl.length+' players'+(sessHands.length?' &middot; '+sessHands.length+' hands':'')+'</div></div>'+(s.aiAnalysis?'<span style="font-size:9px;color:#a78bfa;background:rgba(139,92,246,.15);padding:2px 7px;border-radius:10px">AI</span>':'')+'</div>'
+    +'<div style="display:flex;align-items:center;gap:8px"><span class="'+(isActive?'gld':r>=0?'grn':'rrd')+' fw7" style="font-size:15px">'+(isActive?'&#127183;':rs(r))+'</span><span id="ar'+i+'" style="color:var(--t3);font-size:12px">&#9660;</span><button data-delsess="'+i+'" style="background:none;border:none;color:var(--t3);cursor:pointer;font-size:14px;padding:4px 6px">&#10005;</button></div>'
     +'</div><div class="sbody" id="sb'+i+'">'+bodyH+'</div></div>';
 }
 
 function bindSessBtns(){
   document.querySelectorAll('[data-delsess]').forEach(function(btn){
-    btn.addEventListener('click',function(e){e.stopPropagation();var s=APP.sessions[parseInt(btn.dataset.delsess)];if(s&&confirm('Delete this session?'))delSess(s.id);});
+    btn.addEventListener('click',function(e){e.stopPropagation();var s=A.sessions[parseInt(btn.dataset.delsess)];if(s&&confirm('Delete this session?')){if(s.status==='active')A.activeSessId=null;delSess(s.id);}});
+  });
+  A.sessions.forEach(function(s,i){
+    var goBtn=el('sess-go-live-'+i);
+    if(goBtn)goBtn.addEventListener('click',function(){A.tab='live';buildNav();render();});
+    var endBtn=el('sess-end-'+i);
+    if(endBtn)endBtn.addEventListener('click',function(){A.activeSessId=s.id;A.liveBuyins=JSON.parse(JSON.stringify(s.buyins||{}));openCashoutModal();});
   });
 }
 
 window.togS=function(i){
   var b=el('sb'+i),a=el('ar'+i);if(!b)return;
-  if(b.style.display!=='block'){b.style.display='block';if(a)a.innerHTML='&#9650;';var aiBtn=b.querySelector('[data-airun]');if(aiBtn)aiBtn.addEventListener('click',function(){runSessAI(parseInt(aiBtn.dataset.airun));});}
-  else{b.style.display='none';if(a)a.innerHTML='&#9660;';}
+  if(b.style.display!=='block'){
+    b.style.display='block';if(a)a.innerHTML='&#9650;';
+    var aiBtn=b.querySelector('[data-airun]');
+    if(aiBtn)aiBtn.addEventListener('click',function(){runSessAI(parseInt(aiBtn.dataset.airun));});
+  }else{b.style.display='none';if(a)a.innerHTML='&#9660;';}
 };
 
 async function runSessAI(idx){
-  var s=APP.sessions[idx];if(!s)return;
+  var s=A.sessions[idx];if(!s)return;
   var bodyEl=el('sb'+idx);if(!bodyEl)return;
   var aiBtn=bodyEl.querySelector('[data-airun]');
   var wrapper=document.createElement('div');wrapper.className='ai-box';
-  wrapper.innerHTML='<div class="ai-box-title">&#9889; AI Coaching</div><div class="thinking"><div class="dots"><span></span><span></span><span></span></div> Analysing...</div><div class="ai-box-body" id="ai-st-'+idx+'"></div>';
+  wrapper.innerHTML='<div class="ai-t">&#9889; AI Coaching</div><div class="thinking"><div class="dots"><span></span><span></span><span></span></div> Analysing...</div><div class="ai-body" id="ai-st-'+idx+'"></div>';
   if(aiBtn)aiBtn.replaceWith(wrapper);else bodyEl.appendChild(wrapper);
   var streamEl=el('ai-st-'+idx);var text='';
-  var sessionHands=APP.hands.filter(function(h){return h.sessionId===s.id;});
-  callClaude(buildSessPrompt(s,sessionHands),
+  var sHands=A.hands.filter(function(h){return h.sessionId===s.id;});
+  callClaude(buildSessPrompt(s,sHands),
     function(chunk){text+=chunk;if(streamEl)streamEl.textContent=text;},
-    async function(){wrapper.querySelector('.thinking')&&wrapper.querySelector('.thinking').remove();extractUpdates(text,s.players||APP.players);var updated=Object.assign({},s,{aiAnalysis:text});delete updated.id;await saveSess(Object.assign({id:s.id},updated));},
+    async function(){wrapper.querySelector('.thinking')&&wrapper.querySelector('.thinking').remove();extractUpdates(text,s.players||A.players);await saveSess(Object.assign({},s,{aiAnalysis:text}));},
     function(err){wrapper.innerHTML+='<div style="color:var(--red);font-size:12px;margin-top:8px">Error: '+esc(err)+'</div>';}
   );
 }
 
-// ── Leaderboard ───────────────────────────────────────────────
+// ── LEADERBOARD ───────────────────────────────────────────────
 function pgLeader(){
-  if(!APP.sessions.length)return'<div class="empty"><div class="empty-ic">&#127942;</div><div>Play some sessions first!</div></div>';
-  var totals=APP.players.map(function(p){
+  var done=A.sessions.filter(function(s){return s.status!=='active';});
+  if(!done.length)return'<div class="empty"><div class="empty-ic">&#127942;</div><div>Play some sessions first!</div></div>';
+  var totals=A.players.map(function(p){
     var tot=0,cnt=0,wins=0,best=0;
-    APP.sessions.forEach(function(s){if(s.results&&s.results[p.id]!==undefined){cnt++;var r=s.results[p.id]||0;tot+=r;if(r>0)wins++;if(r>best)best=r;}});
+    done.forEach(function(s){if(s.results&&s.results[p.id]!==undefined){cnt++;var r=s.results[p.id]||0;tot+=r;if(r>0)wins++;if(r>best)best=r;}});
     return{id:p.id,name:p.name,tot:tot,cnt:cnt,wins:wins,best:best};
   }).sort(function(a,b){return b.tot-a.tot;});
   var maxA=Math.max(1,...totals.map(function(p){return Math.abs(p.tot);}));
   var top3=totals.slice(0,3);
-  var podOrder=[top3[1],top3[0],top3[2]].filter(Boolean);
+  var pord=[top3[1],top3[0],top3[2]].filter(Boolean);
+  var pcls=['p2','p1','p3'],phts=[70,100,55],prc=['#b0b0b0','#c9a84c','#cd7f32'];
   var podH='<div class="podium">';
-  var podCls=['pod-2','pod-1','pod-3'];var podH2=[70,100,55];var podRnkC=['#b0b0b0','#c9a84c','#cd7f32'];
-  podOrder.forEach(function(p,i){var pl=APP.players.find(function(x){return x.id===p.id;})||{id:p.id,name:p.name};podH+='<div class="pod"><div class="pod-bar '+podCls[i]+'" style="height:'+podH2[i]+'px">'+avHTML(pl,'av-md')+'</div><div style="font-size:18px;font-weight:900;color:'+podRnkC[i]+';">'+(totals.indexOf(p)+1)+'</div><div class="pod-name">'+esc(p.name.split(' ')[0])+'</div><div class="pod-amt '+(p.tot>=0?'g':'r')+'">'+rs(p.tot)+'</div></div>';});
+  pord.forEach(function(p,i){var pl=A.players.find(function(x){return x.id===p.id;})||{id:p.id,name:p.name};podH+='<div class="pod"><div class="pod-bar '+pcls[i]+'" style="height:'+phts[i]+'px">'+avH(pl,'av-md')+'</div><div style="font-size:18px;font-weight:900;color:'+prc[i]+'">'+(totals.indexOf(p)+1)+'</div><div class="pod-name">'+esc(p.name.split(' ')[0])+'</div><div class="pod-amt '+(p.tot>=0?'grn':'rrd')+'">'+rs(p.tot)+'</div></div>';});
   podH+='</div>';
-  var rowsH='<div class="card"><div class="ct gold">&#9827; All-Time Rankings</div>'+podH;
   var rnkC=['#c9a84c','#b0b0b0','#cd7f32'];
-  totals.forEach(function(p,i){var pl=APP.players.find(function(x){return x.id===p.id;});rowsH+='<div class="lb-row"><span class="lb-rank" style="color:'+(rnkC[i]||'var(--t4)')+'">'+(i+1)+'</span>'+avHTML(pl||{id:p.id,name:p.name},'av-sm')+'<div style="flex:1;min-width:0;margin-left:4px"><div style="display:flex;justify-content:space-between;margin-bottom:3px"><span style="font-size:13px;font-weight:700;color:var(--cream)">'+esc(p.name)+'</span><span class="'+(p.tot>=0?'g':'r')+' fw7" style="font-size:14px">'+rs(p.tot)+'</span></div><div class="lb-bar" style="background:'+(p.tot>=0?'var(--green)':'var(--red)')+';width:'+Math.round(Math.abs(p.tot)/maxA*100)+'%"></div><div class="lb-meta"><span>'+p.cnt+' sessions</span><span>'+p.wins+'W/'+(p.cnt-p.wins)+'L</span>'+(p.best>0?'<span>Best +Rs.'+p.best.toLocaleString('en-IN')+'</span>':'')+'</div></div></div>';});
+  var rowsH='<div class="card"><div class="ct g">&#9827; All-Time Rankings</div>'+podH;
+  totals.forEach(function(p,i){var pl=A.players.find(function(x){return x.id===p.id;});rowsH+='<div class="lb-row"><span style="font-size:13px;font-weight:900;width:20px;flex-shrink:0;color:'+(rnkC[i]||'var(--t4)')+';">'+(i+1)+'</span>'+avH(pl||{id:p.id,name:p.name},'av-sm')+'<div style="flex:1;min-width:0;margin-left:4px"><div style="display:flex;justify-content:space-between;margin-bottom:3px"><span style="font-size:13px;font-weight:700;color:var(--cream)">'+esc(p.name)+'</span><span class="'+(p.tot>=0?'grn':'rrd')+' fw7" style="font-size:14px">'+rs(p.tot)+'</span></div><div class="lb-bar" style="background:'+(p.tot>=0?'var(--green)':'var(--red)')+';width:'+Math.round(Math.abs(p.tot)/maxA*100)+'%"></div><div class="lb-meta"><span>'+p.cnt+' sessions</span><span>'+p.wins+'W/'+(p.cnt-p.wins)+'L</span>'+(p.best>0?'<span>Best +Rs.'+p.best.toLocaleString('en-IN')+'</span>':'')+'</div></div></div>';});
   rowsH+='</div>';
-  var thH=APP.players.map(function(p){return'<th>'+esc(p.name.split(' ')[0])+'</th>';}).join('');
-  var tbH=APP.sessions.map(function(s){return'<tr><td style="color:var(--t3)">'+(s.date||'').slice(5)+'</td>'+APP.players.map(function(p){var r=s.results&&s.results[p.id];return r!==undefined?'<td class="'+(r>=0?'g':'r')+'">'+rs(r)+'</td>':'<td style="color:var(--t4)">-</td>';}).join('')+'</tr>';}).join('');
-  var totH='<tr class="tr-tot"><td>Total</td>'+APP.players.map(function(p){var t=APP.sessions.reduce(function(s,sess){return s+((sess.results&&sess.results[p.id])||0);},0);return'<td class="'+(t>=0?'g':'r')+'">'+rs(t)+'</td>';}).join('')+'</tr>';
-  return rowsH+'<div class="card" style="overflow-x:auto"><div class="ct gold">&#9830; Session Table</div><table><thead><tr><th style="text-align:left">Date</th>'+thH+'</tr></thead><tbody>'+tbH+totH+'</tbody></table></div>';
+  var thH=A.players.map(function(p){return'<th>'+esc(p.name.split(' ')[0])+'</th>';}).join('');
+  var tbH=done.map(function(s){return'<tr><td style="color:var(--t3)">'+(s.date||'').slice(5)+'</td>'+A.players.map(function(p){var r=s.results&&s.results[p.id];return r!==undefined?'<td class="'+(r>=0?'grn':'rrd')+'">'+rs(r)+'</td>':'<td style="color:var(--t4)">-</td>';}).join('')+'</tr>';}).join('');
+  var totH='<tr class="tr-tot"><td>Total</td>'+A.players.map(function(p){var t=done.reduce(function(s,sess){return s+((sess.results&&sess.results[p.id])||0);},0);return'<td class="'+(t>=0?'grn':'rrd')+'">'+rs(t)+'</td>';}).join('')+'</tr>';
+  return rowsH+'<div class="card" style="overflow-x:auto"><div class="ct g">&#9830; Session Table</div><table><thead><tr><th style="text-align:left">Date</th>'+thH+'</tr></thead><tbody>'+tbH+totH+'</tbody></table></div>';
 }
 
-// ── Players ───────────────────────────────────────────────────
+// ── PLAYERS ───────────────────────────────────────────────────
 var TAGS={p1:{l:'Hero',c:'#c9a84c'},p2:{l:'Tight-Passive',c:'#60a5fa'},p3:{l:'Loose-Aggressive',c:'#f87171'},p4:{l:'Calling Station',c:'#c084fc'},p5:{l:'Pair Hunter',c:'#4ade80'}};
 
 function pgPlayers(){
   var h='';
-  APP.players.forEach(function(p,i){
-    var tag=TAGS[p.id];var note=APP.notes[p.id]||'';var aiP=APP.aiProfiles[p.id]||'';
-    var cnt=APP.sessions.filter(function(s){return s.results&&s.results[p.id]!==undefined;}).length;
-    var handCnt=APP.hands.filter(function(h){return Object.keys(h.preflop||{}).indexOf(p.id)>-1||Object.keys(h.flop||{}).indexOf(p.id)>-1;}).length;
-    h+='<div class="pc"><div class="pc-top">'+avHTML(p,'av-lg')+'<div class="pc-info"><div id="pnrow-'+p.id+'"><div class="pc-name">'+esc(p.name)+'</div></div>'+(tag?'<div><span class="ptag" style="color:'+tag.c+';border-color:'+tag.c+'">'+tag.l+'</span></div>':'')+(i===0?'<div style="font-size:9px;color:var(--gold);font-weight:700;letter-spacing:.08em;margin-top:3px">YOU</div>':'')+'<div style="font-size:10px;color:var(--t3);margin-top:3px">'+cnt+' sessions &middot; '+handCnt+' hands tracked</div></div></div>'
-      +'<div class="pc-acts"><button class="abt gold" data-en="'+p.id+'">&#9998; Rename</button><button class="abt gold" data-note="'+p.id+'">&#128221; Notes</button>'+(APP.apiKey&&cnt>0?'<button class="abt purple" data-aip="'+p.id+'">&#9889; AI Profile</button>':'')+(i>0?'<button class="abt red" data-rmp="'+p.id+'">Remove</button>':'')+'</div>'
+  A.players.forEach(function(p,i){
+    var tag=TAGS[p.id];var note=A.notes[p.id]||'';var aiP=A.aiProfiles[p.id]||'';
+    var cnt=A.sessions.filter(function(s){return s.status!=='active'&&s.results&&s.results[p.id]!==undefined;}).length;
+    h+='<div class="pc"><div class="pc-top">'+avH(p,'av-lg')+'<div class="pc-info"><div id="pnrow-'+p.id+'"><div class="pc-name">'+esc(p.name)+'</div></div>'+(tag?'<div><span class="ptag" style="color:'+tag.c+';border-color:'+tag.c+'">'+tag.l+'</span></div>':'')+(i===0?'<div style="font-size:9px;color:var(--gold);font-weight:700;letter-spacing:.08em;margin-top:3px">YOU</div>':'')+'<div style="font-size:10px;color:var(--t3);margin-top:3px">'+cnt+' sessions</div></div></div>'
+      +'<div class="pc-acts"><button class="abt gld" data-en="'+p.id+'">&#9998; Rename</button><button class="abt gld" data-note="'+p.id+'">&#128221; Notes</button>'+(A.apiKey&&cnt>0?'<button class="abt prp" data-aip="'+p.id+'">&#9889; AI Profile</button>':'')+(i>0?'<button class="abt rrd" data-rmp="'+p.id+'">Remove</button>':'')+'</div>'
       +'<div style="margin-top:10px"><div class="pc-bio'+(note?'':' em')+'">'+esc(note||'No notes yet. Tap Notes to add your reads.')+'</div></div>'
-      +(aiP?'<div class="ai-profile"><div class="ai-profile-lbl">&#9889; AI Profile ('+cnt+' sessions, '+handCnt+' hands)</div><div id="aip-'+p.id+'" class="ai-profile-text">'+esc(aiP)+'</div></div>':'<div id="aip-zone-'+p.id+'"></div>')
+      +(aiP?'<div class="ai-prof"><div class="ai-prof-l">&#9889; AI Profile</div><div id="aip-'+p.id+'" class="ai-prof-t">'+esc(aiP)+'</div></div>':'<div id="aip-zone-'+p.id+'"></div>')
       +'</div>';
   });
-  h+='<div class="card"><div class="ct gold">Add Permanent Player</div><div style="display:flex;gap:8px"><input type="text" id="np-in" placeholder="Player name..."><button class="btn b-gold" id="np-btn" style="white-space:nowrap;padding:10px 14px">Add</button></div></div>';
+  h+='<div class="card"><div class="ct g">Add Permanent Player</div><div style="display:flex;gap:8px"><input type="text" id="np-in" placeholder="Player name..."><button class="btn bg" id="np-btn" style="white-space:nowrap;padding:10px 14px">Add</button></div></div>';
   return h;
 }
 
 function bindPlayers(){
   document.querySelectorAll('[data-en]').forEach(function(btn){
-    btn.addEventListener('click',function(){var id=btn.dataset.en;var p=APP.players.find(function(x){return x.id===id;});var row=el('pnrow-'+id);row.innerHTML='<div class="name-edit-row"><input type="text" id="ne-'+id+'" value="'+esc(p.name)+'"><button class="ns-btn" id="ns-'+id+'">Save</button><button style="background:none;border:none;color:var(--t3);cursor:pointer;font-size:14px;padding:0 4px" id="nc-'+id+'">&#10005;</button></div>';el('ns-'+id).addEventListener('click',function(){var val=(el('ne-'+id)||{}).value;if(!val||!val.trim())return;savePlayer(Object.assign({},p,{name:val.trim()}));render();});el('nc-'+id).addEventListener('click',function(){render();});el('ne-'+id).focus();});
+    btn.addEventListener('click',function(){var id=btn.dataset.en;var p=A.players.find(function(x){return x.id===id;});var row=el('pnrow-'+id);row.innerHTML='<div class="ne-row"><input type="text" id="ne-'+id+'" value="'+esc(p.name)+'"><button class="ns-btn" id="ns-'+id+'">Save</button><button style="background:none;border:none;color:var(--t3);cursor:pointer;font-size:14px;padding:0 4px" id="nc-'+id+'">&#10005;</button></div>';el('ns-'+id).addEventListener('click',function(){var val=(el('ne-'+id)||{}).value;if(!val||!val.trim())return;savePlayer(Object.assign({},p,{name:val.trim()}));render();});el('nc-'+id).addEventListener('click',function(){render();});el('ne-'+id).focus();});
   });
   document.querySelectorAll('[data-note]').forEach(function(btn){btn.addEventListener('click',function(){openNoteModal(btn.dataset.note);});});
   document.querySelectorAll('[data-aip]').forEach(function(btn){btn.addEventListener('click',function(){runPlayerAI(btn.dataset.aip);});});
-  document.querySelectorAll('[data-rmp]').forEach(function(btn){btn.addEventListener('click',function(){if(confirm('Remove this player?'))deleteDoc(doc(APP.db,'players',btn.dataset.rmp));});});
+  document.querySelectorAll('[data-rmp]').forEach(function(btn){btn.addEventListener('click',function(){if(confirm('Remove this player?'))deleteDoc(doc(A.db,'players',btn.dataset.rmp));});});
   var npBtn=el('np-btn'),npIn=el('np-in');
   if(npBtn)npBtn.addEventListener('click',doAddPlayer);
   if(npIn)npIn.addEventListener('keydown',function(e){if(e.key==='Enter')doAddPlayer();});
 }
 
 function openNoteModal(id){
-  var p=APP.players.find(function(x){return x.id===id;});
-  el('mbox').innerHTML='<div class="mt">&#128221; Player Notes</div><div style="display:flex;align-items:center;gap:10px;margin-bottom:14px">'+avHTML(p||{id:id,name:'?'},'av-md')+'<div><div style="font-size:15px;font-weight:700;color:var(--cream)">'+esc(p?p.name:id)+'</div><div style="font-size:11px;color:var(--t3)">STAR Profile Notes</div></div></div><textarea id="note-ta" style="height:140px;margin-bottom:14px" placeholder="Showdown tendencies, playing style, exploits, tells, reactions to pressure...">'+esc(APP.notes[id]||'')+'</textarea><div class="row2"><button class="btn b-dark" id="nc">Cancel</button><button class="btn b-gold" id="nsave">Save Notes</button></div>';
+  var p=A.players.find(function(x){return x.id===id;});
+  el('mbox').innerHTML='<div class="mt">&#128221; Notes</div><div style="display:flex;align-items:center;gap:10px;margin-bottom:14px">'+avH(p||{id:id,name:'?'},'av-md')+'<div><div style="font-size:15px;font-weight:700;color:var(--cream)">'+esc(p?p.name:id)+'</div><div style="font-size:11px;color:var(--t3)">STAR Profile Notes</div></div></div><textarea id="note-ta" style="height:140px;margin-bottom:14px" placeholder="Showdown tendencies, playing style, exploits, tells...">'+esc(A.notes[id]||'')+'</textarea><div class="row2"><button class="btn bd" id="nc">Cancel</button><button class="btn bg" id="nsave">Save Notes</button></div>';
   el('mover').classList.add('show');
   el('nc').addEventListener('click',closeModal);
   el('nsave').addEventListener('click',function(){savePlayerNote(id,(el('note-ta')||{}).value||'');closeModal();render();});
 }
 
-async function doAddPlayer(){var inp=el('np-in');var name=inp&&inp.value.trim();if(!name)return;var id=uid();await savePlayer({id:id,name:name,order:APP.players.length});await savePlayerNote(id,'');inp.value='';}
+async function doAddPlayer(){var inp=el('np-in');var name=inp&&inp.value.trim();if(!name)return;var id=uid();await savePlayer({id:id,name:name,order:A.players.length});await savePlayerNote(id,'');inp.value='';}
 
 function runPlayerAI(id){
-  var prompt=profilePrompt(id);if(!prompt){alert('Not enough data yet. Log some sessions and hands first.');return;}
+  var prompt=profilePrompt(id);if(!prompt){alert('Not enough session data yet.');return;}
   var zone=el('aip-'+id)||el('aip-zone-'+id);if(!zone)return;
-  var aiDiv=document.createElement('div');aiDiv.className='ai-profile';
-  aiDiv.innerHTML='<div class="ai-profile-lbl">&#9889; Building AI Profile...</div><div class="thinking"><div class="dots"><span></span><span></span><span></span></div></div><div id="aip-st-'+id+'"></div>';
+  var aiDiv=document.createElement('div');aiDiv.className='ai-prof';
+  aiDiv.innerHTML='<div class="ai-prof-l">&#9889; Building...</div><div class="thinking"><div class="dots"><span></span><span></span><span></span></div></div><div id="aip-st-'+id+'"></div>';
   zone.replaceWith(aiDiv);var streamEl=el('aip-st-'+id);var text='';
-  callClaude(prompt,function(chunk){text+=chunk;if(streamEl)streamEl.textContent=text;},function(){APP.aiProfiles[id]=text;saveProfile(id);render();},function(err){aiDiv.innerHTML+='<div style="color:var(--red);font-size:12px">Error: '+esc(err)+'</div>';});
+  callClaude(prompt,function(chunk){text+=chunk;if(streamEl)streamEl.textContent=text;},function(){A.aiProfiles[id]=text;saveMeta('aiProfile_'+id,text);render();},function(err){aiDiv.innerHTML+='<div style="color:var(--red);font-size:12px">Error: '+esc(err)+'</div>';});
 }
 
-// ── Settings ──────────────────────────────────────────────────
+// ── SETTINGS ──────────────────────────────────────────────────
 function pgSettings(){
-  var fbConf=LS('pkl-fbconfig');var projId='';try{projId=JSON.parse(fbConf||'{}').projectId||'';}catch(e){}
-  return'<div class="card"><div class="ct gold">&#9889; Claude AI Key</div><p style="font-size:13px;color:var(--t2);line-height:1.6;margin-bottom:12px">For automatic player profiling and session coaching after every game. Free key at <strong style="color:var(--gold)">console.anthropic.com</strong></p>'+(APP.apiKey?'<div style="font-size:12px;color:var(--green);margin-bottom:10px">&#10003; AI connected</div>':'')+'<div style="display:flex;gap:8px;margin-bottom:6px"><input type="password" id="ai-key-in" placeholder="sk-ant-..." value="'+esc(APP.apiKey)+'" style="flex:1"><button class="btn b-gold" id="ai-key-save" style="white-space:nowrap;padding:10px 14px">Save</button></div></div>'
-    +'<div class="card"><div class="ct gold">&#128293; Firebase</div>'+(projId?'<p style="font-size:13px;color:var(--green);margin-bottom:12px">&#10003; '+esc(projId)+'</p>':'')+'<p style="font-size:13px;color:var(--t2);line-height:1.6;margin-bottom:12px">To connect a different project reset and refresh.</p><button class="btn b-dark fw" id="reset-fb">Reset Firebase Config</button></div>'
-    +'<div class="card"><div class="ct" style="color:var(--red)">Danger Zone</div><p style="font-size:13px;color:var(--t2);line-height:1.6;margin-bottom:12px">Delete all sessions from Firebase. Cannot be undone.</p><button class="btn b-red fw" id="clear-all">Clear All Sessions</button></div>';
+  return'<div class="card"><div class="ct g">&#9889; Claude AI Key</div><p style="font-size:13px;color:var(--t2);line-height:1.6;margin-bottom:12px">For automatic player profiling and session coaching. Free key at <strong style="color:var(--gold)">console.anthropic.com</strong> → API Keys → Create Key.</p>'+(A.apiKey?'<div style="font-size:12px;color:var(--green);margin-bottom:10px">&#10003; AI connected</div>':'<div style="font-size:12px;color:var(--red);margin-bottom:10px">&#10005; No AI key — add below</div>')+'<div style="display:flex;gap:8px"><input type="password" id="ai-key-in" placeholder="sk-ant-..." value="'+esc(A.apiKey)+'" style="flex:1"><button class="btn bg" id="ai-save" style="white-space:nowrap;padding:10px 14px">Save</button></div><p style="font-size:11px;color:var(--t3);margin-top:8px">Free tier covers hundreds of sessions at your usage level.</p></div>'
+    +'<div class="card"><div class="ct g">&#128293; Firebase Project</div><p style="font-size:13px;color:var(--green);margin-bottom:4px">&#10003; mypokertable-5fea4</p><p style="font-size:12px;color:var(--t3)">Hardcoded — no setup needed on any device.</p></div>'
+    +'<div class="card"><div class="ct" style="color:var(--red)">Danger Zone</div><p style="font-size:13px;color:var(--t2);line-height:1.6;margin-bottom:12px">Delete all finished sessions. Active session and player profiles are kept.</p><button class="btn br fw" id="clear-all">Clear All Finished Sessions</button></div>';
 }
 function bindSettings(){
-  el('ai-key-save').addEventListener('click',function(){var val=(el('ai-key-in')||{}).value;if(val&&val.trim().startsWith('sk-ant')){APP.apiKey=val.trim();LS('pkl-aikey',APP.apiKey);alert('AI key saved!');render();}else alert('Key should start with sk-ant-');});
-  el('reset-fb').addEventListener('click',function(){if(confirm('Clear config? Data in Firebase is safe.')){localStorage.removeItem('pkl-fbconfig');location.reload();}});
-  el('clear-all').addEventListener('click',async function(){if(confirm('Delete ALL sessions?')){sync('saving','Deleting...');var snap=await getDocs(collection(APP.db,'sessions'));for(var i=0;i<snap.docs.length;i++)await deleteDoc(snap.docs[i].ref);sync('ok');render();}});
-}
-
-// ── Session Form ──────────────────────────────────────────────
-var F={pl:[],buyins:{},cashouts:{},snotes:{},gnote:'',date:'',amt:500,showNotes:{}};
-
-function openForm(){
-  F.date=new Date().toISOString().split('T')[0];F.amt=500;F.gnote='';
-  F.pl=APP.players.map(function(p){return{id:p.id,name:p.name};});
-  F.buyins={};F.cashouts={};F.snotes={};F.showNotes={};
-  F.pl.forEach(function(p){F.buyins[p.id]=1;F.cashouts[p.id]='';F.snotes[p.id]='';F.showNotes[p.id]=false;});
-  buildForm();
-}
-
-function buildForm(){
-  var pRowsH=F.pl.map(function(p){
-    var pl=APP.players.find(function(x){return x.id===p.id;})||p;var showNote=F.showNotes[p.id];
-    return'<div class="prow"><div class="prow-header">'+avHTML(pl,'av-sm')+'<div class="prow-info"><div class="prow-name">'+esc(p.name)+(p.isGuest?' <button class="rmg" data-rg="'+p.id+'">&#10005;</button>':'')+'</div><div class="prow-invested" id="inv-'+p.id+'">Invested: Rs.'+(((F.buyins[p.id]||0)*F.amt)).toLocaleString('en-IN')+'</div></div><div class="prow-controls"><div class="stp"><button class="sb" data-dec="'+p.id+'">&#8722;</button><span class="sv" id="sv-'+p.id+'">'+(F.buyins[p.id]||0)+'</span><button class="sb" data-inc="'+p.id+'">+</button></div></div></div>'
-      +'<div class="prow-bottom"><span class="prow-cashout-lbl">Cashout Rs.</span><input type="number" min="0" placeholder="0" id="co-'+p.id+'" class="prow-cashout" value="'+esc(F.cashouts[p.id]||'')+'"></div>'
-      +'<div id="pnl-row-'+p.id+'" style="margin-top:6px"></div>'
-      +'<div class="prow-note-area"><button class="prow-note-toggle" data-togglenote="'+p.id+'">'+(showNote?'&#9650;':'&#9654;')+' Notes for '+esc(p.name)+'</button>'+(showNote?'<textarea class="prow-note-input" id="sn-'+p.id+'" placeholder="How did '+esc(p.name)+' play tonight?">'+esc(F.snotes[p.id]||'')+'</textarea>':'')+'</div>'
-      +'</div>';
-  }).join('');
-  el('mbox').innerHTML='<div class="mt">&#9824; Log Session</div><div class="fg2"><div><label class="fl">Date</label><input type="date" id="f-date" value="'+F.date+'"></div><div><label class="fl">Buyin Rs.</label><input type="number" id="f-amt" value="'+F.amt+'"></div></div>'+pRowsH+'<div id="guest-zone" style="margin-bottom:12px"></div><div id="results-zone"></div><div style="margin-bottom:14px"><label class="fl">Overall Session Notes</label><textarea id="f-gnote" style="height:52px" placeholder="Key hands, interesting moments...">'+esc(F.gnote)+'</textarea></div><div class="row2"><button class="btn b-dark" id="f-cancel">Cancel</button><button class="btn b-gold" id="f-save">Save Session</button></div>';
-  el('mover').classList.add('show');showGuestBtn();wireForm();refreshResults();
-}
-
-function refreshResults(){
-  F.pl.forEach(function(p){var inp=el('co-'+p.id);if(inp)F.cashouts[p.id]=inp.value;});
-  var totalIn=0,totalOut=0,results={};
-  F.pl.forEach(function(p){var inv=(F.buyins[p.id]||0)*F.amt;var co=Number(F.cashouts[p.id])||0;totalIn+=inv;totalOut+=co;results[p.id]=co-inv;});
-  var diff=Math.abs(totalOut-totalIn);var balanced=diff<1;
-  F.pl.forEach(function(p){
-    var invEl=el('inv-'+p.id);if(invEl)invEl.textContent='Invested: Rs.'+((F.buyins[p.id]||0)*F.amt).toLocaleString('en-IN');
-    var row=el('pnl-row-'+p.id);if(!row)return;
-    if(F.cashouts[p.id]!==''){var pnl=results[p.id];row.innerHTML='<div style="text-align:right;font-size:13px;font-weight:700" class="'+(pnl>=0?'g':'r')+'">'+rs(pnl)+'</div>';}else row.innerHTML='';
-  });
-  el('results-zone').innerHTML='<div class="bal '+(balanced?'bal-ok':'bal-err')+'" style="margin-bottom:10px"><span style="color:var(--t2)">Balance Check</span><span class="'+(balanced?'g':'r')+'">'+(balanced?'&#10003; Balanced':'Off by Rs.'+diff.toFixed(0))+'</span></div>'+settlHTML(results,F.pl);
-}
-
-function wireForm(){
-  el('f-date').addEventListener('change',function(){F.date=this.value;});
-  el('f-amt').addEventListener('change',function(){F.amt=Number(this.value)||500;refreshResults();buildForm();});
-  document.querySelectorAll('[data-inc]').forEach(function(btn){btn.addEventListener('click',function(){var id=btn.dataset.inc;F.buyins[id]=(F.buyins[id]||0)+1;var sv=el('sv-'+id);if(sv)sv.textContent=F.buyins[id];refreshResults();});});
-  document.querySelectorAll('[data-dec]').forEach(function(btn){btn.addEventListener('click',function(){var id=btn.dataset.dec;F.buyins[id]=Math.max(0,(F.buyins[id]||0)-1);var sv=el('sv-'+id);if(sv)sv.textContent=F.buyins[id];refreshResults();});});
-  F.pl.forEach(function(p){var inp=el('co-'+p.id);if(inp)inp.addEventListener('input',function(){F.cashouts[p.id]=this.value;refreshResults();});var ta=el('sn-'+p.id);if(ta)ta.addEventListener('input',function(){F.snotes[p.id]=this.value;});});
-  document.querySelectorAll('[data-togglenote]').forEach(function(btn){
-    btn.addEventListener('click',function(){
-      var id=btn.dataset.togglenote;var ta=el('sn-'+id);if(ta)F.snotes[id]=ta.value;
-      F.pl.forEach(function(p){var inp=el('co-'+p.id);if(inp)F.cashouts[p.id]=inp.value;});
-      var gn=el('f-gnote');if(gn)F.gnote=gn.value;var fd=el('f-date');if(fd)F.date=fd.value;
-      F.showNotes[id]=!F.showNotes[id];buildForm();
-    });
-  });
-  el('f-gnote').addEventListener('input',function(){F.gnote=this.value;});
-  document.querySelectorAll('[data-rg]').forEach(function(btn){btn.addEventListener('click',function(){F.pl=F.pl.filter(function(p){return p.id!==btn.dataset.rg;});buildForm();});});
-  el('f-cancel').addEventListener('click',closeModal);
-  el('f-save').addEventListener('click',doSaveSession);
-}
-
-function showGuestBtn(){
-  var gz=el('guest-zone');if(!gz)return;
-  gz.innerHTML='<button class="dashed" id="add-g-btn">+ Add Guest Player</button>';
-  el('add-g-btn').addEventListener('click',function(){
-    gz.innerHTML='<div class="ginput"><input type="text" id="g-in" placeholder="Guest name..."><button class="btn b-gold" id="g-ok" style="padding:10px 14px;white-space:nowrap">Add</button><button class="btn b-dark" id="g-x" style="padding:10px 12px">&#10005;</button></div>';
-    el('g-in').focus();el('g-ok').addEventListener('click',doAddGuest);el('g-in').addEventListener('keydown',function(e){if(e.key==='Enter')doAddGuest();});el('g-x').addEventListener('click',showGuestBtn);
-  });
-}
-
-function doAddGuest(){
-  var inp=el('g-in');var name=inp?inp.value.trim():'';if(!name)return;
-  F.pl.forEach(function(p){var i=el('co-'+p.id);if(i)F.cashouts[p.id]=i.value;var t=el('sn-'+p.id);if(t)F.snotes[p.id]=t.value;});
-  var gn=el('f-gnote');if(gn)F.gnote=gn.value;
-  var id=uid();F.pl.push({id:id,name:name,isGuest:true});F.buyins[id]=1;F.cashouts[id]='';F.snotes[id]='';F.showNotes[id]=false;buildForm();
-}
-
-async function doSaveSession(){
-  F.pl.forEach(function(p){var co=el('co-'+p.id);if(co)F.cashouts[p.id]=co.value;var sn=el('sn-'+p.id);if(sn)F.snotes[p.id]=sn.value;});
-  var gn=el('f-gnote');if(gn)F.gnote=gn.value;var fd=el('f-date');if(fd)F.date=fd.value;var fa=el('f-amt');if(fa)F.amt=Number(fa.value)||500;
-  var results={};F.pl.forEach(function(p){results[p.id]=(Number(F.cashouts[p.id])||0)-(F.buyins[p.id]||0)*F.amt;});
-  closeModal();
-  var savedSess=await saveSess({date:F.date,buyinAmt:F.amt,players:F.pl.map(function(p){return{id:p.id,name:p.name,isGuest:p.isGuest||false};}),buyins:JSON.parse(JSON.stringify(F.buyins)),cashouts:JSON.parse(JSON.stringify(F.cashouts)),sessionNotes:JSON.parse(JSON.stringify(F.snotes)),notes:F.gnote,results:results,createdAt:serverTimestamp()});
-  // Auto-set as active session for live tracking
-  if(savedSess&&savedSess.id){APP.activeSessionId=savedSess.id;APP.liveHand={step:'dealer',dealer:null,preflop:{},flop:{},turn:{},river:{},flopCards:[null,null,null],turnCard:null,riverCard:null,winner:null,winnerHand:'',losingHands:{},handCount:0};}
+  el('ai-save').addEventListener('click',function(){var val=(el('ai-key-in')||{}).value;if(val&&val.trim().startsWith('sk-ant')){A.apiKey=val.trim();LS('pkl-aikey',A.apiKey);alert('AI key saved! Coaching is now active.');render();}else alert('Key must start with sk-ant-');});
+  el('clear-all').addEventListener('click',async function(){if(confirm('Delete all finished sessions? Cannot be undone.')){sync('saving','Deleting...');var snap=await getDocs(collection(A.db,'sessions'));for(var i=0;i<snap.docs.length;i++){var d=snap.docs[i].data();if(d.status!=='active')await deleteDoc(snap.docs[i].ref);}sync('ok');render();}});
 }
 
 function closeModal(){el('mover').classList.remove('show');}
