@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>MyPokerTable</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
@@ -107,6 +107,8 @@ body{overflow-y:scroll;-webkit-overflow-scrolling:touch}
 .lnote-btn{width:34px;height:34px;border-radius:8px;background:rgba(0,0,0,.3);border:1px solid var(--cbr);color:var(--t3);cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:.15s;font-family:Georgia,serif}
 .lnote-btn:active{background:rgba(201,168,76,.2)}
 .lnote-btn.has{background:rgba(201,168,76,.15);border-color:rgba(201,168,76,.4);color:var(--gold)}
+.late-pick{display:flex;align-items:center;gap:10px;padding:10px 12px;background:rgba(0,0,0,.3);border:1px solid var(--cbr);border-radius:10px;cursor:pointer;width:100%;font-family:Georgia,serif;transition:.15s}
+.late-pick:active{background:rgba(201,168,76,.1);border-color:rgba(201,168,76,.4)}
 .stp{display:flex;align-items:center;gap:4px;background:rgba(0,0,0,.3);border:1px solid var(--cbr);border-radius:8px;padding:3px}
 .sb{width:32px;height:32px;border-radius:6px;background:rgba(201,168,76,.15);border:none;color:var(--gold);font-size:20px;font-weight:900;cursor:pointer;display:flex;align-items:center;justify-content:center;line-height:1;font-family:Georgia,serif;flex-shrink:0}
 .sb:active{background:var(--gold);color:#1a1a0a}
@@ -180,7 +182,7 @@ body{overflow-y:scroll;-webkit-overflow-scrolling:touch}
 .pc-bio{font-size:13px;color:var(--t2);line-height:1.6}
 .pc-bio.em{color:var(--t4);font-style:italic}
 .ne-row{display:flex;align-items:center;gap:6px;flex:1}
-.ne-row input{flex:1;padding:7px 10px;font-size:13px}
+.ne-row input{flex:1;padding:7px 10px;font-size:16px}
 .ns-btn{background:var(--gold);color:#1a1a0a;border:none;border-radius:8px;padding:7px 12px;font-size:11px;font-weight:700;cursor:pointer;font-family:Georgia,serif}
 .podium{display:flex;align-items:flex-end;justify-content:center;gap:8px;margin-bottom:20px;padding-top:10px}
 .pod{display:flex;flex-direction:column;align-items:center;flex:1;max-width:110px}
@@ -218,7 +220,7 @@ tr+tr{border-top:1px solid var(--cbr)}
 .mt{font-size:18px;font-weight:900;color:var(--cream);margin-bottom:18px;letter-spacing:-.3px}
 .fg2{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px}
 .fl{font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:var(--t3);display:block;margin-bottom:5px}
-input,textarea{background:rgba(0,0,0,.3);border:1px solid var(--cbr);border-radius:8px;padding:10px 12px;color:var(--t1);font-family:Georgia,serif;font-size:13px;width:100%}
+input,textarea,select{background:rgba(0,0,0,.3);border:1px solid var(--cbr);border-radius:8px;padding:10px 12px;color:var(--t1);font-family:Georgia,serif;font-size:16px;width:100%;-webkit-appearance:none;-webkit-user-select:text;user-select:text}
 input:focus,textarea:focus{outline:none;border-color:var(--gold)}
 textarea{resize:none}
 .row2{display:flex;gap:10px;margin-top:14px}
@@ -246,7 +248,7 @@ textarea{resize:none}
         Go to <strong style="color:var(--gold)">console.firebase.google.com</strong><br>
         Your project &rarr; Project Settings &rarr; Web app &rarr; Config
       </p>
-      <textarea id="fb-cfg" style="height:120px;font-size:11px;font-family:monospace;margin-bottom:10px" placeholder='Paste the full firebaseConfig object here:
+      <textarea id="fb-cfg" style="height:140px;font-size:16px;font-family:monospace;margin-bottom:10px" placeholder='Paste the full firebaseConfig object here:
 
 {
   "apiKey": "AIza...",
@@ -710,7 +712,7 @@ function pgLive(){
   var sessHands=A.hands.filter(function(h){return h.sessionId===A.activeSessId;});
   var h='<div class="live-hdr"><div style="display:flex;align-items:center;justify-content:space-between"><div><div style="font-size:11px;color:var(--t3);margin-bottom:2px"><span class="live-dot"></span>LIVE &middot; '+esc(sess.date)+'</div><div style="font-size:13px;color:var(--t2)">Rs.'+(sess.buyinAmt||500)+'/buyin &middot; '+pl.length+' players</div></div><div style="text-align:right"><div class="hand-num">'+(lh.count+1)+'</div><div class="hand-sub">Hand #</div></div></div></div>';
   // Rebuy tracker
-  h+='<div class="card"><div class="ct g">&#128260; Rebuy Tracker</div>';
+  h+='<div class="card"><div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px"><div class="ct g" style="margin-bottom:0">&#128260; Rebuy Tracker</div><button class="btn bd" style="padding:6px 10px;font-size:11px" id="add-late-btn">+ Add Player</button></div>';
   pl.forEach(function(p){var cnt=A.liveBuyins[p.id]||1;var inv=cnt*(sess.buyinAmt||500);var hasNote=!!(A.notes[p.id]&&A.notes[p.id].trim());h+='<div class="rebuy-row"><div class="rebuy-left">'+avH(p,'av-sm')+'<div><div class="rebuy-name">'+esc(p.name)+'</div><div class="rebuy-invested">'+cnt+'&times; buyin &middot; Rs.'+inv.toLocaleString('en-IN')+'</div></div></div><div style="display:flex;align-items:center;gap:6px"><button class="lnote-btn'+(hasNote?' has':'')+'" data-lnote="'+p.id+'" title="Add note">&#128221;</button><div class="stp"><button class="sb" data-dec="'+p.id+'">&#8722;</button><span class="sv" id="lsv-'+p.id+'">'+cnt+'</span><button class="sb" data-inc="'+p.id+'">+</button></div></div></div>';});
   h+='</div>';
   // Hand logger
@@ -796,6 +798,8 @@ function bindLive(){
   document.querySelectorAll('[data-dec]').forEach(function(btn){btn.addEventListener('click',function(){var id=btn.dataset.dec;A.liveBuyins[id]=Math.max(1,(A.liveBuyins[id]||1)-1);var sv=el('lsv-'+id);if(sv)sv.textContent=A.liveBuyins[id];updateLiveBuyins(sess);});});
   // Per-player note button (live)
   document.querySelectorAll('[data-lnote]').forEach(function(btn){btn.addEventListener('click',function(){openNoteModal(btn.dataset.lnote);});});
+  // Add late-joining player
+  var addLate=el('add-late-btn');if(addLate)addLate.addEventListener('click',openAddLateModal);
   // Skip hand
   var skipBtn=el('skip-btn');if(skipBtn)skipBtn.addEventListener('click',function(){A.lh={step:'dealer',dealer:null,pre:{},flop:{},turn:{},river:{},fc:[null,null,null],tc:null,rc:null,winner:null,hcards:{},count:lh.count+1};render();});
   // Dealer
@@ -972,6 +976,38 @@ function bindPlayers(){
   if(npBtn)npBtn.addEventListener('click',doAddPlayer);
   if(npIn)npIn.addEventListener('keydown',function(e){if(e.key==='Enter')doAddPlayer();});
 }
+function openAddLateModal(){
+  var sess=getActSess();if(!sess)return;
+  var existingIds={};(sess.players||[]).forEach(function(p){existingIds[p.id]=true;});
+  var available=A.players.filter(function(p){return!existingIds[p.id];});
+  var rows=available.map(function(p){return'<button class="late-pick" data-late="'+p.id+'">'+avH(p,'av-sm')+'<span style="flex:1;text-align:left;color:var(--cream);font-size:14px;font-weight:600">'+esc(p.name)+'</span><span style="color:var(--gold);font-size:18px">+</span></button>';}).join('');
+  el('mbox').innerHTML='<div class="mt">&#128100;&#43; Add Player to Live Game</div>'
+    +'<div style="font-size:12px;color:var(--t3);margin-bottom:14px">They&rsquo;ll start with 1 buyin (Rs.'+(sess.buyinAmt||500)+'). Tap +/&minus; later if they rebuy.</div>'
+    +(rows?'<div class="ct g">From Your Players</div><div style="display:flex;flex-direction:column;gap:6px;margin-bottom:18px">'+rows+'</div>':'')
+    +'<div class="ct g">Add Guest</div>'
+    +'<div style="display:flex;gap:8px;margin-bottom:14px"><input type="text" id="lg-in" placeholder="Guest name..." style="flex:1"><button class="btn bg" id="lg-ok" style="padding:10px 16px">Add</button></div>'
+    +'<div class="row2"><button class="btn bd fw" id="lg-cancel">Cancel</button></div>';
+  el('mover').classList.add('show');
+  document.querySelectorAll('[data-late]').forEach(function(btn){btn.addEventListener('click',function(){addPlayerToLive(btn.dataset.late,null);});});
+  el('lg-ok').addEventListener('click',function(){var n=(el('lg-in').value||'').trim();if(n)addPlayerToLive(null,n);});
+  el('lg-in').addEventListener('keydown',function(e){if(e.key==='Enter'){var n=(el('lg-in').value||'').trim();if(n)addPlayerToLive(null,n);}});
+  el('lg-cancel').addEventListener('click',closeModal);
+}
+
+async function addPlayerToLive(existingId,guestName){
+  var sess=getActSess();if(!sess)return;
+  var newP;
+  if(existingId){var p=A.players.find(function(x){return x.id===existingId;});if(!p)return;newP={id:p.id,name:p.name};}
+  else{newP={id:uid(),name:guestName,isGuest:true};}
+  var newPlayers=(sess.players||[]).slice();newPlayers.push(newP);
+  var newBuyins=Object.assign({},sess.buyins||{});newBuyins[newP.id]=1;
+  A.liveBuyins[newP.id]=1;
+  closeModal();
+  await saveSess(Object.assign({},sess,{players:newPlayers,buyins:newBuyins}));
+  // Listener will re-render automatically; render once now too for instant feedback
+  render();
+}
+
 function openNoteModal(id){
   var p=A.players.find(function(x){return x.id===id;});
   el('mbox').innerHTML='<div class="mt">&#128221; Notes</div><div style="display:flex;align-items:center;gap:10px;margin-bottom:14px">'+avH(p||{id:id,name:'?'},'av-md')+'<div><div style="font-size:15px;font-weight:700;color:var(--cream)">'+esc(p?p.name:id)+'</div><div style="font-size:11px;color:var(--t3)">STAR Profile</div></div></div><textarea id="note-ta" style="height:140px;margin-bottom:14px" placeholder="Showdown tendencies, playing style, exploits, tells...">'+esc(A.notes[id]||'')+'</textarea><div class="row2"><button class="btn bd" id="nc">Cancel</button><button class="btn bg" id="nsave">Save</button></div>';
