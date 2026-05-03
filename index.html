@@ -104,6 +104,9 @@ body{overflow-y:scroll;-webkit-overflow-scrolling:touch}
 .rebuy-left{display:flex;align-items:center;gap:10px;flex:1;min-width:0}
 .rebuy-name{font-size:14px;font-weight:700;color:var(--cream)}
 .rebuy-invested{font-size:11px;color:var(--t3);margin-top:2px}
+.lnote-btn{width:34px;height:34px;border-radius:8px;background:rgba(0,0,0,.3);border:1px solid var(--cbr);color:var(--t3);cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:.15s;font-family:Georgia,serif}
+.lnote-btn:active{background:rgba(201,168,76,.2)}
+.lnote-btn.has{background:rgba(201,168,76,.15);border-color:rgba(201,168,76,.4);color:var(--gold)}
 .stp{display:flex;align-items:center;gap:4px;background:rgba(0,0,0,.3);border:1px solid var(--cbr);border-radius:8px;padding:3px}
 .sb{width:32px;height:32px;border-radius:6px;background:rgba(201,168,76,.15);border:none;color:var(--gold);font-size:20px;font-weight:900;cursor:pointer;display:flex;align-items:center;justify-content:center;line-height:1;font-family:Georgia,serif;flex-shrink:0}
 .sb:active{background:var(--gold);color:#1a1a0a}
@@ -289,7 +292,7 @@ textarea{resize:none}
 <div class="mover" id="mover"><div class="mbox" id="mbox"></div></div>
 
 <script type="module">
-import{initializeApp}from'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
+import{initializeApp,getApps,getApp}from'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
 import{getFirestore,collection,doc,getDocs,addDoc,setDoc,deleteDoc,onSnapshot,serverTimestamp}from'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
 
 // ── Helpers ───────────────────────────────────────────────────
@@ -440,24 +443,29 @@ async function savePlayerNote(pid,note){A.notes[pid]=note;await saveMeta('note_'
 
 function startListeners(){
   onSnapshot(collection(A.db,'sessions'),function(snap){
+    A._listenerFired=true;
+    if(A._connectTimer){clearTimeout(A._connectTimer);A._connectTimer=null;}
     A.sessions=sortByTs(snap.docs.map(function(d){var x=d.data();x.id=d.id;return x;}));
     var active=A.sessions.find(function(s){return s.status==='active';});
     if(active){if(A.activeSessId!==active.id){A.activeSessId=active.id;A.liveBuyins=JSON.parse(JSON.stringify(active.buyins||{}));}}
     else A.activeSessId=null;
     render();sync('ok');
-  },function(e){console.error('sessions listener error:',e.code,e.message);sync('err','DB error: '+e.code);});
+  },function(e){console.error('sessions listener error:',e.code,e.message);sync('err','DB error: '+e.code);if(!A._listenerFired)showFatalError('Firestore error: '+e.code+(e.code==='permission-denied'?' — your security rules likely expired. Open Firebase Console → Firestore → Rules and republish.':' — '+e.message));});
 
   onSnapshot(collection(A.db,'hands'),function(snap){
+    A._listenerFired=true;
     A.hands=sortByTs(snap.docs.map(function(d){var x=d.data();x.id=d.id;return x;}));
     render();
   },function(e){console.error('hands listener:',e.code);});
 
   onSnapshot(collection(A.db,'players'),function(snap){
+    A._listenerFired=true;
     if(!snap.empty)A.players=snap.docs.map(function(d){var x=d.data();x.id=d.id;return x;}).sort(function(a,b){return(a.order||0)-(b.order||0);});
     render();
   },function(e){console.error('players listener:',e.code);});
 
   onSnapshot(collection(A.db,'meta'),function(snap){
+    A._listenerFired=true;
     snap.docs.forEach(function(d){var key=d.id,val=d.data().value;if(key.startsWith('note_'))A.notes[key.slice(5)]=val;else if(key.startsWith('aiProfile_'))A.aiProfiles[key.slice(10)]=val;});
     render();
   },function(e){console.error('meta listener:',e.code);});
@@ -477,21 +485,52 @@ function showSetupErr(msg){var e=el('setup-err');if(e){e.style.display='block';e
 
 async function initApp(config){
   try{
-    var fbApp=initializeApp(config);
-    A.db=getFirestore(fbApp);
+    // Prevent "duplicate app" error if Firebase was already initialized (happens on reload/reopen)
+    var fbApp=A._fbApp||(A._fbApp=getApps().length?getApp():initializeApp(config));
+    A.db=A.db||getFirestore(fbApp);
     el('setup-pg').style.display='none';
     el('main-pg').style.display='block';
     sync('saving','Connecting...');
     buildNav();
     el('btn-new').addEventListener('click',openStartModal);
     el('mover').addEventListener('click',function(e){if(e.target===el('mover'))closeModal();});
-    // Start realtime listeners — they render when data arrives
+    // Render immediately with whatever (likely empty) state we have so the user isn't stuck on a spinner
+    // If listeners fail or are slow, the dashboard / empty state still shows up and the bottom nav is usable
+    render();
+    // Start realtime listeners — they re-render when data arrives
     startListeners();
     // Seed default players in background
     seedPlayers().catch(function(e){console.error('seed:',e);});
+    // Failsafe: if no listener has fired in 8s, show a recovery prompt instead of staying stuck
+    A._connectStart=Date.now();
+    A._connectTimer=setTimeout(function(){
+      if(!A._listenerFired){showConnectionTrouble();}
+    },8000);
   }catch(e){
-    showSetupErr('Connection failed: '+e.message);
+    // Setup page is already hidden — show error in main page instead so user can recover
+    showFatalError('Connection failed: '+e.message);
   }
+}
+
+function showFatalError(msg){
+  var pg=el('pg');
+  if(pg){
+    pg.innerHTML='<div style="text-align:center;padding:60px 20px;color:var(--t2)"><div style="font-size:44px;margin-bottom:12px;color:var(--red)">&#9888;</div><div style="font-size:15px;font-weight:700;color:var(--cream);margin-bottom:8px">Could Not Connect</div><div style="font-size:13px;color:var(--t3);margin-bottom:24px;line-height:1.6">'+esc(msg)+'</div><button class="btn bd" id="reset-cfg" style="margin-bottom:8px">Reset Firebase Config</button><div style="font-size:11px;color:var(--t4);margin-top:12px;line-height:1.6">Tip: if Firestore rules expired, go to Firebase Console &rarr; Firestore &rarr; Rules and republish in test mode.</div></div>';
+    var rb=el('reset-cfg');if(rb)rb.addEventListener('click',function(){localStorage.removeItem('pkl-fbconfig');location.reload();});
+  }
+  // Also show a setup error if setup is visible
+  var se=el('setup-err');if(se){se.style.display='block';se.textContent=msg;}
+}
+
+function showConnectionTrouble(){
+  // Only override the page if we're still showing the empty/loading state and no real data has arrived
+  if(A._listenerFired)return;
+  var pg=el('pg');if(!pg)return;
+  // If user already navigated and rendered a real page, don't overwrite
+  if(pg.innerHTML.indexOf('Connecting')<0 && A.players.length>0)return;
+  pg.innerHTML='<div style="text-align:center;padding:60px 20px;color:var(--t2)"><div style="font-size:44px;margin-bottom:12px;color:var(--gold)">&#9888;</div><div style="font-size:15px;font-weight:700;color:var(--cream);margin-bottom:8px">Connection Slow or Failed</div><div style="font-size:13px;color:var(--t3);margin-bottom:18px;line-height:1.6">Firestore is not responding. Most common cause: <strong style="color:var(--gold)">test-mode rules expired</strong> (they auto-expire 30 days after enabling).</div><div style="background:rgba(0,0,0,.2);border:1px solid var(--cbr);border-radius:10px;padding:12px;font-size:11px;color:var(--t3);text-align:left;line-height:1.7;margin-bottom:18px">1. Open Firebase Console<br>2. Firestore Database &rarr; Rules tab<br>3. Set: <code style="color:var(--gold)">allow read, write: if true;</code><br>4. Click Publish<br>5. Reload this page</div><button class="btn bg fw" id="retry-btn" style="margin-bottom:8px">Retry Connection</button><button class="btn bd fw" id="reset-cfg2">Reset Firebase Config</button></div>';
+  var rt=el('retry-btn');if(rt)rt.addEventListener('click',function(){location.reload();});
+  var rb=el('reset-cfg2');if(rb)rb.addEventListener('click',function(){localStorage.removeItem('pkl-fbconfig');location.reload();});
 }
 
 function parseConfig(raw){
@@ -672,7 +711,7 @@ function pgLive(){
   var h='<div class="live-hdr"><div style="display:flex;align-items:center;justify-content:space-between"><div><div style="font-size:11px;color:var(--t3);margin-bottom:2px"><span class="live-dot"></span>LIVE &middot; '+esc(sess.date)+'</div><div style="font-size:13px;color:var(--t2)">Rs.'+(sess.buyinAmt||500)+'/buyin &middot; '+pl.length+' players</div></div><div style="text-align:right"><div class="hand-num">'+(lh.count+1)+'</div><div class="hand-sub">Hand #</div></div></div></div>';
   // Rebuy tracker
   h+='<div class="card"><div class="ct g">&#128260; Rebuy Tracker</div>';
-  pl.forEach(function(p){var cnt=A.liveBuyins[p.id]||1;var inv=cnt*(sess.buyinAmt||500);h+='<div class="rebuy-row"><div class="rebuy-left">'+avH(p,'av-sm')+'<div><div class="rebuy-name">'+esc(p.name)+'</div><div class="rebuy-invested">'+cnt+'&times; buyin &middot; Rs.'+inv.toLocaleString('en-IN')+'</div></div></div><div class="stp"><button class="sb" data-dec="'+p.id+'">&#8722;</button><span class="sv" id="lsv-'+p.id+'">'+cnt+'</span><button class="sb" data-inc="'+p.id+'">+</button></div></div>';});
+  pl.forEach(function(p){var cnt=A.liveBuyins[p.id]||1;var inv=cnt*(sess.buyinAmt||500);var hasNote=!!(A.notes[p.id]&&A.notes[p.id].trim());h+='<div class="rebuy-row"><div class="rebuy-left">'+avH(p,'av-sm')+'<div><div class="rebuy-name">'+esc(p.name)+'</div><div class="rebuy-invested">'+cnt+'&times; buyin &middot; Rs.'+inv.toLocaleString('en-IN')+'</div></div></div><div style="display:flex;align-items:center;gap:6px"><button class="lnote-btn'+(hasNote?' has':'')+'" data-lnote="'+p.id+'" title="Add note">&#128221;</button><div class="stp"><button class="sb" data-dec="'+p.id+'">&#8722;</button><span class="sv" id="lsv-'+p.id+'">'+cnt+'</span><button class="sb" data-inc="'+p.id+'">+</button></div></div></div>';});
   h+='</div>';
   // Hand logger
   h+='<div class="card"><div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px"><div class="ct g" style="margin-bottom:0">Hand Logger</div><button class="btn bd" style="padding:6px 10px;font-size:11px" id="skip-btn">Skip Hand</button></div>';
@@ -755,6 +794,8 @@ function bindLive(){
   // Rebuy steppers
   document.querySelectorAll('[data-inc]').forEach(function(btn){btn.addEventListener('click',function(){var id=btn.dataset.inc;A.liveBuyins[id]=(A.liveBuyins[id]||1)+1;var sv=el('lsv-'+id);if(sv)sv.textContent=A.liveBuyins[id];updateLiveBuyins(sess);});});
   document.querySelectorAll('[data-dec]').forEach(function(btn){btn.addEventListener('click',function(){var id=btn.dataset.dec;A.liveBuyins[id]=Math.max(1,(A.liveBuyins[id]||1)-1);var sv=el('lsv-'+id);if(sv)sv.textContent=A.liveBuyins[id];updateLiveBuyins(sess);});});
+  // Per-player note button (live)
+  document.querySelectorAll('[data-lnote]').forEach(function(btn){btn.addEventListener('click',function(){openNoteModal(btn.dataset.lnote);});});
   // Skip hand
   var skipBtn=el('skip-btn');if(skipBtn)skipBtn.addEventListener('click',function(){A.lh={step:'dealer',dealer:null,pre:{},flop:{},turn:{},river:{},fc:[null,null,null],tc:null,rc:null,winner:null,hcards:{},count:lh.count+1};render();});
   // Dealer
