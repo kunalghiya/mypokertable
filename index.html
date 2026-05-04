@@ -320,7 +320,9 @@ var A={
   activeSessId:null,
   lh:{step:'dealer',dealer:null,pre:{},flop:{},turn:{},river:{},fc:[null,null,null],tc:null,rc:null,winner:null,hcards:{},count:0},
   sf:{playerIds:[],guests:[],buyinAmt:500,date:''},
-  liveBuyins:{}
+  liveBuyins:{},
+  // Household pairs: array of [playerIdA, playerIdB]. They settle internally first (no cash exchanged)
+  households:JSON.parse(lsGet('pkl-households')||'[]')
 };
 
 const ACTS_PRE=['Fold','Call','Raise','All-In'];
@@ -337,24 +339,71 @@ function sync(state,msg){
 // ── Settlement ────────────────────────────────────────────────
 function calcSettle(results,pl){
   pl=pl||A.players;
-  var bal=[];
-  Object.keys(results||{}).forEach(function(id){var a=Math.round(Number(results[id])||0);if(Math.abs(a)>0)bal.push({id:id,amt:a});});
-  var cr=bal.filter(function(x){return x.amt>0;}).sort(function(a,b){return b.amt-a.amt;}).map(function(x){return{id:x.id,amt:x.amt};});
-  var db=bal.filter(function(x){return x.amt<0;}).sort(function(a,b){return a.amt-b.amt;}).map(function(x){return{id:x.id,amt:x.amt};});
+  // Build a map of playerId -> net result (only for players with non-zero outcomes)
+  var net={};
+  Object.keys(results||{}).forEach(function(id){var a=Math.round(Number(results[id])||0);if(Math.abs(a)>0)net[id]=a;});
+  // Step 1: process household pairs first — they cancel internally without cash changing hands
+  var households=[];
+  (A.households||[]).forEach(function(pair){
+    var a=pair[0],b=pair[1];
+    if(net[a]===undefined&&net[b]===undefined)return;
+    var aN=net[a]||0,bN=net[b]||0;
+    var combined=aN+bN;
+    // Determine internal "virtual" transfer amount (for display only — no real cash)
+    var internal=null;
+    if(aN>0&&bN<0)internal={from:b,to:a,amount:Math.min(aN,Math.abs(bN))};
+    else if(bN>0&&aN<0)internal={from:a,to:b,amount:Math.min(bN,Math.abs(aN))};
+    else if(aN!==0||bN!==0){
+      // Same-sign pair (both winning or both losing) — no internal settlement needed
+      internal=null;
+    }
+    households.push({a:a,b:b,aN:aN,bN:bN,combined:combined,internal:internal});
+    // Collapse pair to a single synthetic entry under the larger half — and zero the other
+    if(combined===0){delete net[a];delete net[b];}
+    else if(Math.abs(aN)>=Math.abs(bN)){net[a]=combined;delete net[b];}
+    else{net[b]=combined;delete net[a];}
+  });
+  // Step 2: standard greedy settlement on remaining net positions
+  var bal=Object.keys(net).map(function(id){return{id:id,amt:net[id]};});
+  var cr=bal.filter(function(x){return x.amt>0;}).sort(function(a,b){return b.amt-a.amt;});
+  var db=bal.filter(function(x){return x.amt<0;}).sort(function(a,b){return a.amt-b.amt;});
+  // Detect imbalance (should be 0 if cashouts were entered correctly)
+  var totalCr=cr.reduce(function(s,x){return s+x.amt;},0);
+  var totalDb=Math.abs(db.reduce(function(s,x){return s+x.amt;},0));
+  var imbalance=totalCr-totalDb;
   var txns=[];var i=0,j=0;
   while(i<cr.length&&j<db.length){var a=Math.min(cr[i].amt,Math.abs(db[j].amt));if(a>0)txns.push({from:db[j].id,to:cr[i].id,amount:a});cr[i].amt-=a;db[j].amt+=a;if(Math.abs(cr[i].amt)<1)i++;if(Math.abs(db[j].amt)<1)j++;}
-  return txns;
+  // Anyone left unsettled = imbalance evidence
+  var unpaid=cr.slice(i).filter(function(x){return x.amt>0;}).concat(db.slice(j).filter(function(x){return x.amt<0;}));
+  return{txns:txns,households:households,imbalance:imbalance,unpaid:unpaid};
 }
 function settlH(results,pl){
   pl=pl||A.players;
-  var txns=calcSettle(results,pl);
-  if(!txns.length)return'<div class="allsq">&#10003; All square — no payments needed</div>';
-  var h='<div class="stl-t">Who Pays Who</div>';
-  txns.forEach(function(t){
-    var fn=((pl.find(function(p){return p.id===t.from;})||{}).name)||t.from;
-    var tn=((pl.find(function(p){return p.id===t.to;})||{}).name)||t.to;
-    h+='<div class="txn"><span><span class="rrd fw7">'+esc(fn)+'</span><span style="color:var(--t3);margin:0 7px">&rarr;</span><span class="grn fw7">'+esc(tn)+'</span></span><span class="gld fw7">Rs.'+t.amount.toLocaleString('en-IN')+'</span></div>';
-  });
+  var res=calcSettle(results,pl);
+  var h='';
+  // Show household internal settlements first (informational, no cash)
+  var internalLines=res.households.filter(function(x){return x.internal&&x.internal.amount>0;});
+  if(internalLines.length){
+    h+='<div class="stl-t" style="color:var(--gold)">&#127968; Household Internal (no cash)</div>';
+    internalLines.forEach(function(hh){
+      var fn=((pl.find(function(p){return p.id===hh.internal.from;})||A.players.find(function(p){return p.id===hh.internal.from;})||{}).name)||hh.internal.from;
+      var tn=((pl.find(function(p){return p.id===hh.internal.to;})||A.players.find(function(p){return p.id===hh.internal.to;})||{}).name)||hh.internal.to;
+      h+='<div class="txn" style="opacity:.85"><span><span class="rrd fw7">'+esc(fn)+'</span><span style="color:var(--t3);margin:0 7px">&rarr;</span><span class="grn fw7">'+esc(tn)+'</span></span><span class="gld fw7" style="font-style:italic">Rs.'+hh.internal.amount.toLocaleString('en-IN')+'</span></div>';
+    });
+  }
+  // Imbalance warning — much better than silently dropping a creditor
+  if(Math.abs(res.imbalance)>=1){
+    h+='<div style="background:rgba(220,38,38,.15);border:1px solid rgba(220,38,38,.4);border-radius:10px;padding:10px 12px;margin-top:10px;font-size:12px;color:var(--red);line-height:1.5">&#9888;&#65039; <strong>Settlement off by Rs.'+Math.abs(res.imbalance).toLocaleString('en-IN')+'</strong>. Cashouts don\'t balance against buyins. Some winnings can\'t be paid out — check the cashout amounts.</div>';
+  }
+  if(!res.txns.length&&!internalLines.length){return'<div class="allsq">&#10003; All square — no payments needed</div>';}
+  if(res.txns.length){
+    h+='<div class="stl-t">Who Pays Who</div>';
+    res.txns.forEach(function(t){
+      var fn=((pl.find(function(p){return p.id===t.from;})||A.players.find(function(p){return p.id===t.from;})||{}).name)||t.from;
+      var tn=((pl.find(function(p){return p.id===t.to;})||A.players.find(function(p){return p.id===t.to;})||{}).name)||t.to;
+      h+='<div class="txn"><span><span class="rrd fw7">'+esc(fn)+'</span><span style="color:var(--t3);margin:0 7px">&rarr;</span><span class="grn fw7">'+esc(tn)+'</span></span><span class="gld fw7">Rs.'+t.amount.toLocaleString('en-IN')+'</span></div>';
+    });
+  }
   return h;
 }
 
@@ -477,8 +526,16 @@ function startListeners(){
 
 async function seedPlayers(){
   var snap=await getDocs(collection(A.db,'players'));
-  if(!snap.empty){A.players=snap.docs.map(function(d){var x=d.data();x.id=d.id;return x;}).sort(function(a,b){return(a.order||0)-(b.order||0);});return;}
-  var defs=[{id:'p1',name:'Kunal',order:0},{id:'p2',name:'Nit Guy',order:1},{id:'p3',name:'Aggro Guy',order:2},{id:'p4',name:'Girl 1',order:3},{id:'p5',name:'Girl 2',order:4}];
+  if(!snap.empty){
+    A.players=snap.docs.map(function(d){var x=d.data();x.id=d.id;return x;}).sort(function(a,b){return(a.order||0)-(b.order||0);});
+    // One-time rename migration for old default names
+    var renames={'Nit Guy':'Preetish','Aggro Guy':'Pranav','Girl 1':'Sakshi','Girl 2':'Japneet'};
+    var migrated=false;
+    for(var k=0;k<A.players.length;k++){var pp=A.players[k];if(renames[pp.name]){pp.name=renames[pp.name];await savePlayer(pp);migrated=true;}}
+    if(migrated)console.log('Renamed legacy default players.');
+    return;
+  }
+  var defs=[{id:'p1',name:'Kunal',order:0},{id:'p2',name:'Preetish',order:1},{id:'p3',name:'Pranav',order:2},{id:'p4',name:'Sakshi',order:3},{id:'p5',name:'Japneet',order:4}];
   var defN={p1:'Hero. Improving every session.',p2:'Only plays strong hands. Folds to small raises. When he calls believe him.',p3:'Bets frequently. Moderate bluffer. Let him bluff into you.',p4:'Calls everything. Shows sets, straights. NEVER bluff her.',p5:'Calls only with a pair. Bluff on high boards she missed.'};
   for(var i=0;i<defs.length;i++){await savePlayer(defs[i]);await savePlayerNote(defs[i].id,defN[defs[i].id]);}
   A.players=defs;Object.keys(defN).forEach(function(k){A.notes[k]=defN[k];});
@@ -901,7 +958,16 @@ function drawCashoutModal(sess,pl){
   el('end-save').addEventListener('click',async function(){
     pl.forEach(function(p){var inp=el('co-'+p.id);if(inp)_coState.cashouts[p.id]=inp.value;});
     var gn=(el('end-notes')||{}).value||'';var buyinAmt2=sess.buyinAmt||500;
-    var finalResults={};pl.forEach(function(p){finalResults[p.id]=(Number(_coState.cashouts[p.id])||0)-(buyins[p.id]||1)*buyinAmt2;});
+    // Enforce balance check before saving — silently saving an unbalanced session corrupts settlements
+    var totalIn2=pl.reduce(function(s,p){return s+(A.liveBuyins[p.id]||1)*buyinAmt2;},0);
+    var totalOut2=pl.reduce(function(s,p){return s+(Number(_coState.cashouts[p.id])||0);},0);
+    var diff2=totalOut2-totalIn2;
+    if(Math.abs(diff2)>=1){
+      var sign=diff2>0?'over':'under';
+      var msg='\u26A0\uFE0F Cashouts are '+sign+' by Rs.'+Math.abs(diff2).toFixed(0)+'.\n\nTotal buyins: Rs.'+totalIn2.toLocaleString('en-IN')+'\nTotal cashouts: Rs.'+totalOut2.toLocaleString('en-IN')+'\n\nThis means somebody\u2019s cashout is wrong. Saving anyway will leave the smallest winner unpaid in the settlement.\n\nSave anyway?';
+      if(!confirm(msg))return;
+    }
+    var finalResults={};pl.forEach(function(p){finalResults[p.id]=(Number(_coState.cashouts[p.id])||0)-(A.liveBuyins[p.id]||1)*buyinAmt2;});
     await saveSess({id:sess.id,date:sess.date,buyinAmt:buyinAmt2,players:pl,buyins:A.liveBuyins,cashouts:JSON.parse(JSON.stringify(_coState.cashouts)),sessionNotes:sess.sessionNotes||{},notes:gn,results:finalResults,status:'done',createdAt:sess.createdAt});
     A.activeSessId=null;closeModal();A.tab='sessions';buildNav();render();
   });
@@ -1079,11 +1145,38 @@ function runPlayerAI(id){
 
 // ── SETTINGS ──────────────────────────────────────────────────
 function pgSettings(){
-  return'<div class="card"><div class="ct g">&#9889; Claude AI Key</div><p style="font-size:13px;color:var(--t2);line-height:1.6;margin-bottom:12px">For automatic player profiling and session coaching after every game.<br>Get a free key at <strong style="color:var(--gold)">console.anthropic.com</strong> &rarr; API Keys &rarr; Create Key.</p>'+(A.apiKey?'<div style="font-size:12px;color:var(--green);margin-bottom:10px">&#10003; AI key connected</div>':'<div style="font-size:12px;color:var(--red);margin-bottom:10px">&#10005; No key — add below</div>')+'<div style="display:flex;gap:8px;margin-bottom:6px"><input type="password" id="ai-key-in" placeholder="sk-ant-..." value="'+esc(A.apiKey)+'" style="flex:1"><button class="btn bg" id="ai-save" style="white-space:nowrap;padding:10px 14px">Save</button></div></div>'
+  // Households section
+  var hhRows=(A.households||[]).map(function(pair,i){
+    var a=A.players.find(function(p){return p.id===pair[0];});
+    var b=A.players.find(function(p){return p.id===pair[1];});
+    if(!a||!b)return'';
+    return'<div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;background:rgba(201,168,76,.08);border:1px solid rgba(201,168,76,.25);border-radius:10px;padding:10px 12px"><span style="flex:1;font-size:14px;color:var(--cream);font-weight:600">&#127968; '+esc(a.name)+' &amp; '+esc(b.name)+'</span><button class="btn bd" data-rmhh="'+i+'" style="padding:5px 10px;font-size:11px">Remove</button></div>';
+  }).join('');
+  var optsA='<option value="">Select player A...</option>'+A.players.map(function(p){return'<option value="'+p.id+'">'+esc(p.name)+'</option>';}).join('');
+  var optsB='<option value="">Select player B...</option>'+A.players.map(function(p){return'<option value="'+p.id+'">'+esc(p.name)+'</option>';}).join('');
+  return'<div class="card"><div class="ct g">&#127968; Household Pairs</div><p style="font-size:13px;color:var(--t2);line-height:1.6;margin-bottom:12px">Couples who don\'t actually exchange cash with each other. Their P&amp;L is netted internally first, then only the household\'s combined position enters the wider settlement.</p>'
+    +(hhRows||'<div style="font-size:12px;color:var(--t3);font-style:italic;margin-bottom:10px">No pairs yet</div>')
+    +'<div style="display:flex;flex-direction:column;gap:8px;margin-top:10px"><select id="hh-a" style="font-size:14px">'+optsA+'</select><select id="hh-b" style="font-size:14px">'+optsB+'</select><button class="btn bg fw" id="hh-add">+ Add Pair</button></div></div>'
+    +'<div class="card"><div class="ct g">&#9889; Claude AI Key</div><p style="font-size:13px;color:var(--t2);line-height:1.6;margin-bottom:12px">For automatic player profiling and session coaching after every game.<br>Get a free key at <strong style="color:var(--gold)">console.anthropic.com</strong> &rarr; API Keys &rarr; Create Key.</p>'+(A.apiKey?'<div style="font-size:12px;color:var(--green);margin-bottom:10px">&#10003; AI key connected</div>':'<div style="font-size:12px;color:var(--red);margin-bottom:10px">&#10005; No key — add below</div>')+'<div style="display:flex;gap:8px;margin-bottom:6px"><input type="password" id="ai-key-in" placeholder="sk-ant-..." value="'+esc(A.apiKey)+'" style="flex:1"><button class="btn bg" id="ai-save" style="white-space:nowrap;padding:10px 14px">Save</button></div></div>'
     +'<div class="card"><div class="ct g">&#128293; Firebase</div><p style="font-size:13px;color:var(--t2);line-height:1.6;margin-bottom:12px">To connect a different Firebase project, reset and paste a new config.</p><button class="btn bd fw" id="reset-fb">Reset Firebase Config</button></div>'
     +'<div class="card"><div class="ct" style="color:var(--red)">Danger Zone</div><p style="font-size:13px;color:var(--t2);line-height:1.6;margin-bottom:12px">Delete all finished sessions from Firebase. Cannot be undone.</p><button class="btn br fw" id="clear-all">Clear All Finished Sessions</button></div>';
 }
 function bindSettings(){
+  // Household pairs
+  var hhAdd=el('hh-add');if(hhAdd)hhAdd.addEventListener('click',function(){
+    var aId=(el('hh-a')||{}).value,bId=(el('hh-b')||{}).value;
+    if(!aId||!bId){alert('Pick two players.');return;}
+    if(aId===bId){alert('Pick two different players.');return;}
+    // Don't allow a player to be in two pairs
+    var already=(A.households||[]).some(function(p){return p[0]===aId||p[1]===aId||p[0]===bId||p[1]===bId;});
+    if(already){alert('One of those players is already in a household pair. Remove them first.');return;}
+    A.households=(A.households||[]).concat([[aId,bId]]);
+    lsSet('pkl-households',JSON.stringify(A.households));
+    render();
+  });
+  document.querySelectorAll('[data-rmhh]').forEach(function(btn){btn.addEventListener('click',function(){
+    var idx=parseInt(btn.dataset.rmhh);A.households.splice(idx,1);lsSet('pkl-households',JSON.stringify(A.households));render();
+  });});
   el('ai-save').addEventListener('click',function(){var val=(el('ai-key-in')||{}).value;if(val&&val.trim().startsWith('sk-ant')){A.apiKey=val.trim();lsSet('pkl-aikey',A.apiKey);alert('AI key saved! Coaching is now active.');render();}else alert('Key must start with sk-ant-');});
   el('reset-fb').addEventListener('click',function(){if(confirm('Clear Firebase config? Your data in Firebase is safe.')){localStorage.removeItem('pkl-fbconfig');location.reload();}});
   el('clear-all').addEventListener('click',async function(){if(confirm('Delete all finished sessions? Cannot be undone.')){sync('saving','Deleting...');var snap=await getDocs(collection(A.db,'sessions'));for(var i=0;i<snap.docs.length;i++){var d=snap.docs[i].data();if(d.status!=='active')await deleteDoc(snap.docs[i].ref);}sync('ok');render();}});
