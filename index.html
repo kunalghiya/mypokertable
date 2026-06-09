@@ -1,0 +1,1188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>MyPokerTable</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+:root{
+  --felt:#1a2e1a;--felt2:#1f361f;--felt3:#243d24;
+  --cream:#f5f0e8;--gold:#c9a84c;--gold2:#e8c96a;
+  --green:#4a9e5c;--red:#c94a4a;--purple:#8b5cf6;
+  --t1:#f5f0e8;--t2:#c8bfa8;--t3:#8a7f6a;--t4:#4a4035;
+  --cb:#1f3620;--cbr:#2d4a2d;--mb:#162416;
+}
+html,body{background:var(--felt);color:var(--t1);font-family:Georgia,serif;min-height:100vh}
+body{overflow-y:scroll;-webkit-overflow-scrolling:touch}
+.app{max-width:430px;margin:0 auto;padding-bottom:90px}
+.av{border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:900;flex-shrink:0;letter-spacing:-.5px;border:2px solid transparent}
+.av-sm{width:34px;height:34px;font-size:11px}.av-md{width:44px;height:44px;font-size:14px}.av-lg{width:58px;height:58px;font-size:18px}
+.av-sel{border-color:var(--gold)!important;box-shadow:0 0 0 3px rgba(201,168,76,.3)}
+.av-c0{background:#2d6a4f;color:#95d5b2}.av-c1{background:#6b3d2e;color:#e8b4a0}
+.av-c2{background:#3d4a6b;color:#a0b4e8}.av-c3{background:#6b2d4f;color:#e8a0c8}
+.av-c4{background:#4a6b2d;color:#b4e8a0}.av-c5{background:#6b6b2d;color:#e8e0a0}
+.av-c6{background:#2d4a6b;color:#a0c8e8}.av-c7{background:#6b4a2d;color:#e8c8a0}
+.hdr{background:var(--felt2);border-bottom:1px solid var(--cbr);padding:14px 16px 0;position:sticky;top:0;z-index:50}
+.hdr-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+.logo{font-size:19px;font-weight:900;color:var(--cream);letter-spacing:-.3px}
+.logo span{color:var(--gold)}
+.sync-bar{display:flex;align-items:center;gap:5px;font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--t3);padding:0 0 8px}
+.sdot{width:6px;height:6px;border-radius:50%;flex-shrink:0}
+.s-ok .sdot{background:var(--green)}.s-saving .sdot{background:var(--gold);animation:bk2 .8s infinite}.s-err .sdot{background:var(--red)}
+@keyframes bk2{0%,100%{opacity:.3}50%{opacity:1}}
+.pg{padding:14px 14px 0}
+.card{background:var(--cb);border:1px solid var(--cbr);border-radius:14px;padding:16px;margin-bottom:12px}
+.ct{font-size:9px;letter-spacing:.15em;text-transform:uppercase;color:var(--t3);margin-bottom:12px}
+.ct.g{color:var(--gold)}
+.btn{border:none;cursor:pointer;font-family:Georgia,serif;font-weight:700;border-radius:10px;display:inline-flex;align-items:center;justify-content:center;gap:6px;transition:.15s}
+.bg{background:var(--gold);color:#1a1a0a;padding:10px 18px;font-size:13px}
+.bg:active{background:var(--gold2)}
+.bd{background:rgba(0,0,0,.3);color:var(--t2);padding:10px 18px;font-size:13px;border:1px solid var(--cbr)}
+.br{background:rgba(180,40,40,.2);color:var(--red);padding:12px 18px;font-size:13px;border:1px solid rgba(180,40,40,.3)}
+.bai{background:linear-gradient(90deg,#4c1d95,#78350f);color:#fff;padding:10px 18px;font-size:13px}
+.fw{width:100%;padding:13px}
+.dsh{background:none;border:2px dashed var(--cbr);color:var(--t3);width:100%;padding:11px;font-size:13px;border-radius:10px;font-family:Georgia,serif;cursor:pointer}
+.hero{background:linear-gradient(160deg,var(--felt3),var(--felt));border:1px solid var(--cbr);border-radius:18px;padding:22px 16px;margin-bottom:14px;position:relative;overflow:hidden}
+.hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 30% 50%,rgba(201,168,76,.06),transparent 70%);pointer-events:none}
+.hero-lbl{font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--t3);margin-bottom:6px}
+.hero-amt{font-size:42px;font-weight:900;line-height:1;letter-spacing:-1px}
+.hchg{display:inline-flex;align-items:center;font-size:11px;font-weight:700;padding:2px 7px;border-radius:20px;margin-top:6px}
+.hchg.pos{background:rgba(74,158,92,.2);color:var(--green)}.hchg.neg{background:rgba(201,74,74,.2);color:var(--red)}
+.pills{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;padding-bottom:4px;margin-bottom:14px}
+.pills::-webkit-scrollbar{display:none}
+.pill{background:var(--cb);border:1px solid var(--cbr);border-radius:10px;padding:10px 14px;min-width:80px;text-align:center;flex-shrink:0}
+.pill-l{font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:var(--t3);margin-bottom:3px}
+.pill-v{font-size:14px;font-weight:700}
+.ch-wrap{position:relative;height:80px;margin:4px 0 2px}
+.ch-zero{position:absolute;left:0;right:0;top:50%;border-top:1px dashed rgba(201,168,76,.2)}
+.ch-lbls{display:flex;justify-content:space-between;margin-top:3px}
+.srow{background:var(--cb);border:1px solid var(--cbr);border-radius:14px;margin-bottom:10px;overflow:hidden}
+.srow.act{border-color:var(--gold);box-shadow:0 0 0 2px rgba(201,168,76,.15)}
+.shdr{display:flex;align-items:center;justify-content:space-between;padding:13px 14px;cursor:pointer}
+.shdr:active{background:var(--felt3)}
+.smeta{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.sbody{padding:13px 14px;border-top:1px solid var(--cbr);display:none}
+.pres{background:rgba(0,0,0,.2);border-radius:10px;padding:10px 12px;margin-bottom:8px}
+.pres-top{display:flex;align-items:center;gap:10px}
+.pres-r{flex:1;display:flex;justify-content:space-between;align-items:center}
+.pnote{font-size:11px;color:var(--t3);font-style:italic;margin-top:7px;padding-top:7px;border-top:1px solid var(--cbr)}
+.snote{background:rgba(0,0,0,.2);border-radius:10px;padding:10px 12px;font-size:11px;font-style:italic;color:var(--t3);margin-top:8px}
+.stl-t{font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:var(--t3);margin:12px 0 7px}
+.txn{display:flex;align-items:center;justify-content:space-between;background:rgba(0,0,0,.2);border-radius:10px;padding:10px 13px;margin-bottom:6px}
+.allsq{background:rgba(74,158,92,.1);border:1px solid rgba(74,158,92,.3);border-radius:10px;padding:10px;text-align:center;color:var(--green);font-size:13px;margin-top:8px}
+.ai-box{background:linear-gradient(135deg,rgba(76,29,149,.12),rgba(120,53,15,.08));border:1px solid rgba(139,92,246,.25);border-radius:12px;padding:14px;margin-top:10px}
+.ai-t{font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:#a78bfa;margin-bottom:8px}
+.ai-body{font-size:13px;color:var(--t2);line-height:1.7;white-space:pre-wrap}
+.ai-prof{background:linear-gradient(135deg,rgba(76,29,149,.1),transparent);border:1px solid rgba(139,92,246,.2);border-radius:10px;padding:12px;margin-top:10px}
+.ai-prof-l{font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:#a78bfa;margin-bottom:6px}
+.ai-prof-t{font-size:12px;color:var(--t2);line-height:1.6;white-space:pre-wrap}
+.thinking{display:flex;align-items:center;gap:8px;color:#a78bfa;font-size:12px;font-style:italic;padding:4px 0}
+.dots span{width:5px;height:5px;background:#a78bfa;border-radius:50%;display:inline-block;margin:0 1px;animation:blink 1.2s infinite}
+.dots span:nth-child(2){animation-delay:.2s}.dots span:nth-child(3){animation-delay:.4s}
+@keyframes blink{0%,80%,100%{opacity:.15}40%{opacity:1}}
+.bal{border-radius:10px;padding:11px 14px;display:flex;justify-content:space-between;align-items:center;font-size:13px;margin-bottom:10px}
+.bok{background:rgba(74,158,92,.1);border:1px solid rgba(74,158,92,.3)}
+.berr{background:rgba(201,74,74,.1);border:1px solid rgba(201,74,74,.3)}
+.act-banner{background:rgba(201,168,76,.08);border:1px solid rgba(201,168,76,.3);border-radius:14px;padding:14px;margin-bottom:12px;display:flex;align-items:center;justify-content:space-between}
+.live-dot{width:7px;height:7px;border-radius:50%;background:var(--red);animation:bk2 .8s infinite;display:inline-block;margin-right:5px}
+.live-hdr{background:linear-gradient(135deg,var(--felt3),var(--felt2));border:1px solid var(--cbr);border-radius:14px;padding:14px;margin-bottom:12px}
+.hand-num{font-size:28px;font-weight:900;color:var(--gold);line-height:1}
+.hand-sub{font-size:10px;color:var(--t3);letter-spacing:.1em;text-transform:uppercase;margin-top:2px}
+.street-bar{display:flex;gap:4px;margin-bottom:16px}
+.ss{flex:1;height:4px;border-radius:2px;background:var(--cbr);transition:.2s}
+.ss.done{background:var(--green)}.ss.active{background:var(--gold)}
+.slbl{font-size:16px;font-weight:900;color:var(--cream);margin-bottom:14px;letter-spacing:-.2px}
+.pl-tgl{display:flex;align-items:center;justify-content:space-between;padding:10px 12px;border:1px solid var(--cbr);border-radius:10px;margin-bottom:8px;cursor:pointer;transition:.15s}
+.pl-tgl.on{background:rgba(201,168,76,.07);border-color:rgba(201,168,76,.35)}
+.pl-tgl.off{opacity:.5}
+.tgl{width:38px;height:22px;border-radius:11px;background:var(--cbr);position:relative;flex-shrink:0;transition:.2s}
+.tgl.on{background:var(--green)}
+.tgl::after{content:'';position:absolute;top:3px;left:3px;width:16px;height:16px;border-radius:50%;background:#fff;transition:.2s}
+.tgl.on::after{left:19px}
+.rebuy-row{display:flex;align-items:center;justify-content:space-between;padding:12px 14px;background:rgba(0,0,0,.2);border:1px solid var(--cbr);border-radius:12px;margin-bottom:8px}
+.rebuy-left{display:flex;align-items:center;gap:10px;flex:1;min-width:0}
+.rebuy-name{font-size:14px;font-weight:700;color:var(--cream)}
+.rebuy-invested{font-size:11px;color:var(--t3);margin-top:2px}
+.lnote-btn{width:34px;height:34px;border-radius:8px;background:rgba(0,0,0,.3);border:1px solid var(--cbr);color:var(--t3);cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:.15s;font-family:Georgia,serif}
+.lnote-btn:active{background:rgba(201,168,76,.2)}
+.lnote-btn.has{background:rgba(201,168,76,.15);border-color:rgba(201,168,76,.4);color:var(--gold)}
+.rmlive-btn{width:28px;height:34px;border-radius:8px;background:transparent;border:none;color:var(--t4);cursor:pointer;font-size:13px;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:.15s;padding:0;margin-left:2px}
+.rmlive-btn:active{color:var(--red);background:rgba(220,38,38,.1)}
+.late-pick{display:flex;align-items:center;gap:10px;padding:10px 12px;background:rgba(0,0,0,.3);border:1px solid var(--cbr);border-radius:10px;cursor:pointer;width:100%;font-family:Georgia,serif;transition:.15s}
+.late-pick:active{background:rgba(201,168,76,.1);border-color:rgba(201,168,76,.4)}
+.stp{display:flex;align-items:center;gap:4px;background:rgba(0,0,0,.3);border:1px solid var(--cbr);border-radius:8px;padding:3px}
+.sb{width:32px;height:32px;border-radius:6px;background:rgba(201,168,76,.15);border:none;color:var(--gold);font-size:20px;font-weight:900;cursor:pointer;display:flex;align-items:center;justify-content:center;line-height:1;font-family:Georgia,serif;flex-shrink:0}
+.sb:active{background:var(--gold);color:#1a1a0a}
+.sv{width:26px;text-align:center;font-size:15px;font-weight:700;color:var(--cream)}
+.dealer-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin-bottom:12px}
+.dealer-btn{display:flex;flex-direction:column;align-items:center;gap:4px;background:none;border:none;cursor:pointer;padding:6px 2px;border-radius:10px}
+.dealer-name{font-size:10px;color:var(--t3);text-align:center;line-height:1.2}
+.brd-cards{display:flex;gap:6px;margin-bottom:14px;flex-wrap:wrap}
+.pcard{width:42px;height:58px;border-radius:6px;background:var(--cream);display:flex;flex-direction:column;align-items:center;justify-content:center;flex-shrink:0;cursor:pointer;transition:.15s}
+.pcard:active{transform:scale(.95)}
+.pcard.empty{background:rgba(0,0,0,.2);border:2px dashed var(--cbr);color:var(--t3);font-size:20px}
+.pcard.red{color:#c94a4a}.pcard.blk{color:#1a2e1a}
+.cv{font-size:14px;font-weight:900;line-height:1}.cs{font-size:11px;line-height:1}
+.suit-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:16px}
+.suit-btn{height:56px;border-radius:10px;background:rgba(0,0,0,.3);border:1px solid var(--cbr);font-size:24px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:.15s}
+.suit-btn:active,.suit-btn.sel{background:rgba(201,168,76,.2);border-color:var(--gold)}
+.suit-btn.red{color:#c94a4a}.suit-btn.blk{color:var(--cream)}
+.val-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:6px}
+.val-btn{height:44px;border-radius:8px;background:rgba(0,0,0,.3);border:1px solid var(--cbr);font-size:13px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--t2);transition:.15s}
+.val-btn:active,.val-btn.sel{background:rgba(201,168,76,.2);border-color:var(--gold);color:var(--gold)}
+.act-rows{display:flex;flex-direction:column;gap:8px;margin-bottom:14px}
+.act-row{background:rgba(0,0,0,.2);border:1px solid var(--cbr);border-radius:12px;padding:10px 12px;display:flex;align-items:center;gap:10px}
+.act-row-name{font-size:13px;font-weight:700;color:var(--cream);flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.act-btns{display:flex;gap:4px;flex-wrap:wrap;justify-content:flex-end}
+.abt2{font-size:11px;font-weight:700;padding:6px 9px;border-radius:7px;border:1px solid var(--cbr);background:rgba(0,0,0,.3);color:var(--t3);cursor:pointer;font-family:Georgia,serif;transition:.15s}
+.abt2.sc,.abt2.sl{background:rgba(74,158,92,.2);border-color:var(--green);color:var(--green)}
+.abt2.sf{background:rgba(201,74,74,.2);border-color:var(--red);color:var(--red)}
+.abt2.sr,.abt2.sb2{background:rgba(201,168,76,.2);border-color:var(--gold);color:var(--gold)}
+.abt2.sa{background:rgba(139,92,246,.2);border-color:var(--purple);color:var(--purple)}
+.amt-inp{width:80px;background:rgba(0,0,0,.4);border:1px solid var(--cbr);border-radius:6px;padding:5px 7px;color:var(--t1);font-family:Georgia,serif;font-size:12px;display:none}
+.amt-inp.show{display:block}
+.winner-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin-bottom:14px}
+.wbtn{display:flex;flex-direction:column;align-items:center;gap:4px;background:rgba(0,0,0,.2);border:1px solid var(--cbr);border-radius:10px;padding:8px 4px;cursor:pointer;transition:.15s}
+.wbtn.sel{background:rgba(201,168,76,.15);border-color:var(--gold)}
+.winner-name{font-size:10px;color:var(--t3);text-align:center}
+.hcard-row{display:flex;align-items:center;gap:8px;margin-bottom:7px;padding:8px 10px;background:rgba(0,0,0,.2);border:1px solid var(--cbr);border-radius:10px}
+.hcard-name{font-size:12px;font-weight:700;color:var(--t2);flex:1}
+.hcard-inp{width:110px;background:rgba(0,0,0,.3);border:1px solid var(--cbr);border-radius:6px;padding:6px 8px;color:var(--t1);font-family:Georgia,serif;font-size:12px}
+.hlog{background:rgba(0,0,0,.15);border-radius:10px;padding:10px 12px;margin-bottom:6px;font-size:12px}
+.hlog-hdr{display:flex;justify-content:space-between;margin-bottom:5px;font-size:11px;color:var(--t3)}
+.sname{font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);margin:5px 0 2px}
+.brd-mini{display:flex;gap:3px;margin:3px 0}
+.mc{padding:2px 5px;border-radius:4px;font-size:11px;font-weight:700;background:var(--cream);display:inline-block}
+.mc.red{color:#c94a4a}.mc.blk{color:#1a2e1a}
+.chip{display:inline-flex;align-items:center;font-size:10px;padding:2px 7px;border-radius:10px;margin:2px 2px 0 0}
+.chk,.cll{background:rgba(74,158,92,.15);color:var(--green)}
+.fld{background:rgba(201,74,74,.15);color:var(--red)}
+.rse,.bet{background:rgba(201,168,76,.15);color:var(--gold)}
+.ali{background:rgba(139,92,246,.15);color:var(--purple)}
+.win-chip{background:rgba(201,168,76,.2);color:var(--gold);font-size:10px;padding:2px 8px;border-radius:10px;font-weight:700;display:inline-block;margin-top:4px}
+.co-row{display:flex;align-items:center;gap:10px;padding:11px 12px;background:rgba(0,0,0,.2);border:1px solid var(--cbr);border-radius:12px;margin-bottom:8px}
+.co-info{flex:1;min-width:0}
+.co-name{font-size:13px;font-weight:700;color:var(--cream)}
+.co-inv{font-size:11px;color:var(--t3);margin-top:1px}
+.co-inp{width:90px;text-align:center;font-size:14px;font-weight:700;background:rgba(0,0,0,.4)!important}
+.co-pnl{font-size:13px;font-weight:700;min-width:70px;text-align:right}
+.tend-card{background:rgba(0,0,0,.2);border:1px solid var(--cbr);border-radius:10px;padding:10px 12px;margin-bottom:8px}
+.tend-stat{display:flex;justify-content:space-between;font-size:11px;padding:3px 0;border-bottom:1px solid rgba(45,74,45,.5)}
+.tend-stat:last-child{border-bottom:none}
+.tl{color:var(--t3)}.tv{color:var(--t2);font-weight:700}
+.pc{background:var(--cb);border:1px solid var(--cbr);border-radius:14px;padding:14px;margin-bottom:10px}
+.pc-top{display:flex;align-items:flex-start;gap:12px;margin-bottom:10px}
+.pc-info{flex:1;min-width:0}
+.pc-name{font-size:16px;font-weight:900;color:var(--cream);letter-spacing:-.2px}
+.ptag{display:inline-flex;font-size:9px;border:1px solid;border-radius:20px;padding:2px 8px;margin-top:5px;letter-spacing:.05em}
+.pc-acts{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+.abt{background:rgba(0,0,0,.2);border:1px solid var(--cbr);border-radius:8px;padding:5px 10px;cursor:pointer;font-family:Georgia,serif;font-size:11px;color:var(--t2)}
+.abt.gld{color:var(--gold);border-color:rgba(201,168,76,.3)}
+.abt.prp{color:#a78bfa;border-color:rgba(139,92,246,.3)}
+.abt.rrd{color:var(--red);border-color:rgba(201,74,74,.3)}
+.pc-bio{font-size:13px;color:var(--t2);line-height:1.6}
+.pc-bio.em{color:var(--t4);font-style:italic}
+.ne-row{display:flex;align-items:center;gap:6px;flex:1}
+.ne-row input{flex:1;padding:7px 10px;font-size:16px}
+.ns-btn{background:var(--gold);color:#1a1a0a;border:none;border-radius:8px;padding:7px 12px;font-size:11px;font-weight:700;cursor:pointer;font-family:Georgia,serif}
+.podium{display:flex;align-items:flex-end;justify-content:center;gap:8px;margin-bottom:20px;padding-top:10px}
+.pod{display:flex;flex-direction:column;align-items:center;flex:1;max-width:110px}
+.pod-bar{width:100%;border-radius:8px 8px 0 0;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;padding-bottom:8px}
+.p1{background:linear-gradient(180deg,rgba(201,168,76,.3),rgba(201,168,76,.1));border:1px solid rgba(201,168,76,.4)}
+.p2{background:linear-gradient(180deg,rgba(180,180,180,.2),rgba(180,180,180,.05));border:1px solid rgba(180,180,180,.25)}
+.p3{background:linear-gradient(180deg,rgba(150,100,50,.2),rgba(150,100,50,.05));border:1px solid rgba(150,100,50,.25)}
+.pod-name{font-size:11px;color:var(--t2);margin-top:4px;text-align:center;font-weight:700}
+.pod-amt{font-size:12px;font-weight:900;margin-top:2px}
+.lb-row{display:flex;align-items:center;gap:10px;padding:10px 0;border-top:1px solid var(--cbr)}
+.lb-row:first-child{border-top:none}
+.lb-bar{height:4px;border-radius:2px;margin:4px 0;min-width:2px}
+.lb-meta{display:flex;gap:8px;flex-wrap:wrap}
+.lb-meta span{font-size:10px;color:var(--t3)}
+table{width:100%;border-collapse:collapse;font-size:11px}
+th{color:var(--t3);font-weight:normal;padding-bottom:8px;text-align:right;font-family:Georgia,serif;font-size:10px}
+th:first-child{text-align:left}
+td{padding:6px 3px;text-align:right;font-weight:600;font-family:Georgia,serif}
+td:first-child{text-align:left;color:var(--t2);font-weight:normal}
+tr+tr{border-top:1px solid var(--cbr)}
+.tr-tot td{border-top:2px solid var(--cbr);color:var(--gold);font-weight:900}
+.bnav{position:fixed;bottom:0;left:0;right:0;background:var(--felt2);border-top:1px solid var(--cbr);display:flex;z-index:40;max-width:430px;margin:0 auto}
+.bnav-btn{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:9px 4px 13px;border:none;background:none;color:var(--t3);cursor:pointer;font-family:Georgia,serif;font-size:9px;letter-spacing:.06em;text-transform:uppercase;gap:4px;transition:.15s;position:relative}
+.bnav-btn.on{color:var(--gold)}
+.bnav-icon{font-size:17px;line-height:1}
+.live-badge{position:absolute;top:6px;right:calc(50% - 14px);width:7px;height:7px;background:var(--red);border-radius:50%;animation:bk2 .8s infinite}
+/* Setup screen */
+.setup{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:30px 20px;text-align:center}
+.setup-card{background:var(--cb);border:1px solid var(--cbr);border-radius:16px;padding:20px;width:100%;text-align:left;margin-bottom:12px}
+.setup-step{font-size:9px;letter-spacing:.15em;text-transform:uppercase;color:var(--gold);margin-bottom:8px}
+/* Modal */
+.mover{position:fixed;inset:0;background:rgba(0,0,0,.87);z-index:200;display:none;align-items:flex-end;justify-content:center}
+.mover.show{display:flex}
+.mbox{background:var(--mb);border:1px solid var(--cbr);border-radius:22px 22px 0 0;width:100%;max-width:430px;max-height:93vh;overflow-y:auto;padding:20px 16px 36px;-webkit-overflow-scrolling:touch}
+.mt{font-size:18px;font-weight:900;color:var(--cream);margin-bottom:18px;letter-spacing:-.3px}
+.fg2{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px}
+.fl{font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:var(--t3);display:block;margin-bottom:5px}
+input,textarea,select{background:rgba(0,0,0,.3);border:1px solid var(--cbr);border-radius:8px;padding:10px 12px;color:var(--t1);font-family:Georgia,serif;font-size:16px;width:100%;-webkit-appearance:none;-webkit-user-select:text;user-select:text}
+input:focus,textarea:focus{outline:none;border-color:var(--gold)}
+textarea{resize:none}
+.row2{display:flex;gap:10px;margin-top:14px}
+.row2 .btn{flex:1}
+.ginput{display:flex;gap:8px;margin-bottom:10px}
+.ginput input{flex:1}
+.rmg{background:none;border:none;color:var(--t3);cursor:pointer;font-size:14px;padding:0 0 0 4px;font-family:Georgia,serif}
+.gld{color:var(--gold)}.grn{color:var(--green)}.rrd{color:var(--red)}.fw7{font-weight:700}
+.empty{text-align:center;padding:60px 20px;color:var(--t3)}
+.empty-ic{font-size:44px;margin-bottom:12px}
+</style>
+</head>
+<body>
+
+<!-- Setup Screen -->
+<div id="setup-pg">
+  <div class="setup">
+    <div style="font-size:52px;margin-bottom:16px">&#9824;</div>
+    <div style="font-size:24px;font-weight:900;color:var(--cream);margin-bottom:8px">MyPokerTable</div>
+    <div style="font-size:13px;color:var(--t2);line-height:1.7;margin-bottom:24px">Paste your Firebase config once.<br>Saved in this browser forever.</div>
+
+    <div class="setup-card">
+      <div class="setup-step">Step 1 — Firebase Config</div>
+      <p style="font-size:12px;color:var(--t2);line-height:1.7;margin-bottom:10px">
+        Go to <strong style="color:var(--gold)">console.firebase.google.com</strong><br>
+        Your project &rarr; Project Settings &rarr; Web app &rarr; Config
+      </p>
+      <textarea id="fb-cfg" style="height:140px;font-size:16px;font-family:monospace;margin-bottom:10px" placeholder='Paste the full firebaseConfig object here:
+
+{
+  "apiKey": "AIza...",
+  "authDomain": "xxx.firebaseapp.com",
+  "projectId": "xxx",
+  ...
+}'></textarea>
+      <button class="btn bg fw" id="connect-btn">Connect &amp; Start &rarr;</button>
+      <div id="setup-err" style="color:var(--red);font-size:12px;margin-top:10px;display:none;line-height:1.5"></div>
+    </div>
+
+    <div class="setup-card">
+      <div class="setup-step">Step 2 — Claude AI Key (Optional)</div>
+      <p style="font-size:12px;color:var(--t2);line-height:1.6;margin-bottom:8px">
+        For automatic coaching after each session.<br>
+        Get free key at <strong style="color:var(--gold)">console.anthropic.com</strong> &rarr; API Keys
+      </p>
+      <input type="password" id="ai-key-input" placeholder="sk-ant-...">
+    </div>
+
+    <p style="font-size:11px;color:var(--t3);line-height:1.6;margin-top:8px">
+      Your config is saved only in this browser.<br>
+      On a new device, paste it once again.
+    </p>
+  </div>
+</div>
+
+<!-- Main App -->
+<div id="main-pg" style="display:none">
+  <div class="app">
+    <div class="hdr">
+      <div class="hdr-row">
+        <div class="logo">My<span>Poker</span>Table</div>
+        <button class="btn bg" id="btn-new" style="padding:9px 16px;font-size:13px">+ Session</button>
+      </div>
+      <div id="sync-bar" class="sync-bar s-ok"><div class="sdot"></div><span id="sync-txt">Connected</span></div>
+    </div>
+    <div class="pg" id="pg"></div>
+  </div>
+  <div class="bnav" id="bnav"></div>
+</div>
+
+<div class="mover" id="mover"><div class="mbox" id="mbox"></div></div>
+
+<script type="module">
+import{initializeApp,getApps,getApp}from'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
+import{getFirestore,collection,doc,getDocs,addDoc,setDoc,deleteDoc,onSnapshot,serverTimestamp}from'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
+
+// ── Helpers ───────────────────────────────────────────────────
+function uid(){return'p'+Math.random().toString(36).slice(2,8);}
+function el(id){return document.getElementById(id);}
+function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+function rs(n){n=Math.round(Number(n)||0);return(n>=0?'+':'-')+'Rs.'+Math.abs(n).toLocaleString('en-IN');}
+function lsGet(k){try{var v=localStorage.getItem(k);return v?JSON.parse(v):null;}catch(e){return null;}}
+function lsSet(k,v){try{localStorage.setItem(k,JSON.stringify(v));}catch(e){}}
+const AVC=['av-c0','av-c1','av-c2','av-c3','av-c4','av-c5','av-c6','av-c7'];
+function avc(id){var s=0;for(var i=0;i<(id||'').length;i++)s+=(id||'').charCodeAt(i);return AVC[s%AVC.length];}
+function ini(n){var p=(n||'').trim().split(/\s+/);return p.length>=2?(p[0][0]+p[1][0]).toUpperCase():(n||'?').slice(0,2).toUpperCase();}
+function avH(p,sz){return'<div class="av '+(sz||'av-md')+' '+avc(p.id||'x')+'">'+esc(ini(p.name))+'</div>';}
+
+// ── App State ─────────────────────────────────────────────────
+var A={
+  db:null,players:[],sessions:[],hands:[],
+  notes:{},aiProfiles:{},
+  apiKey:lsGet('pkl-aikey')||'',
+  tab:'dashboard',
+  activeSessId:null,
+  lh:{step:'dealer',dealer:null,pre:{},flop:{},turn:{},river:{},fc:[null,null,null],tc:null,rc:null,winner:null,hcards:{},count:0},
+  sf:{playerIds:[],guests:[],buyinAmt:500,date:''},
+  liveBuyins:{},
+  // Household pairs: array of [playerIdA, playerIdB]. They settle internally first (no cash exchanged)
+  households:JSON.parse(lsGet('pkl-households')||'[]')
+};
+
+const ACTS_PRE=['Fold','Call','Raise','All-In'];
+const ACTS_POST=['Check','Fold','Call','Bet','Raise','All-In'];
+const CVALS=['A','2','3','4','5','6','7','8','9','10','J','Q','K'];
+const SUITS=[{s:'♠',r:false},{s:'♥',r:true},{s:'♦',r:true},{s:'♣',r:false}];
+
+function sync(state,msg){
+  var bar=el('sync-bar'),txt=el('sync-txt');if(!bar)return;
+  bar.className='sync-bar s-'+state;
+  txt.textContent=msg||{ok:'Connected',saving:'Saving...',err:'Sync error'}[state]||state;
+}
+
+// ── Settlement ────────────────────────────────────────────────
+function calcSettle(results,pl){
+  pl=pl||A.players;
+  // Build a map of playerId -> net result (only for players with non-zero outcomes)
+  var net={};
+  Object.keys(results||{}).forEach(function(id){var a=Math.round(Number(results[id])||0);if(Math.abs(a)>0)net[id]=a;});
+  // Step 1: process household pairs first — they cancel internally without cash changing hands
+  var households=[];
+  (A.households||[]).forEach(function(pair){
+    var a=pair[0],b=pair[1];
+    if(net[a]===undefined&&net[b]===undefined)return;
+    var aN=net[a]||0,bN=net[b]||0;
+    var combined=aN+bN;
+    // Determine internal "virtual" transfer amount (for display only — no real cash)
+    var internal=null;
+    if(aN>0&&bN<0)internal={from:b,to:a,amount:Math.min(aN,Math.abs(bN))};
+    else if(bN>0&&aN<0)internal={from:a,to:b,amount:Math.min(bN,Math.abs(aN))};
+    else if(aN!==0||bN!==0){
+      // Same-sign pair (both winning or both losing) — no internal settlement needed
+      internal=null;
+    }
+    households.push({a:a,b:b,aN:aN,bN:bN,combined:combined,internal:internal});
+    // Collapse pair to a single synthetic entry under the larger half — and zero the other
+    if(combined===0){delete net[a];delete net[b];}
+    else if(Math.abs(aN)>=Math.abs(bN)){net[a]=combined;delete net[b];}
+    else{net[b]=combined;delete net[a];}
+  });
+  // Step 2: standard greedy settlement on remaining net positions
+  var bal=Object.keys(net).map(function(id){return{id:id,amt:net[id]};});
+  var cr=bal.filter(function(x){return x.amt>0;}).sort(function(a,b){return b.amt-a.amt;});
+  var db=bal.filter(function(x){return x.amt<0;}).sort(function(a,b){return a.amt-b.amt;});
+  // Detect imbalance (should be 0 if cashouts were entered correctly)
+  var totalCr=cr.reduce(function(s,x){return s+x.amt;},0);
+  var totalDb=Math.abs(db.reduce(function(s,x){return s+x.amt;},0));
+  var imbalance=totalCr-totalDb;
+  var txns=[];var i=0,j=0;
+  while(i<cr.length&&j<db.length){var a=Math.min(cr[i].amt,Math.abs(db[j].amt));if(a>0)txns.push({from:db[j].id,to:cr[i].id,amount:a});cr[i].amt-=a;db[j].amt+=a;if(Math.abs(cr[i].amt)<1)i++;if(Math.abs(db[j].amt)<1)j++;}
+  // Anyone left unsettled = imbalance evidence
+  var unpaid=cr.slice(i).filter(function(x){return x.amt>0;}).concat(db.slice(j).filter(function(x){return x.amt<0;}));
+  return{txns:txns,households:households,imbalance:imbalance,unpaid:unpaid};
+}
+function settlH(results,pl){
+  pl=pl||A.players;
+  var res=calcSettle(results,pl);
+  var h='';
+  // Show household internal settlements first (informational, no cash)
+  var internalLines=res.households.filter(function(x){return x.internal&&x.internal.amount>0;});
+  if(internalLines.length){
+    h+='<div class="stl-t" style="color:var(--gold)">&#127968; Household Internal (no cash)</div>';
+    internalLines.forEach(function(hh){
+      var fn=((pl.find(function(p){return p.id===hh.internal.from;})||A.players.find(function(p){return p.id===hh.internal.from;})||{}).name)||hh.internal.from;
+      var tn=((pl.find(function(p){return p.id===hh.internal.to;})||A.players.find(function(p){return p.id===hh.internal.to;})||{}).name)||hh.internal.to;
+      h+='<div class="txn" style="opacity:.85"><span><span class="rrd fw7">'+esc(fn)+'</span><span style="color:var(--t3);margin:0 7px">&rarr;</span><span class="grn fw7">'+esc(tn)+'</span></span><span class="gld fw7" style="font-style:italic">Rs.'+hh.internal.amount.toLocaleString('en-IN')+'</span></div>';
+    });
+  }
+  // Imbalance warning — much better than silently dropping a creditor
+  if(Math.abs(res.imbalance)>=1){
+    h+='<div style="background:rgba(220,38,38,.15);border:1px solid rgba(220,38,38,.4);border-radius:10px;padding:10px 12px;margin-top:10px;font-size:12px;color:var(--red);line-height:1.5">&#9888;&#65039; <strong>Settlement off by Rs.'+Math.abs(res.imbalance).toLocaleString('en-IN')+'</strong>. Cashouts don\'t balance against buyins. Some winnings can\'t be paid out — check the cashout amounts.</div>';
+  }
+  if(!res.txns.length&&!internalLines.length){return'<div class="allsq">&#10003; All square — no payments needed</div>';}
+  if(res.txns.length){
+    h+='<div class="stl-t">Who Pays Who</div>';
+    res.txns.forEach(function(t){
+      var fn=((pl.find(function(p){return p.id===t.from;})||A.players.find(function(p){return p.id===t.from;})||{}).name)||t.from;
+      var tn=((pl.find(function(p){return p.id===t.to;})||A.players.find(function(p){return p.id===t.to;})||{}).name)||t.to;
+      h+='<div class="txn"><span><span class="rrd fw7">'+esc(fn)+'</span><span style="color:var(--t3);margin:0 7px">&rarr;</span><span class="grn fw7">'+esc(tn)+'</span></span><span class="gld fw7">Rs.'+t.amount.toLocaleString('en-IN')+'</span></div>';
+    });
+  }
+  return h;
+}
+
+// ── Claude AI ─────────────────────────────────────────────────
+function callClaude(prompt,onChunk,onDone,onErr){
+  if(!A.apiKey){onErr('No API key. Go to Settings tab and add your Claude API key.');return;}
+  fetch('https://api.anthropic.com/v1/messages',{
+    method:'POST',
+    headers:{'Content-Type':'application/json','x-api-key':A.apiKey,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
+    body:JSON.stringify({model:'claude-haiku-4-5-20251001',max_tokens:1000,stream:true,messages:[{role:'user',content:prompt}]})
+  }).then(function(res){
+    if(!res.ok){return res.json().then(function(e){onErr((e.error&&e.error.message)||'API error '+res.status);});}
+    var reader=res.body.getReader(),decoder=new TextDecoder(),buf='';
+    function read(){
+      reader.read().then(function(r){
+        if(r.done){onDone();return;}
+        buf+=decoder.decode(r.value,{stream:true});
+        var lines=buf.split('\n');buf=lines.pop();
+        lines.forEach(function(line){if(!line.startsWith('data:'))return;try{var j=JSON.parse(line.slice(5).trim());if(j.type==='content_block_delta'&&j.delta&&j.delta.text)onChunk(j.delta.text);}catch(e){}});
+        read();
+      }).catch(function(e){onErr(e.message);});
+    }
+    read();
+  }).catch(function(e){onErr(e.message);});
+}
+
+function buildSessPrompt(s,sHands){
+  var pl=s.players||A.players;
+  var lines=pl.map(function(p){var r=(s.results&&s.results[p.id])||0;var note=s.sessionNotes&&s.sessionNotes[p.id];return p.name+': '+(s.buyins&&s.buyins[p.id]||0)+' buyins, P&L='+rs(r)+(note?' | '+note:'');});
+  var handSummary='';
+  if(sHands&&sHands.length){
+    var stats={};A.players.forEach(function(p){stats[p.id]={r:0,f:0,c:0,w:0,t:0};});
+    sHands.forEach(function(h){[h.pre||{},h.flop||{},h.turn||{},h.river||{}].forEach(function(st){Object.keys(st).forEach(function(pid){if(!stats[pid])stats[pid]={r:0,f:0,c:0,w:0,t:0};var a=(st[pid].action||'').toLowerCase();stats[pid].t++;if(a==='raise'||a==='all-in')stats[pid].r++;else if(a==='fold')stats[pid].f++;else if(a==='call')stats[pid].c++;});});if(h.winner&&stats[h.winner])stats[h.winner].w++;});
+    handSummary='HAND DATA ('+sHands.length+' hands):\n';
+    A.players.forEach(function(p){var st=stats[p.id];if(!st||!st.t)return;handSummary+=p.name+': '+st.t+' actions, '+st.r+' raises, '+st.f+' folds, '+st.w+' pots won\n';});
+  }
+  var hist=A.sessions.filter(function(x){return x.status!=='active'&&x.id!==s.id;}).slice(0,4).map(function(h){var pl2=h.players||A.players;return(h.date||'')+': '+pl2.map(function(p){return p.name+'='+rs((h.results&&h.results[p.id])||0);}).join(', ');}).join('\n');
+  var profStr=A.players.map(function(p){return A.aiProfiles[p.id]?p.name+': '+A.aiProfiles[p.id]:'';}).filter(Boolean).join('\n');
+  return'You are an elite poker coach.\n\nDATE: '+s.date+'\nBUYIN: Rs.'+(s.buyinAmt||500)+'\n\nRESULTS:\n'+lines.join('\n')+'\n\n'+handSummary+(s.notes?'NOTES: '+s.notes+'\n\n':'')+(hist?'HISTORY:\n'+hist+'\n\n':'')+(profStr?'PROFILES:\n'+profStr+'\n\n':'')+'Provide:\n1. KUNAL COACHING (4-5 lines): patterns from hand data and P&L. One concrete adjustment.\n2. PLAYER UPDATES (one line each "Name: note"): tendencies revealed today.\n3. TABLE READS (3-4 lines): exact exploits for next session.\nBe specific and reference actual numbers.';
+}
+
+function profilePrompt(pid){
+  var player=A.players.find(function(p){return p.id===pid;});if(!player)return null;
+  var sess=A.sessions.filter(function(s){return s.status!=='active'&&s.results&&s.results[pid]!==undefined;});if(!sess.length)return null;
+  var hs={r:0,f:0,c:0,w:0,t:0};
+  A.hands.forEach(function(h){[h.pre||{},h.flop||{},h.turn||{},h.river||{}].forEach(function(st){if(st[pid]){var a=(st[pid].action||'').toLowerCase();hs.t++;if(a==='raise'||a==='all-in')hs.r++;else if(a==='fold')hs.f++;else if(a==='call')hs.c++;}});if(h.winner===pid)hs.w++;});
+  return'You are an elite poker coach. PLAYER: '+player.name+'\nNOTES: '+(A.notes[pid]||'None')+'\nSTATS: '+hs.t+' actions, '+hs.r+' raises ('+(hs.t?Math.round(hs.r/hs.t*100):0)+'%), '+hs.f+' folds, '+hs.c+' calls, '+hs.w+' pots won\n\nSESSIONS:\n'+sess.map(function(s){return(s.date||'')+': '+(s.buyins&&s.buyins[pid]||0)+'x, P&L='+rs((s.results&&s.results[pid])||0);}).join('\n')+'\n\nWrite a 5-6 line STAR profile: showdown tendencies, raise frequency meaning, fold patterns, key exploit, warning. Under 120 words.';
+}
+
+function extractUpdates(text,players){
+  var lines=text.split('\n');var inSec=false;
+  lines.forEach(function(line){
+    if(/PLAYER UPDATES/i.test(line)){inSec=true;return;}
+    if(/TABLE READS|KUNAL COACHING/i.test(line)&&inSec){inSec=false;return;}
+    if(!inSec||!line.trim())return;
+    players.forEach(function(p){
+      var re=new RegExp('^-?\\s*'+p.name.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')+'\\s*[:\\-]\\s*','i');
+      if(re.test(line)){var note=line.replace(re,'').trim();var date=new Date().toLocaleDateString('en-IN');if(note){A.aiProfiles[p.id]=(A.aiProfiles[p.id]?A.aiProfiles[p.id]+'\n':'')+'['+date+'] '+note;saveMeta('aiProfile_'+p.id,A.aiProfiles[p.id]);}}
+    });
+  });
+}
+
+// ── Firestore ─────────────────────────────────────────────────
+function sortByTs(arr){
+  return arr.sort(function(a,b){
+    var ta=a.createdAt?(a.createdAt.toMillis?a.createdAt.toMillis():a.createdAt.seconds*1000):0;
+    var tb=b.createdAt?(b.createdAt.toMillis?b.createdAt.toMillis():b.createdAt.seconds*1000):0;
+    return tb-ta;
+  });
+}
+
+async function saveSess(data){
+  sync('saving');
+  try{
+    if(data.id){var id=data.id;var d={};Object.keys(data).forEach(function(k){if(k!=='id')d[k]=data[k];});await setDoc(doc(A.db,'sessions',id),d);}
+    else{data.createdAt=serverTimestamp();var ref=await addDoc(collection(A.db,'sessions'),data);data.id=ref.id;}
+    sync('ok');return data;
+  }catch(e){sync('err');throw e;}
+}
+async function delSess(id){sync('saving');try{await deleteDoc(doc(A.db,'sessions',id));sync('ok');}catch(e){sync('err');}}
+async function saveHand(data){
+  try{
+    if(data.id){var id=data.id;var d={};Object.keys(data).forEach(function(k){if(k!=='id')d[k]=data[k];});await setDoc(doc(A.db,'hands',id),d);return data;}
+    var ref=await addDoc(collection(A.db,'hands'),data);data.id=ref.id;return data;
+  }catch(e){console.error('saveHand',e);}
+}
+async function savePlayer(p){try{await setDoc(doc(A.db,'players',p.id),p);}catch(e){console.error(e);}}
+async function saveMeta(key,val){try{await setDoc(doc(A.db,'meta',key),{value:val,updatedAt:serverTimestamp()});}catch(e){console.error(e);}}
+async function savePlayerNote(pid,note){A.notes[pid]=note;await saveMeta('note_'+pid,note);}
+
+function startListeners(){
+  onSnapshot(collection(A.db,'sessions'),function(snap){
+    A._listenerFired=true;
+    if(A._connectTimer){clearTimeout(A._connectTimer);A._connectTimer=null;}
+    A.sessions=sortByTs(snap.docs.map(function(d){var x=d.data();x.id=d.id;return x;}));
+    var active=A.sessions.find(function(s){return s.status==='active';});
+    if(active){if(A.activeSessId!==active.id){A.activeSessId=active.id;A.liveBuyins=JSON.parse(JSON.stringify(active.buyins||{}));}}
+    else A.activeSessId=null;
+    render();sync('ok');
+  },function(e){console.error('sessions listener error:',e.code,e.message);sync('err','DB error: '+e.code);if(!A._listenerFired)showFatalError('Firestore error: '+e.code+(e.code==='permission-denied'?' — your security rules likely expired. Open Firebase Console → Firestore → Rules and republish.':' — '+e.message));});
+
+  onSnapshot(collection(A.db,'hands'),function(snap){
+    A._listenerFired=true;
+    A.hands=sortByTs(snap.docs.map(function(d){var x=d.data();x.id=d.id;return x;}));
+    render();
+  },function(e){console.error('hands listener:',e.code);});
+
+  onSnapshot(collection(A.db,'players'),function(snap){
+    A._listenerFired=true;
+    if(!snap.empty)A.players=snap.docs.map(function(d){var x=d.data();x.id=d.id;return x;}).sort(function(a,b){return(a.order||0)-(b.order||0);});
+    render();
+  },function(e){console.error('players listener:',e.code);});
+
+  onSnapshot(collection(A.db,'meta'),function(snap){
+    A._listenerFired=true;
+    snap.docs.forEach(function(d){var key=d.id,val=d.data().value;if(key.startsWith('note_'))A.notes[key.slice(5)]=val;else if(key.startsWith('aiProfile_'))A.aiProfiles[key.slice(10)]=val;});
+    render();
+  },function(e){console.error('meta listener:',e.code);});
+}
+
+async function seedPlayers(){
+  var snap=await getDocs(collection(A.db,'players'));
+  if(!snap.empty){
+    A.players=snap.docs.map(function(d){var x=d.data();x.id=d.id;return x;}).sort(function(a,b){return(a.order||0)-(b.order||0);});
+    // One-time rename migration for old default names
+    var renames={'Nit Guy':'Preetish','Aggro Guy':'Pranav','Girl 1':'Sakshi','Girl 2':'Japneet'};
+    var migrated=false;
+    for(var k=0;k<A.players.length;k++){var pp=A.players[k];if(renames[pp.name]){pp.name=renames[pp.name];await savePlayer(pp);migrated=true;}}
+    if(migrated)console.log('Renamed legacy default players.');
+    return;
+  }
+  var defs=[{id:'p1',name:'Kunal',order:0},{id:'p2',name:'Preetish',order:1},{id:'p3',name:'Pranav',order:2},{id:'p4',name:'Sakshi',order:3},{id:'p5',name:'Japneet',order:4}];
+  var defN={p1:'Hero. Improving every session.',p2:'Only plays strong hands. Folds to small raises. When he calls believe him.',p3:'Bets frequently. Moderate bluffer. Let him bluff into you.',p4:'Calls everything. Shows sets, straights. NEVER bluff her.',p5:'Calls only with a pair. Bluff on high boards she missed.'};
+  for(var i=0;i<defs.length;i++){await savePlayer(defs[i]);await savePlayerNote(defs[i].id,defN[defs[i].id]);}
+  A.players=defs;Object.keys(defN).forEach(function(k){A.notes[k]=defN[k];});
+}
+
+// ── Init ──────────────────────────────────────────────────────
+function showSetupErr(msg){var e=el('setup-err');if(e){e.style.display='block';e.textContent=msg;}}
+
+async function initApp(config){
+  try{
+    // Prevent "duplicate app" error if Firebase was already initialized (happens on reload/reopen)
+    var fbApp=A._fbApp||(A._fbApp=getApps().length?getApp():initializeApp(config));
+    A.db=A.db||getFirestore(fbApp);
+    el('setup-pg').style.display='none';
+    el('main-pg').style.display='block';
+    sync('saving','Connecting...');
+    buildNav();
+    el('btn-new').addEventListener('click',openStartModal);
+    el('mover').addEventListener('click',function(e){if(e.target===el('mover'))closeModal();});
+    // Render immediately with whatever (likely empty) state we have so the user isn't stuck on a spinner
+    // If listeners fail or are slow, the dashboard / empty state still shows up and the bottom nav is usable
+    render();
+    // Start realtime listeners — they re-render when data arrives
+    startListeners();
+    // Seed default players in background
+    seedPlayers().catch(function(e){console.error('seed:',e);});
+    // Failsafe: if no listener has fired in 8s, show a recovery prompt instead of staying stuck
+    A._connectStart=Date.now();
+    A._connectTimer=setTimeout(function(){
+      if(!A._listenerFired){showConnectionTrouble();}
+    },8000);
+  }catch(e){
+    // Setup page is already hidden — show error in main page instead so user can recover
+    showFatalError('Connection failed: '+e.message);
+  }
+}
+
+function showFatalError(msg){
+  var pg=el('pg');
+  if(pg){
+    pg.innerHTML='<div style="text-align:center;padding:60px 20px;color:var(--t2)"><div style="font-size:44px;margin-bottom:12px;color:var(--red)">&#9888;</div><div style="font-size:15px;font-weight:700;color:var(--cream);margin-bottom:8px">Could Not Connect</div><div style="font-size:13px;color:var(--t3);margin-bottom:24px;line-height:1.6">'+esc(msg)+'</div><button class="btn bd" id="reset-cfg" style="margin-bottom:8px">Reset Firebase Config</button><div style="font-size:11px;color:var(--t4);margin-top:12px;line-height:1.6">Tip: if Firestore rules expired, go to Firebase Console &rarr; Firestore &rarr; Rules and republish in test mode.</div></div>';
+    var rb=el('reset-cfg');if(rb)rb.addEventListener('click',function(){localStorage.removeItem('pkl-fbconfig');location.reload();});
+  }
+  // Also show a setup error if setup is visible
+  var se=el('setup-err');if(se){se.style.display='block';se.textContent=msg;}
+}
+
+function showConnectionTrouble(){
+  // Only override the page if we're still showing the empty/loading state and no real data has arrived
+  if(A._listenerFired)return;
+  var pg=el('pg');if(!pg)return;
+  // If user already navigated and rendered a real page, don't overwrite
+  if(pg.innerHTML.indexOf('Connecting')<0 && A.players.length>0)return;
+  pg.innerHTML='<div style="text-align:center;padding:60px 20px;color:var(--t2)"><div style="font-size:44px;margin-bottom:12px;color:var(--gold)">&#9888;</div><div style="font-size:15px;font-weight:700;color:var(--cream);margin-bottom:8px">Connection Slow or Failed</div><div style="font-size:13px;color:var(--t3);margin-bottom:18px;line-height:1.6">Firestore is not responding. Most common cause: <strong style="color:var(--gold)">test-mode rules expired</strong> (they auto-expire 30 days after enabling).</div><div style="background:rgba(0,0,0,.2);border:1px solid var(--cbr);border-radius:10px;padding:12px;font-size:11px;color:var(--t3);text-align:left;line-height:1.7;margin-bottom:18px">1. Open Firebase Console<br>2. Firestore Database &rarr; Rules tab<br>3. Set: <code style="color:var(--gold)">allow read, write: if true;</code><br>4. Click Publish<br>5. Reload this page</div><button class="btn bg fw" id="retry-btn" style="margin-bottom:8px">Retry Connection</button><button class="btn bd fw" id="reset-cfg2">Reset Firebase Config</button></div>';
+  var rt=el('retry-btn');if(rt)rt.addEventListener('click',function(){location.reload();});
+  var rb=el('reset-cfg2');if(rb)rb.addEventListener('click',function(){localStorage.removeItem('pkl-fbconfig');location.reload();});
+}
+
+function parseConfig(raw){
+  // Strips JS comments, quotes unquoted keys, fixes trailing commas
+  var s=raw.trim();
+  // If it looks like JS object literal wrap it
+  s=s.replace(/\/\/[^\n]*/g,'');
+  s=s.replace(/\/\*[\s\S]*?\*\//g,'');
+  // Quote unquoted keys
+  s=s.replace(/([{,]\s*)([A-Za-z_]\w*)\s*:/g,'$1"$2":');
+  // Single to double quotes
+  s=s.replace(/'/g,'"');
+  // Remove trailing commas
+  s=s.replace(/,(\s*[}\]])/g,'$1');
+  // Extract just the object if there is surrounding code
+  var match=s.match(/\{[\s\S]*\}/);
+  if(match)s=match[0];
+  return JSON.parse(s);
+}
+
+// ── Navigation ────────────────────────────────────────────────
+var TABS=[{id:'dashboard',label:'Home',icon:'&#9824;'},{id:'live',label:'Live',icon:'&#127183;'},{id:'sessions',label:'Sessions',icon:'&#9830;'},{id:'leaderboard',label:'Leaders',icon:'&#127942;'},{id:'players',label:'Players',icon:'&#128100;'},{id:'settings',label:'Settings',icon:'&#9881;'}];
+
+// Try auto-connect from saved config
+var _savedCfg=lsGet('pkl-fbconfig');
+if(_savedCfg){
+  el('setup-pg').style.display='none';
+  el('main-pg').style.display='block';
+  el('main-pg').querySelector('#pg').innerHTML='<div style="text-align:center;padding:80px 20px;color:var(--t3)"><div style="font-size:44px;margin-bottom:12px">&#9824;</div><div>Connecting...</div></div>';
+  initApp(_savedCfg);
+}
+
+// Connect button
+el('connect-btn').addEventListener('click',function(){
+  var raw=(el('fb-cfg').value||'').trim();
+  var aiKey=(el('ai-key-input').value||'').trim();
+  el('setup-err').style.display='none';
+  if(!raw){showSetupErr('Please paste your Firebase config first.');return;}
+  try{
+    var config=parseConfig(raw);
+    if(!config.apiKey||!config.projectId){throw new Error('Config is missing apiKey or projectId. Copy the full firebaseConfig object.');}
+    lsSet('pkl-fbconfig',config);
+    if(aiKey&&aiKey.startsWith('sk-ant')){lsSet('pkl-aikey',aiKey);A.apiKey=aiKey;}
+    initApp(config);
+  }catch(e){
+    showSetupErr('Could not read config: '+e.message+'\n\nMake sure you copied the full firebaseConfig object including the curly braces.');
+  }
+});
+
+function buildNav(){
+  var bnav=el('bnav');var hasActive=!!A.activeSessId;
+  bnav.innerHTML=TABS.map(function(t){var isLive=t.id==='live';return'<button class="bnav-btn'+(A.tab===t.id?' on':'')+'" data-tab="'+t.id+'"><span class="bnav-icon">'+t.icon+'</span>'+(isLive&&hasActive?'<span class="live-badge"></span>':'')+t.label+'</button>';}).join('');
+  bnav.querySelectorAll('[data-tab]').forEach(function(btn){btn.addEventListener('click',function(){A.tab=btn.dataset.tab;buildNav();render();});});
+}
+
+function render(){
+  var pg=el('pg');if(!pg)return;
+  if(A.tab==='dashboard')pg.innerHTML=pgDash();
+  else if(A.tab==='live'){pg.innerHTML=pgLive();bindLive();}
+  else if(A.tab==='sessions'){pg.innerHTML=pgSessions();bindSessBtns();}
+  else if(A.tab==='leaderboard')pg.innerHTML=pgLeader();
+  else if(A.tab==='players'){pg.innerHTML=pgPlayers();bindPlayers();}
+  else if(A.tab==='settings'){pg.innerHTML=pgSettings();bindSettings();}
+}
+
+// ── Dashboard ─────────────────────────────────────────────────
+function pgDash(){
+  var myP=A.players.find(function(p){return p.name==='Kunal';})||A.players[0];
+  var mid=myP?myP.id:'';
+  var done=A.sessions.filter(function(s){return s.status!=='active';});
+  var total=0,wins=0,n=done.length,best=0,worst=0;
+  done.forEach(function(s){var r=(s.results&&s.results[mid])||0;total+=r;if(r>0)wins++;if(r>best)best=r;if(r<worst)worst=r;});
+  var cd=[],run=0;[].concat(done).reverse().slice(-12).forEach(function(s){run+=(s.results&&s.results[mid])||0;cd.push({date:s.date,r:run});});
+  var maxV=1;cd.forEach(function(d){if(Math.abs(d.r)>maxV)maxV=Math.abs(d.r);});
+  var chartH='';
+  if(cd.length>1){
+    var col=total>=0?'#4a9e5c':'#c94a4a';
+    var pts=cd.map(function(d,i){return i+','+(50-(d.r/maxV)*44);}).join(' ');
+    var dots=cd.map(function(d,i){return'<circle cx="'+i+'" cy="'+(50-(d.r/maxV)*44)+'" r="2.5" fill="'+(d.r>=0?'#4a9e5c':'#c94a4a')+'"/>';}).join('');
+    chartH='<div class="card" style="margin-bottom:12px"><div class="ct">Running P&amp;L</div><div class="ch-wrap"><div class="ch-zero"></div><svg width="100%" height="100%" viewBox="0 0 '+(cd.length-1)+' 100" preserveAspectRatio="none"><polyline points="'+pts+'" fill="none" stroke="'+col+'" stroke-width="0.6" vector-effect="non-scaling-stroke"/>'+dots+'</svg></div><div class="ch-lbls">'+cd.map(function(d){return'<span style="font-size:9px;color:var(--t4)">'+(d.date||'').slice(5)+'</span>';}).join('')+'</div></div>';
+  }
+  var lastR=n?(done[0].results&&done[0].results[mid]||0):0;
+  var heroH='<div class="hero"><div style="display:flex;align-items:center;gap:12px;margin-bottom:12px">'+(myP?avH(myP,'av-lg'):'')+'<div><div class="hero-lbl">'+(n?n+' Sessions':'No sessions yet')+'</div><div style="font-size:22px;font-weight:900;color:var(--cream)">'+(myP?esc(myP.name):'')+'</div></div></div><div class="hero-lbl">Lifetime P&amp;L</div><div class="hero-amt '+(total>=0?'grn':'rrd')+'">'+(total>=0?'+':'')+'Rs.'+Math.abs(Math.round(total)).toLocaleString('en-IN')+'</div>'+(lastR&&n?'<div class="hchg '+(lastR>=0?'pos':'neg')+'">'+(lastR>=0?'+':'')+rs(lastR)+' last session</div>':'')+'</div>';
+  var statsH='<div class="pills"><div class="pill"><div class="pill-l">Win Rate</div><div class="pill-v gld">'+(n?Math.round(wins/n*100)+'%':'—')+'</div></div><div class="pill"><div class="pill-l">Best</div><div class="pill-v grn">'+(n?rs(best):'—')+'</div></div><div class="pill"><div class="pill-l">Worst</div><div class="pill-v rrd">'+(n?rs(worst):'—')+'</div></div><div class="pill"><div class="pill-l">Avg</div><div class="pill-v" style="color:var(--t2)">'+(n?rs(Math.round(total/n)):'—')+'</div></div><div class="pill"><div class="pill-l">Hands</div><div class="pill-v gld">'+A.hands.length+'</div></div></div>';
+  var activeSess=A.sessions.find(function(s){return s.status==='active';});
+  var activeH=activeSess?'<div class="act-banner"><div><div style="font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);margin-bottom:4px"><span class="live-dot"></span>Game In Progress</div><div style="font-size:14px;font-weight:700;color:var(--cream)">'+(activeSess.date||'')+'</div><div style="font-size:11px;color:var(--t3)">Rs.'+(activeSess.buyinAmt||500)+'/buyin &middot; '+((activeSess.players||[]).length)+' players</div></div><button class="btn bg" id="go-live-dash" style="padding:9px 14px;font-size:12px">Go Live &rarr;</button></div>':'';
+  var recH=n?'<div class="card"><div class="ct g">Recent Sessions</div>'+done.slice(0,4).map(function(s){var r=(s.results&&s.results[mid])||0;var hc=A.hands.filter(function(h){return h.sessionId===s.id;}).length;return'<div style="display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--cbr)"><div><div style="font-size:13px;color:var(--cream);font-weight:700">'+(s.date||'')+'</div><div style="font-size:11px;color:var(--t3);margin-top:1px">Rs.'+(s.buyinAmt||500)+'/buyin'+(hc?' &middot; '+hc+' hands':'')+'</div></div><span class="'+(r>=0?'grn':'rrd')+' fw7" style="font-size:15px">'+rs(r)+'</span></div>';}).join('')+'</div>'
+    :'<div class="empty"><div class="empty-ic">&#9824;</div><div>No sessions yet.<br>Tap + Session to start.</div></div>';
+  // Tendency summary
+  var tendH='';
+  if(A.hands.length>4){
+    var stats={};A.players.forEach(function(p){stats[p.id]={r:0,f:0,c:0,w:0,t:0};});
+    A.hands.forEach(function(h){[h.pre||{},h.flop||{},h.turn||{},h.river||{}].forEach(function(st){Object.keys(st).forEach(function(pid){if(!stats[pid])return;var a=(st[pid].action||'').toLowerCase();stats[pid].t++;if(a==='raise'||a==='all-in')stats[pid].r++;else if(a==='fold')stats[pid].f++;else if(a==='call')stats[pid].c++;});});if(h.winner&&stats[h.winner])stats[h.winner].w++;});
+    tendH='<div class="card"><div class="ct g">&#128200; Tendency Summary</div>';
+    A.players.forEach(function(p){
+      var st=stats[p.id];if(!st||st.t<3)return;
+      var rp=Math.round(st.r/st.t*100);var fp=Math.round(st.f/st.t*100);
+      tendH+='<div class="tend-card"><div style="display:flex;align-items:center;gap:8px;margin-bottom:7px">'+avH(p,'av-sm')+'<span style="font-size:13px;font-weight:700;color:var(--cream)">'+esc(p.name)+'</span></div>'
+        +'<div class="tend-stat"><span class="tl">Raise frequency</span><span class="tv '+(rp>40?'gld':'')+'">'+(rp>40?'High':'Medium/Low')+' ('+rp+'%)</span></div>'
+        +'<div class="tend-stat"><span class="tl">Fold frequency</span><span class="tv">'+(fp>50?'Folds a lot':'Rarely folds')+' ('+fp+'%)</span></div>'
+        +'<div class="tend-stat"><span class="tl">Pots won</span><span class="tv gld">'+st.w+' of '+A.hands.length+'</span></div>'
+        +'</div>';
+    });
+    tendH+='</div>';
+  }
+  return heroH+statsH+activeH+chartH+recH+tendH;
+}
+
+// ── START SESSION ─────────────────────────────────────────────
+function openStartModal(){
+  var existing=A.sessions.find(function(s){return s.status==='active';});
+  if(existing){if(confirm('Active session on '+existing.date+' exists.\nOK = Go to Live tab\nCancel = Do nothing')){A.tab='live';buildNav();render();}return;}
+  A.sf={playerIds:A.players.map(function(p){return p.id;}),guests:[],buyinAmt:500,date:new Date().toISOString().split('T')[0]};
+  drawStartModal();
+}
+
+function drawStartModal(){
+  var sf=A.sf;
+  var playerRows=A.players.map(function(p){
+    var on=sf.playerIds.indexOf(p.id)>-1;
+    return'<div class="pl-tgl'+(on?' on':' off')+'" data-ptgl="'+p.id+'"><div style="display:flex;align-items:center;gap:10px">'+avH(p,'av-sm')+'<span style="font-size:13px;font-weight:700;color:var(--cream)">'+esc(p.name)+'</span></div><div class="tgl'+(on?' on':'')+'"></div></div>';
+  }).join('');
+  var guestRows=sf.guests.map(function(g,i){return'<div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;background:rgba(139,92,246,.08);border:1px solid rgba(139,92,246,.2);border-radius:10px;padding:8px 12px"><span style="font-size:13px;color:var(--cream);flex:1">'+esc(g)+'</span><button class="rmg" data-rmg="'+i+'">&#10005;</button></div>';}).join('');
+  el('mbox').innerHTML='<div class="mt">&#9824; Start Session</div>'
+    +'<div class="fg2"><div><label class="fl">Date</label><input type="date" id="sf-date" value="'+sf.date+'"></div><div><label class="fl">Buyin Rs.</label><input type="number" id="sf-amt" value="'+sf.buyinAmt+'"></div></div>'
+    +'<div class="ct g" style="margin-bottom:10px">Who is playing today?</div>'
+    +playerRows
+    +(guestRows?'<div style="margin-top:8px">'+guestRows+'</div>':'')
+    +'<div id="gzone" style="margin-top:8px;margin-bottom:14px"></div>'
+    +'<div style="background:rgba(201,168,76,.08);border:1px solid rgba(201,168,76,.2);border-radius:10px;padding:12px;margin-bottom:16px;font-size:12px;color:var(--t2);line-height:1.6">&#9432; After starting go to <strong style="color:var(--gold)">Live tab</strong> to log hands &amp; rebuys. Tap <strong style="color:var(--gold)">End Session</strong> when the game finishes to enter cashouts.</div>'
+    +'<div class="row2"><button class="btn bd" id="sf-cancel">Cancel</button><button class="btn bg" id="sf-start" style="flex:2">&#127183; Start Session</button></div>';
+  el('mover').classList.add('show');
+  showGuestZone();
+  // Bind toggles
+  document.querySelectorAll('[data-ptgl]').forEach(function(row){row.addEventListener('click',function(){var pid=row.dataset.ptgl;var idx=sf.playerIds.indexOf(pid);if(idx>-1)sf.playerIds.splice(idx,1);else sf.playerIds.push(pid);drawStartModal();});});
+  document.querySelectorAll('[data-rmg]').forEach(function(btn){btn.addEventListener('click',function(){sf.guests.splice(parseInt(btn.dataset.rmg),1);drawStartModal();});});
+  el('sf-date').addEventListener('change',function(){sf.date=this.value;});
+  el('sf-amt').addEventListener('change',function(){sf.buyinAmt=Number(this.value)||500;});
+  el('sf-cancel').addEventListener('click',closeModal);
+  el('sf-start').addEventListener('click',doStartSession);
+}
+
+function showGuestZone(){
+  var gz=el('gzone');if(!gz)return;
+  gz.innerHTML='<button class="dsh" id="add-g-btn">+ Add Guest Player</button>';
+  el('add-g-btn').addEventListener('click',function(){
+    gz.innerHTML='<div class="ginput"><input type="text" id="g-in" placeholder="Guest name..."><button class="btn bg" id="g-ok" style="padding:10px 14px;white-space:nowrap">Add</button><button class="btn bd" id="g-x" style="padding:10px 12px">&#10005;</button></div>';
+    el('g-in').focus();
+    el('g-ok').addEventListener('click',function(){var n=(el('g-in').value||'').trim();if(n){A.sf.guests.push(n);drawStartModal();}});
+    el('g-in').addEventListener('keydown',function(e){if(e.key==='Enter'){var n=(el('g-in').value||'').trim();if(n){A.sf.guests.push(n);drawStartModal();}}});
+    el('g-x').addEventListener('click',showGuestZone);
+  });
+}
+
+async function doStartSession(){
+  var sf=A.sf;
+  var fd=el('sf-date');if(fd)sf.date=fd.value;
+  var fa=el('sf-amt');if(fa)sf.buyinAmt=Number(fa.value)||500;
+  if(!sf.playerIds.length&&!sf.guests.length){alert('Select at least one player.');return;}
+  var sessionPlayers=[];
+  sf.playerIds.forEach(function(pid){var p=A.players.find(function(x){return x.id===pid;});if(p)sessionPlayers.push({id:p.id,name:p.name});});
+  sf.guests.forEach(function(name){sessionPlayers.push({id:uid(),name:name,isGuest:true});});
+  var buyins={};sessionPlayers.forEach(function(p){buyins[p.id]=1;});
+  closeModal();
+  var saved=await saveSess({date:sf.date,buyinAmt:sf.buyinAmt,players:sessionPlayers,buyins:buyins,sessionNotes:{},notes:'',results:{},status:'active',createdAt:serverTimestamp()});
+  if(saved&&saved.id){A.activeSessId=saved.id;A.liveBuyins=JSON.parse(JSON.stringify(buyins));A.lh={step:'dealer',dealer:null,pre:{},flop:{},turn:{},river:{},fc:[null,null,null],tc:null,rc:null,winner:null,hcards:{},count:0};A.tab='live';buildNav();render();}
+}
+
+// ── LIVE TAB ──────────────────────────────────────────────────
+function getActSess(){return A.sessions.find(function(s){return s.id===A.activeSessId;})||null;}
+function getLivePl(){var s=getActSess();return s?s.players:[];}
+
+function pgLive(){
+  var lh=A.lh;var sess=getActSess();
+  if(!A.activeSessId||!sess)return'<div class="empty"><div class="empty-ic">&#127183;</div><div>No active session.<br>Tap + Session to start a game.</div></div>';
+  var pl=getLivePl();
+  var sessHands=A.hands.filter(function(h){return h.sessionId===A.activeSessId;});
+  var h='<div class="live-hdr"><div style="display:flex;align-items:center;justify-content:space-between"><div><div style="font-size:11px;color:var(--t3);margin-bottom:2px"><span class="live-dot"></span>LIVE &middot; '+esc(sess.date)+'</div><div style="font-size:13px;color:var(--t2)">Rs.'+(sess.buyinAmt||500)+'/buyin &middot; '+pl.length+' players</div></div><div style="text-align:right"><div class="hand-num">'+(lh.count+1)+'</div><div class="hand-sub">Hand #</div></div></div></div>';
+  // Rebuy tracker
+  h+='<div class="card"><div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px"><div class="ct g" style="margin-bottom:0">&#128260; Rebuy Tracker</div><button class="btn bd" style="padding:6px 10px;font-size:11px" id="add-late-btn">+ Add Player</button></div>';
+  pl.forEach(function(p){var cnt=A.liveBuyins[p.id]||1;var inv=cnt*(sess.buyinAmt||500);var hasNote=!!(A.notes[p.id]&&A.notes[p.id].trim());h+='<div class="rebuy-row"><div class="rebuy-left">'+avH(p,'av-sm')+'<div><div class="rebuy-name">'+esc(p.name)+'</div><div class="rebuy-invested">'+cnt+'&times; buyin &middot; Rs.'+inv.toLocaleString('en-IN')+'</div></div></div><div style="display:flex;align-items:center;gap:6px"><button class="lnote-btn'+(hasNote?' has':'')+'" data-lnote="'+p.id+'" title="Add note">&#128221;</button><div class="stp"><button class="sb" data-dec="'+p.id+'">&#8722;</button><span class="sv" id="lsv-'+p.id+'">'+cnt+'</span><button class="sb" data-inc="'+p.id+'">+</button></div><button class="rmlive-btn" data-rmlive="'+p.id+'" title="Remove from session">&#10005;</button></div></div>';});
+  h+='</div>';
+  // Hand logger
+  h+='<div class="card"><div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px"><div class="ct g" style="margin-bottom:0">Hand Logger</div><button class="btn bd" style="padding:6px 10px;font-size:11px" id="skip-btn">Skip Hand</button></div>';
+  var stepIdx=['dealer','preflop','flop','turn','river','showdown'].indexOf(lh.step);
+  h+='<div class="street-bar">';['Dealer','Pre','Flop','Turn','River','Show'].forEach(function(s,i){h+='<div class="ss'+(i<stepIdx?' done':i===stepIdx?' active':'')+'" title="'+s+'"></div>';});h+='</div>';
+  if(lh.step==='dealer')h+=stepDealer(pl);
+  else if(lh.step==='preflop')h+=stepActions('preflop','Preflop',ACTS_PRE,true,pl);
+  else if(lh.step==='flop')h+=stepFlop(pl);
+  else if(lh.step==='turn')h+=stepStreet('turn','Turn',lh.tc,pl);
+  else if(lh.step==='river')h+=stepStreet('river','River',lh.rc,pl);
+  else if(lh.step==='showdown')h+=stepShowdown(pl);
+  h+='</div>';
+  h+='<button class="btn br fw" id="end-sess-btn" style="margin-bottom:12px">&#9635; End Session &amp; Enter Cashouts</button>';
+  if(sessHands.length){h+='<div class="card"><div class="ct g">&#128221; Logged Hands ('+sessHands.length+')</div>';sessHands.slice(0,8).forEach(function(hand,idx){h+=handLogHTML(hand,idx,pl);});if(sessHands.length>8)h+='<div style="font-size:11px;color:var(--t3);text-align:center;padding:6px">+more above</div>';h+='</div>';}
+  return h;
+}
+
+function stepDealer(pl){
+  var lh=A.lh;
+  var h='<div class="slbl">&#9824; Who is dealing?</div><div class="dealer-grid">';
+  pl.forEach(function(p){var sel=lh.dealer===p.id;h+='<button class="dealer-btn" data-sd="'+p.id+'">'+avH(p,'av-md '+(sel?'av-sel':''))+'<span class="dealer-name">'+esc(p.name.split(' ')[0])+'</span>'+(sel?'<span style="font-size:9px;color:var(--gold)">&#9679;</span>':'')+'</button>';});
+  h+='</div><button class="btn bg fw" id="dealer-next">Preflop &rarr;</button>';
+  return h;
+}
+
+function stepActions(street,label,actions,isPre,pl){
+  var lh=A.lh;var key=street==='preflop'?'pre':street;var streetData=lh[key]||{};
+  var activePl=isPre?pl:pl.filter(function(p){return!lh.pre[p.id]||lh.pre[p.id].action!=='Fold';});
+  var h='<div class="slbl">'+label+'</div><div class="act-rows">';
+  activePl.forEach(function(p){
+    var cur=streetData[p.id]||{action:isPre?'Call':'Check'};
+    var showAmt=cur.action==='Raise'||cur.action==='Bet'||cur.action==='All-In';
+    h+='<div class="act-row" id="arow-'+street+'-'+p.id+'">'+avH(p,'av-sm')+'<span class="act-row-name">'+esc(p.name.split(' ')[0])+'</span><div style="display:flex;flex-direction:column;align-items:flex-end;gap:5px"><div class="act-btns">';
+    actions.forEach(function(a){var cls=cur.action===a?(' s'+{Fold:'f',Call:'l',Check:'c',Raise:'r',Bet:'b2',All:'a'}[a.slice(0,4)]||'c'):'';h+='<button class="abt2'+cls+'" data-ab="'+p.id+'" data-act="'+a+'" data-st="'+street+'">'+a+'</button>';});
+    h+='</div><input class="amt-inp'+(showAmt?' show':'')+'" id="amt-'+street+'-'+p.id+'" type="number" placeholder="Rs." value="'+(cur.amount||'')+'" data-af="'+p.id+'" data-st="'+street+'"></div></div>';
+  });
+  h+='</div>';
+  var prev={preflop:'dealer',flop:'preflop',turn:'flop',river:'turn',showdown:'river'}[street]||'dealer';
+  var next={preflop:'flop',flop:'turn',turn:'river',river:'showdown'}[street]||'showdown';
+  h+='<div style="display:flex;gap:8px"><button class="btn bd" style="flex:1;padding:12px" data-sg="'+prev+'">&larr; Back</button><button class="btn bg" style="flex:2;padding:12px" data-sg="'+next+'">'+(street==='river'?'Showdown':'Next')+' &rarr;</button></div>';
+  return h;
+}
+
+function stepFlop(pl){
+  var lh=A.lh;
+  var h='<div class="slbl">Flop Cards</div><div class="brd-cards">';
+  for(var i=0;i<3;i++){var c=lh.fc[i];h+=c?'<div class="pcard '+(c.r?'red':'blk')+'" data-pc="flop-'+i+'"><div class="cv">'+c.v+'</div><div class="cs">'+c.s+'</div></div>':'<div class="pcard empty" data-pc="flop-'+i+'">+</div>';}
+  h+='</div>';h+=stepActions('flop','Flop Actions',ACTS_POST,false,pl);return h;
+}
+function stepStreet(street,label,card,pl){
+  var h='<div class="slbl">'+label+' Card</div><div class="brd-cards">';
+  h+=card?'<div class="pcard '+(card.r?'red':'blk')+'" data-pc="'+street+'"><div class="cv">'+card.v+'</div><div class="cs">'+card.s+'</div></div>':'<div class="pcard empty" data-pc="'+street+'">+</div>';
+  h+='</div>';h+=stepActions(street,label+' Actions',ACTS_POST,false,pl);return h;
+}
+function stepShowdown(pl){
+  var lh=A.lh;var activePl=pl.filter(function(p){return!lh.pre[p.id]||lh.pre[p.id].action!=='Fold';});
+  var h='<div class="slbl">&#127942; Who won?</div><div class="winner-grid">';
+  activePl.forEach(function(p){h+='<button class="wbtn'+(lh.winner===p.id?' sel':'')+'" data-sw="'+p.id+'">'+avH(p,'av-sm')+'<span class="winner-name">'+esc(p.name.split(' ')[0])+'</span>'+(lh.winner===p.id?'<span style="font-size:9px;color:var(--gold)">&#127942;</span>':'')+'</button>';});
+  h+='</div><div class="ct g" style="margin-top:8px">Hole cards shown (optional)</div>';
+  pl.forEach(function(p){h+='<div class="hcard-row">'+avH(p,'av-sm')+'<span class="hcard-name">'+esc(p.name.split(' ')[0])+'</span><input class="hcard-inp" id="hc-'+p.id+'" placeholder="A&#9824; K&#9829;" value="'+(lh.hcards&&lh.hcards[p.id]||'')+'"></div>';});
+  h+='<div style="display:flex;gap:8px;margin-top:14px"><button class="btn bd" style="flex:1;padding:12px" data-sg="river">&larr;</button><button class="btn bg" style="flex:2;padding:12px" id="log-hand-btn">&#10003; Log Hand</button></div>';
+  return h;
+}
+
+function handLogHTML(hand,idx,pl){
+  pl=pl||getLivePl();
+  var nof=function(id){return((pl.find(function(p){return p.id===id;})||{}).name)||id;};
+  var h='<div class="hlog"><div class="hlog-hdr"><span>Hand #'+(hand.handNumber||idx+1)+'</span>'+(hand.dealer?'<span>'+esc(nof(hand.dealer))+' deals</span>':'')+'</div>';
+  var allC=[];if(hand.fc)hand.fc.forEach(function(c){if(c)allC.push(c);});if(hand.tc)allC.push(hand.tc);if(hand.rc)allC.push(hand.rc);
+  if(allC.length){h+='<div class="brd-mini">';allC.forEach(function(c){h+='<span class="mc '+(c.r?'red':'blk')+'">'+c.v+c.s+'</span>';});h+='</div>';}
+  ['pre','flop','turn','river'].forEach(function(street){var sd=hand[street];if(!sd||!Object.keys(sd).length)return;h+='<div class="sname">'+{pre:'PREFLOP',flop:'FLOP',turn:'TURN',river:'RIVER'}[street]+'</div>';Object.keys(sd).forEach(function(pid){var act=sd[pid];if(!act||!act.action)return;var a=act.action.toLowerCase().replace(/-/g,'');var cls={fold:'fld',call:'cll',check:'chk',raise:'rse',bet:'bet',allin:'ali'}[a]||'chk';h+='<span class="chip '+cls+'">'+esc(nof(pid).split(' ')[0])+' '+act.action+(act.amount?' Rs.'+act.amount:'')+'</span>';});});
+  if(hand.winner){var wc=(hand.hcards&&hand.hcards[hand.winner])?' ('+esc(hand.hcards[hand.winner])+')':'';h+='<div class="win-chip">&#127942; '+esc(nof(hand.winner))+' won'+wc+'</div>';}
+  if(hand.hcards)Object.keys(hand.hcards).forEach(function(pid){if(pid!==hand.winner&&hand.hcards[pid])h+='<span style="font-size:10px;color:var(--t3);margin-left:6px">'+esc(nof(pid).split(' ')[0])+': '+esc(hand.hcards[pid])+'</span>';});
+  h+='</div>';return h;
+}
+
+function bindLive(){
+  var lh=A.lh;var pl=getLivePl();var sess=getActSess();if(!sess)return;
+  var goLiveBtn=el('go-live-dash');if(goLiveBtn)goLiveBtn.addEventListener('click',function(){A.tab='live';buildNav();render();});
+  // Rebuy steppers
+  document.querySelectorAll('[data-inc]').forEach(function(btn){btn.addEventListener('click',function(){var id=btn.dataset.inc;A.liveBuyins[id]=(A.liveBuyins[id]||1)+1;var sv=el('lsv-'+id);if(sv)sv.textContent=A.liveBuyins[id];updateLiveBuyins(sess);});});
+  document.querySelectorAll('[data-dec]').forEach(function(btn){btn.addEventListener('click',function(){var id=btn.dataset.dec;A.liveBuyins[id]=Math.max(1,(A.liveBuyins[id]||1)-1);var sv=el('lsv-'+id);if(sv)sv.textContent=A.liveBuyins[id];updateLiveBuyins(sess);});});
+  // Per-player note button (live)
+  document.querySelectorAll('[data-lnote]').forEach(function(btn){btn.addEventListener('click',function(){openNoteModal(btn.dataset.lnote);});});
+  // Remove player from session
+  document.querySelectorAll('[data-rmlive]').forEach(function(btn){btn.addEventListener('click',function(){removePlayerFromLive(btn.dataset.rmlive);});});
+  // Add late-joining player
+  var addLate=el('add-late-btn');if(addLate)addLate.addEventListener('click',openAddLateModal);
+  // Skip hand
+  var skipBtn=el('skip-btn');if(skipBtn)skipBtn.addEventListener('click',function(){A.lh={step:'dealer',dealer:null,pre:{},flop:{},turn:{},river:{},fc:[null,null,null],tc:null,rc:null,winner:null,hcards:{},count:lh.count+1};render();});
+  // Dealer
+  document.querySelectorAll('[data-sd]').forEach(function(btn){btn.addEventListener('click',function(){lh.dealer=btn.dataset.sd;render();});});
+  var dn=el('dealer-next');if(dn)dn.addEventListener('click',function(){lh.step='preflop';render();});
+  // Step nav
+  document.querySelectorAll('[data-sg]').forEach(function(btn){btn.addEventListener('click',function(){lh.step=btn.dataset.sg;render();});});
+  // Action buttons
+  document.querySelectorAll('[data-ab]').forEach(function(btn){
+    btn.addEventListener('click',function(){
+      var pid=btn.dataset.ab,act=btn.dataset.act,street=btn.dataset.st;var key=street==='preflop'?'pre':street;
+      if(!lh[key])lh[key]={};lh[key][pid]=lh[key][pid]||{};lh[key][pid].action=act;
+      var ai=el('amt-'+street+'-'+pid);if(ai){if(act==='Raise'||act==='Bet'||act==='All-In')ai.classList.add('show');else ai.classList.remove('show');}
+      var row=el('arow-'+street+'-'+pid);if(row){row.querySelectorAll('[data-ab="'+pid+'"]').forEach(function(b){var a2=b.dataset.act;var cls=a2===act?(' s'+{Fold:'f',Call:'l',Check:'c',Raise:'r',Bet:'b2',All:'a'}[a2.slice(0,4)]||'c'):'';b.className='abt2'+cls;});}
+    });
+  });
+  document.querySelectorAll('[data-af]').forEach(function(inp){inp.addEventListener('input',function(){var pid=inp.dataset.af,street=inp.dataset.st;var key=street==='preflop'?'pre':street;if(!lh[key])lh[key]={};if(!lh[key][pid])lh[key][pid]={};lh[key][pid].amount=inp.value;});});
+  // Cards
+  document.querySelectorAll('[data-pc]').forEach(function(btn){btn.addEventListener('click',function(){openCardPicker(btn.dataset.pc);});});
+  // Winner
+  document.querySelectorAll('[data-sw]').forEach(function(btn){btn.addEventListener('click',function(){lh.winner=btn.dataset.sw;render();});});
+  // Hole cards
+  pl.forEach(function(p){var inp=el('hc-'+p.id);if(inp)inp.addEventListener('input',function(){if(!lh.hcards)lh.hcards={};lh.hcards[p.id]=inp.value;});});
+  // Log hand
+  var logBtn=el('log-hand-btn');if(logBtn)logBtn.addEventListener('click',doLogHand);
+  // End session
+  var endBtn=el('end-sess-btn');if(endBtn)endBtn.addEventListener('click',openCashoutModal);
+}
+
+async function updateLiveBuyins(sess){
+  try{await setDoc(doc(A.db,'sessions',sess.id),{buyins:JSON.parse(JSON.stringify(A.liveBuyins))},{merge:true});}catch(e){console.error('updateBuyins',e);}
+}
+
+async function doLogHand(){
+  var lh=A.lh;var pl=getLivePl();
+  if(!lh.winner){alert('Please select the winner first.');return;}
+  pl.forEach(function(p){var inp=el('hc-'+p.id);if(inp&&inp.value){if(!lh.hcards)lh.hcards={};lh.hcards[p.id]=inp.value;}});
+  await saveHand({sessionId:A.activeSessId,dealer:lh.dealer,pre:JSON.parse(JSON.stringify(lh.pre||{})),flop:JSON.parse(JSON.stringify(lh.flop||{})),turn:JSON.parse(JSON.stringify(lh.turn||{})),river:JSON.parse(JSON.stringify(lh.river||{})),fc:lh.fc,tc:lh.tc,rc:lh.rc,winner:lh.winner,hcards:JSON.parse(JSON.stringify(lh.hcards||{})),handNumber:lh.count+1,createdAt:serverTimestamp()});
+  A.lh={step:'dealer',dealer:null,pre:{},flop:{},turn:{},river:{},fc:[null,null,null],tc:null,rc:null,winner:null,hcards:{},count:lh.count+1};render();
+}
+
+// ── CARD PICKER ───────────────────────────────────────────────
+var cTarget=null,cSuit=null;
+function openCardPicker(target){
+  cTarget=target;cSuit=null;
+  el('mbox').innerHTML='<div class="mt">Pick Card</div><div class="ct g">Suit</div><div class="suit-grid">'+SUITS.map(function(s){return'<button class="suit-btn '+(s.r?'red':'blk')+'" data-suit="'+s.s+'" data-red="'+s.r+'">'+s.s+'</button>';}).join('')+'</div><div class="ct g">Value</div><div class="val-grid">'+CVALS.map(function(v){return'<button class="val-btn" data-val="'+v+'">'+v+'</button>';}).join('')+'</div><div class="row2" style="margin-top:14px"><button class="btn bd fw" id="cp-cancel">Cancel</button></div>';
+  el('mover').classList.add('show');
+  el('cp-cancel').addEventListener('click',closeModal);
+  document.querySelectorAll('[data-suit]').forEach(function(btn){btn.addEventListener('click',function(){cSuit={s:btn.dataset.suit,r:btn.dataset.red==='true'};document.querySelectorAll('[data-suit]').forEach(function(b){b.classList.remove('sel');});btn.classList.add('sel');});});
+  document.querySelectorAll('[data-val]').forEach(function(btn){btn.addEventListener('click',function(){if(!cSuit){alert('Pick a suit first.');return;}var card={v:btn.dataset.val,s:cSuit.s,r:cSuit.r};applyCard(cTarget,card);closeModal();});});
+}
+function applyCard(target,card){
+  var lh=A.lh;
+  if(target.startsWith('flop-'))lh.fc[parseInt(target.split('-')[1])]=card;
+  else if(target==='turn')lh.tc=card;
+  else if(target==='river')lh.rc=card;
+  render();
+}
+
+// ── CASHOUT MODAL ─────────────────────────────────────────────
+var _coState={};
+function openCashoutModal(){
+  var sess=getActSess();if(!sess)return;
+  var pl=sess.players||A.players;
+  _coState={cashouts:{}};pl.forEach(function(p){_coState.cashouts[p.id]='';});
+  drawCashoutModal(sess,pl);
+}
+function drawCashoutModal(sess,pl){
+  var buyinAmt=sess.buyinAmt||500;var buyins=A.liveBuyins;
+  function calc(){
+    var results={};pl.forEach(function(p){results[p.id]=(Number(_coState.cashouts[p.id])||0)-(buyins[p.id]||1)*buyinAmt;});
+    var totalIn=pl.reduce(function(s,p){return s+(buyins[p.id]||1)*buyinAmt;},0);
+    var totalOut=pl.reduce(function(s,p){return s+(Number(_coState.cashouts[p.id])||0);},0);
+    var diff=Math.abs(totalOut-totalIn);
+    return{results:results,diff:diff,balanced:diff<1};
+  }
+  var initial=calc();
+  var rows=pl.map(function(p){var cnt=buyins[p.id]||1;var inv=cnt*buyinAmt;var co=_coState.cashouts[p.id];var pnl=co!==''&&co!==undefined?(Number(co)||0)-inv:null;return'<div class="co-row" id="corow-'+p.id+'">'+avH(p,'av-sm')+'<div class="co-info"><div class="co-name">'+esc(p.name)+'</div><div class="co-inv">'+cnt+'&times; &middot; Rs.'+inv.toLocaleString('en-IN')+'</div></div><input class="co-inp" type="number" inputmode="decimal" min="0" placeholder="0" id="co-'+p.id+'" value="'+esc(co||'')+'" style="width:90px;text-align:center"><div class="co-pnl '+(pnl!==null?(pnl>=0?'grn':'rrd'):'')+' fs-13" id="copnl-'+p.id+'">'+(pnl!==null?rs(pnl):'')+'</div></div>';}).join('');
+  el('mbox').innerHTML='<div class="mt">&#9635; End Session</div><div style="font-size:12px;color:var(--t3);margin-bottom:14px">'+esc(sess.date)+' &middot; Rs.'+buyinAmt+'/buyin</div><div class="ct g">Cashout Amounts</div>'+rows+'<div class="bal '+(initial.balanced?'bok':'berr')+'" id="cobal" style="margin-top:10px"><span style="color:var(--t2)">Balance Check</span><span class="'+(initial.balanced?'grn':'rrd')+'" id="cobaltxt">'+(initial.balanced?'&#10003; Balanced':'Off by Rs.'+initial.diff.toFixed(0))+'</span></div><div id="cosettle">'+settlH(initial.results,pl)+'</div><div style="margin-top:14px"><label class="fl">Session Notes</label><textarea id="end-notes" style="height:60px" placeholder="Key observations..."></textarea></div><div class="row2"><button class="btn bd" id="end-cancel">Cancel</button><button class="btn bg" style="flex:2" id="end-save">Save &amp; End Session</button></div>';
+  el('mover').classList.add('show');
+  // Patch DOM in place on each keystroke instead of re-rendering — keeps iOS keyboard open
+  function patch(){
+    var c=calc();
+    pl.forEach(function(p){
+      var co=_coState.cashouts[p.id];var inv=(buyins[p.id]||1)*buyinAmt;var pnl=co!==''&&co!==undefined?(Number(co)||0)-inv:null;
+      var cell=el('copnl-'+p.id);if(cell){cell.textContent=pnl!==null?rs(pnl):'';cell.className='co-pnl '+(pnl!==null?(pnl>=0?'grn':'rrd'):'')+' fs-13';}
+    });
+    var bal=el('cobal'),balTxt=el('cobaltxt');
+    if(bal){bal.className='bal '+(c.balanced?'bok':'berr');}
+    if(balTxt){balTxt.className=c.balanced?'grn':'rrd';balTxt.innerHTML=c.balanced?'&#10003; Balanced':'Off by Rs.'+c.diff.toFixed(0);}
+    var sett=el('cosettle');if(sett)sett.innerHTML=settlH(c.results,pl);
+  }
+  pl.forEach(function(p){var inp=el('co-'+p.id);if(inp)inp.addEventListener('input',function(){_coState.cashouts[p.id]=inp.value;patch();});});
+  el('end-cancel').addEventListener('click',closeModal);
+  el('end-save').addEventListener('click',async function(){
+    pl.forEach(function(p){var inp=el('co-'+p.id);if(inp)_coState.cashouts[p.id]=inp.value;});
+    var gn=(el('end-notes')||{}).value||'';var buyinAmt2=sess.buyinAmt||500;
+    // Enforce balance check before saving — silently saving an unbalanced session corrupts settlements
+    var totalIn2=pl.reduce(function(s,p){return s+(A.liveBuyins[p.id]||1)*buyinAmt2;},0);
+    var totalOut2=pl.reduce(function(s,p){return s+(Number(_coState.cashouts[p.id])||0);},0);
+    var diff2=totalOut2-totalIn2;
+    if(Math.abs(diff2)>=1){
+      var sign=diff2>0?'over':'under';
+      var msg='\u26A0\uFE0F Cashouts are '+sign+' by Rs.'+Math.abs(diff2).toFixed(0)+'.\n\nTotal buyins: Rs.'+totalIn2.toLocaleString('en-IN')+'\nTotal cashouts: Rs.'+totalOut2.toLocaleString('en-IN')+'\n\nThis means somebody\u2019s cashout is wrong. Saving anyway will leave the smallest winner unpaid in the settlement.\n\nSave anyway?';
+      if(!confirm(msg))return;
+    }
+    var finalResults={};pl.forEach(function(p){finalResults[p.id]=(Number(_coState.cashouts[p.id])||0)-(A.liveBuyins[p.id]||1)*buyinAmt2;});
+    await saveSess({id:sess.id,date:sess.date,buyinAmt:buyinAmt2,players:pl,buyins:A.liveBuyins,cashouts:JSON.parse(JSON.stringify(_coState.cashouts)),sessionNotes:sess.sessionNotes||{},notes:gn,results:finalResults,status:'done',createdAt:sess.createdAt});
+    A.activeSessId=null;closeModal();A.tab='sessions';buildNav();render();
+  });
+}
+
+// ── SESSIONS ─────────────────────────────────────────────────
+function pgSessions(){
+  if(!A.sessions.length)return'<div class="empty"><div class="empty-ic">&#9830;</div><div>No sessions yet.</div></div>';
+  return A.sessions.map(function(s,i){return sessRowHTML(s,i);}).join('');
+}
+function sessRowHTML(s,i){
+  var pl=s.players||A.players;var myP=pl.find(function(p){return p.name==='Kunal';})||pl[0];var mid=myP?myP.id:'';
+  var r=(s.results&&s.results[mid])||0;var isActive=s.status==='active';
+  var sessHands=A.hands.filter(function(h){return h.sessionId===s.id;});
+  var bodyH='';
+  if(isActive){
+    bodyH+='<div style="background:rgba(201,168,76,.08);border:1px solid rgba(201,168,76,.2);border-radius:10px;padding:12px;margin-bottom:10px"><div style="font-size:12px;color:var(--gold);font-weight:700;margin-bottom:6px"><span class="live-dot"></span>Game in progress</div>';
+    pl.forEach(function(p){bodyH+='<div style="display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid rgba(201,168,76,.1)"><div style="display:flex;align-items:center;gap:8px">'+avH(p,'av-sm')+'<span style="font-size:13px;font-weight:700;color:var(--cream)">'+esc(p.name)+'</span></div><span style="font-size:12px;color:var(--t3)">'+(s.buyins&&s.buyins[p.id]||1)+'&times; buyin</span></div>';});
+    bodyH+='</div><div style="display:flex;gap:8px"><button class="btn bg fw" id="sgl-'+i+'">Go Live &rarr;</button><button class="btn br" id="send-'+i+'">End Session</button></div>';
+  } else {
+    pl.forEach(function(p){var pr=(s.results&&s.results[p.id])||0;var note=s.sessionNotes&&s.sessionNotes[p.id];bodyH+='<div class="pres"><div class="pres-top">'+avH(p,'av-sm')+'<div class="pres-r"><span class="fw7" style="font-size:13px;color:var(--cream)">'+esc(p.name)+(p.isGuest?' &#128100;':'')+'</span><div style="display:flex;align-items:center;gap:8px"><span style="font-size:11px;color:var(--t3)">'+(s.buyins&&s.buyins[p.id]||1)+'&times;</span><span class="'+(pr>=0?'grn':'rrd')+' fw7" style="font-size:14px">'+rs(pr)+'</span></div></div></div>'+(note?'<div class="pnote">&#128221; '+esc(note)+'</div>':'')+'</div>';});
+    bodyH+=settlH(s.results||{},pl);
+    if(s.notes)bodyH+='<div class="snote">&#128203; '+esc(s.notes)+'</div>';
+    if(sessHands.length){bodyH+='<div style="margin-top:10px"><div class="ct g">'+sessHands.length+' Hands</div>';sessHands.slice(0,4).forEach(function(hand,hi){bodyH+=handLogHTML(hand,hi,pl);});if(sessHands.length>4)bodyH+='<div style="font-size:11px;color:var(--t3);text-align:center;padding:6px">+more in Live tab</div>';bodyH+='</div>';}
+    if(s.aiAnalysis){bodyH+='<div class="ai-box"><div class="ai-t">&#9889; AI Coaching</div><div class="ai-body">'+esc(s.aiAnalysis)+'</div></div>';}
+    else if(A.apiKey){bodyH+='<button class="btn bai" data-airun="'+i+'" style="width:100%;margin-top:10px;padding:12px">&#9889; Generate AI Coaching</button>';}
+  }
+  return'<div class="srow'+(isActive?' act':'')+'" id="sr'+i+'"><div class="shdr" onclick="togS('+i+')">'
+    +'<div class="smeta">'+avH(myP,'av-sm')+'<div><div style="font-size:13px;font-weight:700;color:var(--cream)">'+(s.date||'')+(isActive?' <span style="font-size:9px;color:var(--gold);background:rgba(201,168,76,.15);padding:2px 7px;border-radius:10px">LIVE</span>':'')+'</div><div style="font-size:11px;color:var(--t3)">Rs.'+(s.buyinAmt||500)+'/buyin &middot; '+pl.length+' players'+(sessHands.length?' &middot; '+sessHands.length+' hands':'')+'</div></div>'+(s.aiAnalysis?'<span style="font-size:9px;color:#a78bfa;background:rgba(139,92,246,.15);padding:2px 7px;border-radius:10px">AI</span>':'')+'</div>'
+    +'<div style="display:flex;align-items:center;gap:8px"><span class="'+(isActive?'gld':r>=0?'grn':'rrd')+' fw7" style="font-size:15px">'+(isActive?'&#127183;':rs(r))+'</span><span id="ar'+i+'" style="color:var(--t3);font-size:12px">&#9660;</span><button data-ds="'+i+'" style="background:none;border:none;color:var(--t3);cursor:pointer;font-size:14px;padding:4px 6px">&#10005;</button></div>'
+    +'</div><div class="sbody" id="sb'+i+'">'+bodyH+'</div></div>';
+}
+function bindSessBtns(){
+  document.querySelectorAll('[data-ds]').forEach(function(btn){btn.addEventListener('click',function(e){e.stopPropagation();var s=A.sessions[parseInt(btn.dataset.ds)];if(s&&confirm('Delete this session?')){if(s.status==='active')A.activeSessId=null;delSess(s.id);}});});
+  A.sessions.forEach(function(s,i){var gl=el('sgl-'+i);if(gl)gl.addEventListener('click',function(){A.tab='live';buildNav();render();});var se=el('send-'+i);if(se)se.addEventListener('click',function(){A.activeSessId=s.id;A.liveBuyins=JSON.parse(JSON.stringify(s.buyins||{}));openCashoutModal();});});
+}
+window.togS=function(i){var b=el('sb'+i),a=el('ar'+i);if(!b)return;if(b.style.display!=='block'){b.style.display='block';if(a)a.innerHTML='&#9650;';var ab=b.querySelector('[data-airun]');if(ab)ab.addEventListener('click',function(){runSessAI(parseInt(ab.dataset.airun));});}else{b.style.display='none';if(a)a.innerHTML='&#9660;';}};
+async function runSessAI(idx){
+  var s=A.sessions[idx];if(!s)return;var bodyEl=el('sb'+idx);if(!bodyEl)return;
+  var aiBtn=bodyEl.querySelector('[data-airun]');var wrapper=document.createElement('div');wrapper.className='ai-box';
+  wrapper.innerHTML='<div class="ai-t">&#9889; AI Coaching</div><div class="thinking"><div class="dots"><span></span><span></span><span></span></div> Analysing...</div><div class="ai-body" id="ai-st-'+idx+'"></div>';
+  if(aiBtn)aiBtn.replaceWith(wrapper);else bodyEl.appendChild(wrapper);
+  var streamEl=el('ai-st-'+idx);var text='';var sHands=A.hands.filter(function(h){return h.sessionId===s.id;});
+  callClaude(buildSessPrompt(s,sHands),function(chunk){text+=chunk;if(streamEl)streamEl.textContent=text;},
+    async function(){wrapper.querySelector('.thinking')&&wrapper.querySelector('.thinking').remove();extractUpdates(text,s.players||A.players);await saveSess(Object.assign({},s,{aiAnalysis:text}));},
+    function(err){wrapper.innerHTML+='<div style="color:var(--red);font-size:12px;margin-top:8px">Error: '+esc(err)+'</div>';});
+}
+
+// ── LEADERBOARD ───────────────────────────────────────────────
+function pgLeader(){
+  var done=A.sessions.filter(function(s){return s.status!=='active';});
+  if(!done.length)return'<div class="empty"><div class="empty-ic">&#127942;</div><div>Play some sessions first!</div></div>';
+  var totals=A.players.map(function(p){var tot=0,cnt=0,wins=0,best=0;done.forEach(function(s){if(s.results&&s.results[p.id]!==undefined){cnt++;var r=s.results[p.id]||0;tot+=r;if(r>0)wins++;if(r>best)best=r;}});return{id:p.id,name:p.name,tot:tot,cnt:cnt,wins:wins,best:best};}).sort(function(a,b){return b.tot-a.tot;});
+  var maxA=Math.max(1,...totals.map(function(p){return Math.abs(p.tot);}));
+  var top3=totals.slice(0,3);var pord=[top3[1],top3[0],top3[2]].filter(Boolean);
+  var pcls=['p2','p1','p3'],phts=[70,100,55],prc=['#b0b0b0','#c9a84c','#cd7f32'];
+  var podH='<div class="podium">';
+  pord.forEach(function(p,i){var pl=A.players.find(function(x){return x.id===p.id;})||{id:p.id,name:p.name};podH+='<div class="pod"><div class="pod-bar '+pcls[i]+'" style="height:'+phts[i]+'px">'+avH(pl,'av-md')+'</div><div style="font-size:18px;font-weight:900;color:'+prc[i]+'">'+(totals.indexOf(p)+1)+'</div><div class="pod-name">'+esc(p.name.split(' ')[0])+'</div><div class="pod-amt '+(p.tot>=0?'grn':'rrd')+'">'+rs(p.tot)+'</div></div>';});
+  podH+='</div>';
+  var rnkC=['#c9a84c','#b0b0b0','#cd7f32'];
+  var rowsH='<div class="card"><div class="ct g">&#9827; All-Time Rankings</div>'+podH;
+  totals.forEach(function(p,i){var pl=A.players.find(function(x){return x.id===p.id;});rowsH+='<div class="lb-row"><span style="font-size:13px;font-weight:900;width:20px;flex-shrink:0;color:'+(rnkC[i]||'var(--t4)')+'">'+(i+1)+'</span>'+avH(pl||{id:p.id,name:p.name},'av-sm')+'<div style="flex:1;min-width:0;margin-left:4px"><div style="display:flex;justify-content:space-between;margin-bottom:3px"><span style="font-size:13px;font-weight:700;color:var(--cream)">'+esc(p.name)+'</span><span class="'+(p.tot>=0?'grn':'rrd')+' fw7" style="font-size:14px">'+rs(p.tot)+'</span></div><div class="lb-bar" style="background:'+(p.tot>=0?'var(--green)':'var(--red)')+';width:'+Math.round(Math.abs(p.tot)/maxA*100)+'%"></div><div class="lb-meta"><span>'+p.cnt+' sessions</span><span>'+p.wins+'W/'+(p.cnt-p.wins)+'L</span>'+(p.best>0?'<span>Best +Rs.'+p.best.toLocaleString('en-IN')+'</span>':'')+'</div></div></div>';});
+  rowsH+='</div>';
+  var thH=A.players.map(function(p){return'<th>'+esc(p.name.split(' ')[0])+'</th>';}).join('');
+  var tbH=done.map(function(s){return'<tr><td style="color:var(--t3)">'+(s.date||'').slice(5)+'</td>'+A.players.map(function(p){var r=s.results&&s.results[p.id];return r!==undefined?'<td class="'+(r>=0?'grn':'rrd')+'">'+rs(r)+'</td>':'<td style="color:var(--t4)">-</td>';}).join('')+'</tr>';}).join('');
+  var totH='<tr class="tr-tot"><td>Total</td>'+A.players.map(function(p){var t=done.reduce(function(s,sess){return s+((sess.results&&sess.results[p.id])||0);},0);return'<td class="'+(t>=0?'grn':'rrd')+'">'+rs(t)+'</td>';}).join('')+'</tr>';
+  return rowsH+'<div class="card" style="overflow-x:auto"><div class="ct g">&#9830; Session Table</div><table><thead><tr><th style="text-align:left">Date</th>'+thH+'</tr></thead><tbody>'+tbH+totH+'</tbody></table></div>';
+}
+
+// ── PLAYERS ───────────────────────────────────────────────────
+var TAGS={p1:{l:'Hero',c:'#c9a84c'},p2:{l:'Tight-Passive',c:'#60a5fa'},p3:{l:'Loose-Aggressive',c:'#f87171'},p4:{l:'Calling Station',c:'#c084fc'},p5:{l:'Pair Hunter',c:'#4ade80'}};
+function pgPlayers(){
+  var h='';
+  A.players.forEach(function(p,i){
+    var tag=TAGS[p.id];var note=A.notes[p.id]||'';var aiP=A.aiProfiles[p.id]||'';
+    var cnt=A.sessions.filter(function(s){return s.status!=='active'&&s.results&&s.results[p.id]!==undefined;}).length;
+    h+='<div class="pc"><div class="pc-top">'+avH(p,'av-lg')+'<div class="pc-info"><div id="pnrow-'+p.id+'"><div class="pc-name">'+esc(p.name)+'</div></div>'+(tag?'<div><span class="ptag" style="color:'+tag.c+';border-color:'+tag.c+'">'+tag.l+'</span></div>':'')+(i===0?'<div style="font-size:9px;color:var(--gold);font-weight:700;letter-spacing:.08em;margin-top:3px">YOU</div>':'')+'<div style="font-size:10px;color:var(--t3);margin-top:3px">'+cnt+' sessions</div></div></div>'
+      +'<div class="pc-acts"><button class="abt gld" data-en="'+p.id+'">&#9998; Rename</button><button class="abt gld" data-note="'+p.id+'">&#128221; Notes</button>'+(A.apiKey&&cnt>0?'<button class="abt prp" data-aip="'+p.id+'">&#9889; AI Profile</button>':'')+(i>0?'<button class="abt rrd" data-rmp="'+p.id+'">Remove</button>':'')+'</div>'
+      +'<div style="margin-top:10px"><div class="pc-bio'+(note?'':' em')+'">'+esc(note||'No notes yet. Tap Notes to add your reads.')+'</div></div>'
+      +(aiP?'<div class="ai-prof"><div class="ai-prof-l">&#9889; AI Profile</div><div class="ai-prof-t">'+esc(aiP)+'</div></div>':'<div id="aip-zone-'+p.id+'"></div>')
+      +'</div>';
+  });
+  h+='<div class="card"><div class="ct g">Add Permanent Player</div><div style="display:flex;gap:8px"><input type="text" id="np-in" placeholder="Player name..."><button class="btn bg" id="np-btn" style="white-space:nowrap;padding:10px 14px">Add</button></div></div>';
+  return h;
+}
+function bindPlayers(){
+  document.querySelectorAll('[data-en]').forEach(function(btn){btn.addEventListener('click',function(){var id=btn.dataset.en;var p=A.players.find(function(x){return x.id===id;});var row=el('pnrow-'+id);row.innerHTML='<div class="ne-row"><input type="text" id="ne-'+id+'" value="'+esc(p.name)+'"><button class="ns-btn" id="ns-'+id+'">Save</button><button style="background:none;border:none;color:var(--t3);cursor:pointer;font-size:14px;padding:0 4px" id="nc-'+id+'">&#10005;</button></div>';el('ns-'+id).addEventListener('click',function(){var val=(el('ne-'+id)||{}).value;if(!val||!val.trim())return;savePlayer(Object.assign({},p,{name:val.trim()}));render();});el('nc-'+id).addEventListener('click',function(){render();});el('ne-'+id).focus();});});
+  document.querySelectorAll('[data-note]').forEach(function(btn){btn.addEventListener('click',function(){openNoteModal(btn.dataset.note);});});
+  document.querySelectorAll('[data-aip]').forEach(function(btn){btn.addEventListener('click',function(){runPlayerAI(btn.dataset.aip);});});
+  document.querySelectorAll('[data-rmp]').forEach(function(btn){btn.addEventListener('click',function(){if(confirm('Remove this player?'))deleteDoc(doc(A.db,'players',btn.dataset.rmp));});});
+  var npBtn=el('np-btn'),npIn=el('np-in');
+  if(npBtn)npBtn.addEventListener('click',doAddPlayer);
+  if(npIn)npIn.addEventListener('keydown',function(e){if(e.key==='Enter')doAddPlayer();});
+}
+function openAddLateModal(){
+  var sess=getActSess();if(!sess)return;
+  var existingIds={};(sess.players||[]).forEach(function(p){existingIds[p.id]=true;});
+  var available=A.players.filter(function(p){return!existingIds[p.id];});
+  var rows=available.map(function(p){return'<button class="late-pick" data-late="'+p.id+'">'+avH(p,'av-sm')+'<span style="flex:1;text-align:left;color:var(--cream);font-size:14px;font-weight:600">'+esc(p.name)+'</span><span style="color:var(--gold);font-size:18px">+</span></button>';}).join('');
+  el('mbox').innerHTML='<div class="mt">&#128100;&#43; Add Player to Live Game</div>'
+    +'<div style="font-size:12px;color:var(--t3);margin-bottom:14px">They&rsquo;ll start with 1 buyin (Rs.'+(sess.buyinAmt||500)+'). Tap +/&minus; later if they rebuy.</div>'
+    +(rows?'<div class="ct g">From Your Players</div><div style="display:flex;flex-direction:column;gap:6px;margin-bottom:18px">'+rows+'</div>':'')
+    +'<div class="ct g">Add Guest</div>'
+    +'<div style="display:flex;gap:8px;margin-bottom:14px"><input type="text" id="lg-in" placeholder="Guest name..." style="flex:1"><button class="btn bg" id="lg-ok" style="padding:10px 16px">Add</button></div>'
+    +'<div class="row2"><button class="btn bd fw" id="lg-cancel">Cancel</button></div>';
+  el('mover').classList.add('show');
+  document.querySelectorAll('[data-late]').forEach(function(btn){btn.addEventListener('click',function(){addPlayerToLive(btn.dataset.late,null);});});
+  el('lg-ok').addEventListener('click',function(){var n=(el('lg-in').value||'').trim();if(n)addPlayerToLive(null,n);});
+  el('lg-in').addEventListener('keydown',function(e){if(e.key==='Enter'){var n=(el('lg-in').value||'').trim();if(n)addPlayerToLive(null,n);}});
+  el('lg-cancel').addEventListener('click',closeModal);
+}
+
+async function addPlayerToLive(existingId,guestName){
+  var sess=getActSess();if(!sess)return;
+  var newP;
+  if(existingId){var p=A.players.find(function(x){return x.id===existingId;});if(!p)return;newP={id:p.id,name:p.name};}
+  else{newP={id:uid(),name:guestName,isGuest:true};}
+  var newPlayers=(sess.players||[]).slice();newPlayers.push(newP);
+  var newBuyins=Object.assign({},sess.buyins||{});newBuyins[newP.id]=1;
+  A.liveBuyins[newP.id]=1;
+  closeModal();
+  await saveSess(Object.assign({},sess,{players:newPlayers,buyins:newBuyins}));
+  // Listener will re-render automatically; render once now too for instant feedback
+  render();
+}
+
+async function removePlayerFromLive(pid){
+  var sess=getActSess();if(!sess)return;
+  var p=(sess.players||[]).find(function(x){return x.id===pid;});if(!p)return;
+  // Check if this player has appeared in any logged hand
+  var inHands=A.hands.filter(function(h){
+    if(h.sessionId!==sess.id)return false;
+    if(h.dealer===pid)return true;
+    if(h.winner===pid)return true;
+    if(h.pre&&h.pre[pid])return true;
+    if(h.flop&&h.flop[pid])return true;
+    if(h.turn&&h.turn[pid])return true;
+    if(h.river&&h.river[pid])return true;
+    return false;
+  }).length;
+  var msg='Remove '+p.name+' from this session?';
+  if(inHands>0)msg+='\n\n\u26A0\uFE0F They appear in '+inHands+' logged hand'+(inHands>1?'s':'')+'. Those hands will keep their data, but '+p.name+' will be removed from new actions, the rebuy tracker, and final cashouts.';
+  else msg+='\n\nThey have not played any logged hands yet.';
+  if(!confirm(msg))return;
+  var newPlayers=(sess.players||[]).filter(function(x){return x.id!==pid;});
+  var newBuyins=Object.assign({},sess.buyins||{});delete newBuyins[pid];
+  delete A.liveBuyins[pid];
+  // Clean up live hand state references
+  if(A.lh){
+    if(A.lh.dealer===pid)A.lh.dealer=null;
+    if(A.lh.winner===pid)A.lh.winner=null;
+    ['pre','flop','turn','river'].forEach(function(k){if(A.lh[k]&&A.lh[k][pid])delete A.lh[k][pid];});
+    if(A.lh.hcards&&A.lh.hcards[pid])delete A.lh.hcards[pid];
+  }
+  await saveSess(Object.assign({},sess,{players:newPlayers,buyins:newBuyins}));
+  render();
+}
+
+function openNoteModal(id){
+  var p=A.players.find(function(x){return x.id===id;});
+  el('mbox').innerHTML='<div class="mt">&#128221; Notes</div><div style="display:flex;align-items:center;gap:10px;margin-bottom:14px">'+avH(p||{id:id,name:'?'},'av-md')+'<div><div style="font-size:15px;font-weight:700;color:var(--cream)">'+esc(p?p.name:id)+'</div><div style="font-size:11px;color:var(--t3)">STAR Profile</div></div></div><textarea id="note-ta" style="height:140px;margin-bottom:14px" placeholder="Showdown tendencies, playing style, exploits, tells...">'+esc(A.notes[id]||'')+'</textarea><div class="row2"><button class="btn bd" id="nc">Cancel</button><button class="btn bg" id="nsave">Save</button></div>';
+  el('mover').classList.add('show');
+  el('nc').addEventListener('click',closeModal);
+  el('nsave').addEventListener('click',function(){savePlayerNote(id,(el('note-ta')||{}).value||'');closeModal();render();});
+}
+async function doAddPlayer(){var inp=el('np-in');var name=inp&&inp.value.trim();if(!name)return;var id=uid();await savePlayer({id:id,name:name,order:A.players.length});await savePlayerNote(id,'');inp.value='';}
+function runPlayerAI(id){
+  var prompt=profilePrompt(id);if(!prompt){alert('Not enough session data yet.');return;}
+  var zone=el('aip-zone-'+id);if(!zone)return;
+  var aiDiv=document.createElement('div');aiDiv.className='ai-prof';
+  aiDiv.innerHTML='<div class="ai-prof-l">&#9889; Building...</div><div class="thinking"><div class="dots"><span></span><span></span><span></span></div></div><div id="aip-st-'+id+'"></div>';
+  zone.replaceWith(aiDiv);var streamEl=el('aip-st-'+id);var text='';
+  callClaude(prompt,function(chunk){text+=chunk;if(streamEl)streamEl.textContent=text;},function(){A.aiProfiles[id]=text;saveMeta('aiProfile_'+id,text);render();},function(err){aiDiv.innerHTML+='<div style="color:var(--red);font-size:12px">Error: '+esc(err)+'</div>';});
+}
+
+// ── SETTINGS ──────────────────────────────────────────────────
+function pgSettings(){
+  // Households section
+  var hhRows=(A.households||[]).map(function(pair,i){
+    var a=A.players.find(function(p){return p.id===pair[0];});
+    var b=A.players.find(function(p){return p.id===pair[1];});
+    if(!a||!b)return'';
+    return'<div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;background:rgba(201,168,76,.08);border:1px solid rgba(201,168,76,.25);border-radius:10px;padding:10px 12px"><span style="flex:1;font-size:14px;color:var(--cream);font-weight:600">&#127968; '+esc(a.name)+' &amp; '+esc(b.name)+'</span><button class="btn bd" data-rmhh="'+i+'" style="padding:5px 10px;font-size:11px">Remove</button></div>';
+  }).join('');
+  var optsA='<option value="">Select player A...</option>'+A.players.map(function(p){return'<option value="'+p.id+'">'+esc(p.name)+'</option>';}).join('');
+  var optsB='<option value="">Select player B...</option>'+A.players.map(function(p){return'<option value="'+p.id+'">'+esc(p.name)+'</option>';}).join('');
+  return'<div class="card"><div class="ct g">&#127968; Household Pairs</div><p style="font-size:13px;color:var(--t2);line-height:1.6;margin-bottom:12px">Couples who don\'t actually exchange cash with each other. Their P&amp;L is netted internally first, then only the household\'s combined position enters the wider settlement.</p>'
+    +(hhRows||'<div style="font-size:12px;color:var(--t3);font-style:italic;margin-bottom:10px">No pairs yet</div>')
+    +'<div style="display:flex;flex-direction:column;gap:8px;margin-top:10px"><select id="hh-a" style="font-size:14px">'+optsA+'</select><select id="hh-b" style="font-size:14px">'+optsB+'</select><button class="btn bg fw" id="hh-add">+ Add Pair</button></div></div>'
+    +'<div class="card"><div class="ct g">&#9889; Claude AI Key</div><p style="font-size:13px;color:var(--t2);line-height:1.6;margin-bottom:12px">For automatic player profiling and session coaching after every game.<br>Get a free key at <strong style="color:var(--gold)">console.anthropic.com</strong> &rarr; API Keys &rarr; Create Key.</p>'+(A.apiKey?'<div style="font-size:12px;color:var(--green);margin-bottom:10px">&#10003; AI key connected</div>':'<div style="font-size:12px;color:var(--red);margin-bottom:10px">&#10005; No key — add below</div>')+'<div style="display:flex;gap:8px;margin-bottom:6px"><input type="password" id="ai-key-in" placeholder="sk-ant-..." value="'+esc(A.apiKey)+'" style="flex:1"><button class="btn bg" id="ai-save" style="white-space:nowrap;padding:10px 14px">Save</button></div></div>'
+    +'<div class="card"><div class="ct g">&#128293; Firebase</div><p style="font-size:13px;color:var(--t2);line-height:1.6;margin-bottom:12px">To connect a different Firebase project, reset and paste a new config.</p><button class="btn bd fw" id="reset-fb">Reset Firebase Config</button></div>'
+    +'<div class="card"><div class="ct" style="color:var(--red)">Danger Zone</div><p style="font-size:13px;color:var(--t2);line-height:1.6;margin-bottom:12px">Delete all finished sessions from Firebase. Cannot be undone.</p><button class="btn br fw" id="clear-all">Clear All Finished Sessions</button></div>';
+}
+function bindSettings(){
+  // Household pairs
+  var hhAdd=el('hh-add');if(hhAdd)hhAdd.addEventListener('click',function(){
+    var aId=(el('hh-a')||{}).value,bId=(el('hh-b')||{}).value;
+    if(!aId||!bId){alert('Pick two players.');return;}
+    if(aId===bId){alert('Pick two different players.');return;}
+    // Don't allow a player to be in two pairs
+    var already=(A.households||[]).some(function(p){return p[0]===aId||p[1]===aId||p[0]===bId||p[1]===bId;});
+    if(already){alert('One of those players is already in a household pair. Remove them first.');return;}
+    A.households=(A.households||[]).concat([[aId,bId]]);
+    lsSet('pkl-households',JSON.stringify(A.households));
+    render();
+  });
+  document.querySelectorAll('[data-rmhh]').forEach(function(btn){btn.addEventListener('click',function(){
+    var idx=parseInt(btn.dataset.rmhh);A.households.splice(idx,1);lsSet('pkl-households',JSON.stringify(A.households));render();
+  });});
+  el('ai-save').addEventListener('click',function(){var val=(el('ai-key-in')||{}).value;if(val&&val.trim().startsWith('sk-ant')){A.apiKey=val.trim();lsSet('pkl-aikey',A.apiKey);alert('AI key saved! Coaching is now active.');render();}else alert('Key must start with sk-ant-');});
+  el('reset-fb').addEventListener('click',function(){if(confirm('Clear Firebase config? Your data in Firebase is safe.')){localStorage.removeItem('pkl-fbconfig');location.reload();}});
+  el('clear-all').addEventListener('click',async function(){if(confirm('Delete all finished sessions? Cannot be undone.')){sync('saving','Deleting...');var snap=await getDocs(collection(A.db,'sessions'));for(var i=0;i<snap.docs.length;i++){var d=snap.docs[i].data();if(d.status!=='active')await deleteDoc(snap.docs[i].ref);}sync('ok');render();}});
+}
+
+function closeModal(){el('mover').classList.remove('show');}
+</script>
+</body>
+</html>
