@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useStore } from '../store'
 import { Avatar } from '../components/Avatar'
@@ -40,9 +41,14 @@ export function Live({
   const setLhHcard  = useStore(s => s.setLhHcard)
   const skipHand    = useStore(s => s.skipHand)
   const logHand     = useStore(s => s.logHand)
-  const setLiveBuyin      = useStore(s => s.setLiveBuyin)
-  const updateLiveBuyins  = useStore(s => s.updateLiveBuyins)
+  const setLiveBuyin         = useStore(s => s.setLiveBuyin)
+  const updateLiveBuyins     = useStore(s => s.updateLiveBuyins)
   const removePlayerFromLive = useStore(s => s.removePlayerFromLive)
+  const addPlayerToLive      = useStore(s => s.addPlayerToLive)
+  const allPlayers           = useStore(s => s.players)
+
+  const [showAddPlayer, setShowAddPlayer] = useState(false)
+  const [guestInput, setGuestInput] = useState('')
 
   // ── No active session ──────────────────────────────────────────
   if (!activeSessId) {
@@ -210,6 +216,42 @@ export function Live({
             </div>
           )
         })}
+
+        {/* Add late player */}
+        {!showAddPlayer ? (
+          <button onClick={() => setShowAddPlayer(true)} style={{
+            width: '100%', marginTop: 6, padding: '10px 0', borderRadius: 12,
+            background: 'none', border: '1.5px dashed var(--border)',
+            color: 'var(--t3)', fontSize: 13, fontFamily: 'var(--fb)',
+            cursor: 'pointer', transition: '.15s',
+          }}>
+            + Add Player
+          </button>
+        ) : (
+          <div style={{ marginTop: 8, background: 'rgba(0,0,0,.2)', border: '1px solid var(--border)', borderRadius: 14, padding: 12 }}>
+            <div style={{ fontSize: 10, letterSpacing: '0.15em', textTransform: 'uppercase', color: 'var(--gold)', fontWeight: 600, marginBottom: 10 }}>Add to Session</div>
+            {/* Existing players not yet in session */}
+            {allPlayers.filter(p => !pl.find(sp => sp.id === p.id)).map(p => (
+              <button key={p.id} onClick={async () => { await addPlayerToLive(p.id, null); sfx.chip(); setShowAddPlayer(false) }}
+                style={{ display: 'flex', alignItems: 'center', gap: 10, width: '100%', background: 'none', border: 'none', cursor: 'pointer', padding: '7px 4px', borderRadius: 10 }}>
+                <Avatar player={p} size="sm" />
+                <span style={{ fontSize: 13, fontWeight: 600, color: 'var(--t1)' }}>{p.name}</span>
+              </button>
+            ))}
+            {/* Guest player input */}
+            <div style={{ display: 'flex', gap: 8, marginTop: 8 }}>
+              <input
+                value={guestInput}
+                onChange={e => setGuestInput(e.target.value)}
+                placeholder="Guest name…"
+                onKeyDown={async e => { if (e.key === 'Enter' && guestInput.trim()) { await addPlayerToLive(null, guestInput.trim()); sfx.chip(); setGuestInput(''); setShowAddPlayer(false) }}}
+                style={{ flex: 1 }}
+              />
+              <Button variant="gold" size="sm" onClick={async () => { if (guestInput.trim()) { await addPlayerToLive(null, guestInput.trim()); sfx.chip(); setGuestInput(''); setShowAddPlayer(false) }}}>Add</Button>
+            </div>
+            <button onClick={() => { setShowAddPlayer(false); setGuestInput('') }} style={{ width: '100%', marginTop: 8, background: 'none', border: 'none', color: 'var(--t3)', fontSize: 12, cursor: 'pointer', fontFamily: 'var(--fb)' }}>Cancel</button>
+          </div>
+        )}
       </Card>
 
       {/* ── Hand Logger ── */}
