@@ -148,7 +148,7 @@ export const useStore = create<AppState>((set, get) => ({
         await saveMeta('note_' + p.id, defNotes[p.id])
       }
     } else {
-      // Migration
+      // Migration: rename legacy placeholder names
       const renames: Record<string, string> = {
         'Nit Guy': 'Preetish', 'Aggro Guy': 'Pranav',
         'Girl 1': 'Sakshi', 'Girl 2': 'Japneet',
@@ -157,6 +157,19 @@ export const useStore = create<AppState>((set, get) => ({
         const p = { ...d.data(), id: d.id } as Player
         if (renames[p.name]) {
           await savePlayer({ ...p, name: renames[p.name] } as unknown as Record<string, unknown>)
+        }
+      }
+      // Add any missing permanent players
+      const existingNames = new Set(snap.docs.map(d => (d.data() as Player).name))
+      const newPlayers: Player[] = [
+        { id: 'p6', name: 'Golu',   order: 5 },
+        { id: 'p7', name: 'Lokesh', order: 6 },
+        { id: 'p8', name: 'Navin',  order: 7 },
+        { id: 'p9', name: 'Tushar', order: 8 },
+      ]
+      for (const p of newPlayers) {
+        if (!existingNames.has(p.name)) {
+          await savePlayer(p as unknown as Record<string, unknown>)
         }
       }
     }
