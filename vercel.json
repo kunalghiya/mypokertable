@@ -1,5 +1,3 @@
 {
-  "buildCommand": "cd poker-app && npm install && npm run build",
-  "outputDirectory": "poker-app/dist",
-  "installCommand": "echo skip"
+  "rootDirectory": "poker-app"
 }
