@@ -23,18 +23,6 @@ function IconHome({ active }: { active: boolean }) {
   )
 }
 
-function IconLive({ active }: { active: boolean }) {
-  const c = active ? '#d4a843' : '#6b6480'
-  return (
-    <svg width="24" height="24" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
-      {/* Circle with pulse rings — "live" indicator */}
-      <circle cx="14" cy="14" r="4" stroke={c} strokeWidth="1.55"/>
-      <circle cx="14" cy="14" r="7.5" stroke={c} strokeWidth="1.2" opacity="0.55"/>
-      <circle cx="14" cy="14" r="11" stroke={c} strokeWidth="1" opacity="0.25"/>
-      {active && <circle cx="14" cy="14" r="4" fill="rgba(212,168,67,0.2)"/>}
-    </svg>
-  )
-}
 
 function IconSessions({ active }: { active: boolean }) {
   const c = active ? '#d4a843' : '#6b6480'

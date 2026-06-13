@@ -137,7 +137,6 @@ export function Live({
           aiLoading={aiLoading}
           openSess={openSess}
           setOpenSess={setOpenSess}
-          onOpenCashout={onOpenCashout}
           onDelete={deleteSession}
           onRunAI={runAI}
         />
@@ -417,7 +416,7 @@ export function Live({
 /* ── Past Sessions list ─────────────────────────────────────── */
 
 function PastSessions({
-  sessions, hands, households, apiKey, aiTexts, aiLoading, openSess, setOpenSess, onOpenCashout, onDelete, onRunAI,
+  sessions, hands, households, apiKey, aiTexts, aiLoading, openSess, setOpenSess, onDelete, onRunAI,
 }: {
   sessions: Session[]
   hands: any[]
@@ -427,7 +426,6 @@ function PastSessions({
   aiLoading: Record<string, boolean>
   openSess: string | null
   setOpenSess: (id: string | null) => void
-  onOpenCashout: (id: string) => void
   onDelete: (id: string) => void
   onRunAI: (s: Session) => void
 }) {
