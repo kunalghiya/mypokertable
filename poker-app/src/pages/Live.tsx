@@ -403,7 +403,6 @@ export function Live({
             aiLoading={aiLoading}
             openSess={openSess}
             setOpenSess={setOpenSess}
-            onOpenCashout={onOpenCashout}
             onDelete={deleteSession}
             onRunAI={runAI}
           />
