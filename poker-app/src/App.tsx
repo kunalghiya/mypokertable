@@ -6,7 +6,6 @@ import { initSounds } from './lib/sounds'
 import { Setup } from './pages/Setup'
 import { Dashboard } from './pages/Dashboard'
 import { Live } from './pages/Live'
-import { Sessions } from './pages/Sessions'
 import { Leaderboard } from './pages/Leaderboard'
 import { Players } from './pages/Players'
 import { Settings } from './pages/Settings'
@@ -95,12 +94,7 @@ export default function App() {
                 <Live
                   onEndSession={() => activeSessId && openCashout(activeSessId)}
                   onCardPick={target => setCardTarget(target)}
-                />
-              )}
-              {tab === 'sessions'    && (
-                <Sessions
-                  onGoLive={() => setTab('live')}
-                  onEndSession={id => openCashout(id)}
+                  onOpenCashout={id => openCashout(id)}
                 />
               )}
               {tab === 'leaderboard' && <Leaderboard />}

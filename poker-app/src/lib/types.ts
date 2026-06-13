@@ -47,6 +47,8 @@ export interface Session {
   results: Record<string, number>
   status: 'active' | 'done'
   aiAnalysis?: string
+  startedAt?: string
+  endedAt?: string
   createdAt?: unknown
 }
 
@@ -79,4 +81,4 @@ export interface HouseholdResult {
   internal: { from: string; to: string; amount: number } | null
 }
 
-export type Tab = 'dashboard' | 'live' | 'sessions' | 'leaderboard' | 'players' | 'settings'
+export type Tab = 'dashboard' | 'live' | 'leaderboard' | 'players' | 'settings'

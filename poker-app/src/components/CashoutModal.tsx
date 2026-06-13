@@ -67,6 +67,19 @@ export function CashoutModal({ open, onClose, forceSessId }: CashoutModalProps) 
         {sess.date} · Rs.{buyinAmt}/buyin
       </div>
 
+      {/* Total on table */}
+      <div style={{
+        background: 'linear-gradient(135deg,rgba(26,16,64,.9),rgba(10,7,24,.9))',
+        border: '1px solid rgba(212,168,67,.2)', borderRadius: 14,
+        padding: '12px 16px', marginBottom: 14,
+        display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+      }}>
+        <div style={{ fontSize: 11, color: 'var(--t3)', textTransform: 'uppercase', letterSpacing: '0.12em', fontWeight: 600 }}>Total on Table</div>
+        <div style={{ fontFamily: 'var(--fs)', fontSize: 24, fontWeight: 900, color: 'var(--gold)', fontVariantNumeric: 'tabular-nums' }}>
+          Rs.{totalIn.toLocaleString('en-IN')}
+        </div>
+      </div>
+
       <div style={{ fontSize: 9, letterSpacing: '0.18em', textTransform: 'uppercase', color: 'var(--gold)', marginBottom: 10, fontWeight: 600 }}>Cashout Amounts</div>
 
       {pl.map(p => {

@@ -8,12 +8,17 @@ function IconHome({ active }: { active: boolean }) {
   const c = active ? '#d4a843' : '#6b6480'
   return (
     <svg width="24" height="24" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
-      {/* Spade — signature app icon */}
+      {/* Card outline */}
+      <rect x="4" y="3" width="20" height="22" rx="3" stroke={c} strokeWidth="1.55" fill={active ? 'rgba(212,168,67,0.08)' : 'none'} />
+      {/* Filled spade in center */}
       <path
-        d="M14 4 C14 4 5 11 5 16.5 C5 19.5 7.5 21 10 20 C9 22.5 7.5 23.5 6 24 L22 24 C20.5 23.5 19 22.5 18 20 C20.5 21 23 19.5 23 16.5 C23 11 14 4 14 4Z"
-        stroke={c} strokeWidth="1.55" strokeLinejoin="round" strokeLinecap="round"
-        fill={active ? 'rgba(212,168,67,0.12)' : 'none'}
+        d="M14 7.5 C14 7.5 9 11.5 9 14.5 C9 16.2 10.3 17 11.7 16.4 C11.1 17.7 10.2 18.3 9.5 18.5 L18.5 18.5 C17.8 18.3 16.9 17.7 16.3 16.4 C17.7 17 19 16.2 19 14.5 C19 11.5 14 7.5 14 7.5Z"
+        fill={c}
       />
+      {/* Corner A top-left */}
+      <text x="5.5" y="10" fontSize="4.5" fill={c} fontFamily="Georgia,serif" fontWeight="700">A</text>
+      {/* Corner A bottom-right (rotated) */}
+      <text x="22.5" y="21" fontSize="4.5" fill={c} fontFamily="Georgia,serif" fontWeight="700" textAnchor="middle" transform="rotate(180 21 19.5)">A</text>
     </svg>
   )
 }
@@ -118,8 +123,7 @@ function IconSettings({ active }: { active: boolean }) {
 
 const TABS: { id: Tab; label: string; Icon: React.FC<{ active: boolean }> }[] = [
   { id: 'dashboard',   label: 'Home',     Icon: IconHome },
-  { id: 'live',        label: 'Live',     Icon: IconLive },
-  { id: 'sessions',    label: 'Sessions', Icon: IconSessions },
+  { id: 'live',        label: 'Sessions', Icon: IconSessions },
   { id: 'leaderboard', label: 'Leaders',  Icon: IconLeaders },
   { id: 'players',     label: 'Players',  Icon: IconPlayers },
   { id: 'settings',    label: 'More',     Icon: IconSettings },
@@ -171,7 +175,7 @@ export function BottomNav() {
                 transition={{ type: 'spring', stiffness: 400, damping: 36 }}
               />
             )}
-            {/* Live session red dot */}
+            {/* Live session red dot — shown on Sessions tab when a game is running */}
             {id === 'live' && hasActive && (
               <span style={{
                 position: 'absolute', top: 5, right: 'calc(50% - 16px)',

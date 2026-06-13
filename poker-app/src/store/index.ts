@@ -248,7 +248,7 @@ export const useStore = create<AppState>((set, get) => ({
     const buyins: Record<string, number> = {}
     sessionPlayers.forEach(p => { buyins[p.id] = 1 })
     set({ syncState: 'saving', syncMsg: 'Saving…' })
-    const saved = await saveSess({ date, buyinAmt, players: sessionPlayers, buyins, sessionNotes: {}, notes: '', results: {}, status: 'active', createdAt: serverTimestamp() })
+    const saved = await saveSess({ date, buyinAmt, players: sessionPlayers, buyins, sessionNotes: {}, notes: '', results: {}, status: 'active', startedAt: new Date().toISOString(), createdAt: serverTimestamp() })
     set({
       activeSessId: saved.id as string,
       liveBuyins: { ...buyins },
@@ -389,9 +389,11 @@ export const useStore = create<AppState>((set, get) => ({
       notes,
       results: finalResults,
       status: 'done',
+      startedAt: sess.startedAt,
+      endedAt: new Date().toISOString(),
       createdAt: sess.createdAt,
     })
-    set({ activeSessId: null, tab: 'sessions', syncState: 'ok', syncMsg: 'Connected' })
+    set({ activeSessId: null, tab: 'live', syncState: 'ok', syncMsg: 'Connected' })
   },
 
   deleteSession: async (id) => {
