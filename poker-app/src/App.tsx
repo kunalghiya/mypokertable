@@ -94,7 +94,7 @@ export default function App() {
                 <Live
                   onEndSession={() => activeSessId && openCashout(activeSessId)}
                   onCardPick={target => setCardTarget(target)}
-                  onOpenCashout={id => openCashout(id)}
+
                 />
               )}
               {tab === 'leaderboard' && <Leaderboard />}

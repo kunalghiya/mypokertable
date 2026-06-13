@@ -53,11 +53,9 @@ function fmtDuration(startedAt?: string, endedAt?: string): string | null {
 export function Live({
   onEndSession,
   onCardPick,
-  onOpenCashout,
 }: {
   onEndSession: () => void
   onCardPick: (target: string) => void
-  onOpenCashout: (sessId: string) => void
 }) {
   const lh          = useStore(s => s.lh)
   const sessions    = useStore(s => s.sessions)
