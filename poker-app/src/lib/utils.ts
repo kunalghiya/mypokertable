@@ -76,21 +76,38 @@ export function calcSettle(
   const imbalance = totalCr - totalDb
 
   const txns: Settlement['txns'] = []
-  let i = 0, j = 0
   const crCopy = cr.map(x => ({ ...x }))
   const dbCopy = db.map(x => ({ ...x }))
-  while (i < crCopy.length && j < dbCopy.length) {
-    const a = Math.min(crCopy[i].amt, Math.abs(dbCopy[j].amt))
-    if (a > 0) txns.push({ from: dbCopy[j].id, to: crCopy[i].id, amount: a })
-    crCopy[i].amt -= a
-    dbCopy[j].amt += a
-    if (Math.abs(crCopy[i].amt) < 1) i++
-    if (Math.abs(dbCopy[j].amt) < 1) j++
+
+  // Pass 1: exact matches — debtor owes exactly what one creditor is owed
+  for (const d of dbCopy) {
+    for (const c of crCopy) {
+      if (Math.abs(d.amt + c.amt) < 1) {
+        txns.push({ from: d.id, to: c.id, amount: c.amt })
+        d.amt = 0
+        c.amt = 0
+        break
+      }
+    }
+  }
+
+  // Pass 2: greedy waterfall for remaining balances
+  // Sort so largest debtor pays largest creditor first (fewest splits)
+  const remCr = crCopy.filter(x => x.amt > 0.5).sort((a, b) => b.amt - a.amt)
+  const remDb = dbCopy.filter(x => x.amt < -0.5).sort((a, b) => a.amt - b.amt)
+  let i = 0, j = 0
+  while (i < remCr.length && j < remDb.length) {
+    const a = Math.min(remCr[i].amt, Math.abs(remDb[j].amt))
+    if (a > 0) txns.push({ from: remDb[j].id, to: remCr[i].id, amount: a })
+    remCr[i].amt -= a
+    remDb[j].amt += a
+    if (Math.abs(remCr[i].amt) < 1) i++
+    if (Math.abs(remDb[j].amt) < 1) j++
   }
 
   const unpaid = [
-    ...crCopy.slice(i).filter(x => x.amt > 0),
-    ...dbCopy.slice(j).filter(x => x.amt < 0)
+    ...remCr.slice(i).filter(x => x.amt > 0),
+    ...remDb.slice(j).filter(x => x.amt < 0)
   ]
 
   return { txns, households: householdResults, imbalance, unpaid }
