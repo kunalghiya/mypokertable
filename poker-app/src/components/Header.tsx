@@ -17,7 +17,7 @@ export function Header({ onNewSession }: HeaderProps) {
       backdropFilter: 'blur(20px) saturate(160%)',
       WebkitBackdropFilter: 'blur(20px) saturate(160%)',
       borderBottom: '1px solid rgba(212,168,67,.07)',
-      padding: '14px 16px 0',
+      padding: 'calc(env(safe-area-inset-top) + 14px) 16px 0',
       position: 'sticky', top: 0, zIndex: 50,
     }}>
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 10 }}>
