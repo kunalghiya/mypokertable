@@ -1,4 +1,5 @@
-import { calcSettle, playerName } from '../lib/utils'
+import { ArrowRight, Check, House, TriangleAlert } from 'lucide-react'
+import { calcSettle, playerName, inr } from '../lib/utils'
 import type { Player } from '../lib/types'
 
 interface SettlementProps {
@@ -17,11 +18,12 @@ export function Settlement({ results, players, households }: SettlementProps) {
   if (!res.txns.length && !internalLines.length) {
     return (
       <div style={{
-        background: 'var(--green-dim)', border: '1px solid rgba(0,232,122,.25)',
-        borderRadius: 12, padding: '10px', textAlign: 'center',
-        color: 'var(--green)', fontSize: 13, marginTop: 8, fontWeight: 500,
+        background: 'var(--accent-dim)', border: '1px solid var(--accent-line)',
+        borderRadius: 12, padding: '11px', textAlign: 'center',
+        color: 'var(--accent)', fontSize: 13, marginTop: 8, fontWeight: 600,
+        display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6,
       }}>
-        ✓ All square — no payments needed
+        <Check size={14} strokeWidth={2.6} /> All square — no payments needed
       </div>
     )
   }
@@ -30,8 +32,8 @@ export function Settlement({ results, players, households }: SettlementProps) {
     <div>
       {internalLines.length > 0 && (
         <>
-          <div style={{ fontSize: 9, letterSpacing: '0.15em', textTransform: 'uppercase', color: 'var(--gold)', margin: '12px 0 7px', fontWeight: 600 }}>
-            🏠 Household Internal (no cash)
+          <div className="label" style={{ margin: '12px 0 8px' }}>
+            <House size={12} strokeWidth={2.4} /> Household internal (no cash)
           </div>
           {internalLines.map((hh, i) => (
             <TxnRow key={i}
@@ -46,18 +48,20 @@ export function Settlement({ results, players, households }: SettlementProps) {
 
       {Math.abs(res.imbalance) >= 1 && (
         <div style={{
-          background: 'rgba(255,51,85,.1)', border: '1px solid rgba(255,51,85,.3)',
-          borderRadius: 10, padding: '10px 12px', marginTop: 10,
-          fontSize: 12, color: 'var(--red)', lineHeight: 1.5,
+          background: 'var(--neg-dim)', border: '1px solid var(--neg-line)',
+          borderRadius: 11, padding: '10px 13px', marginTop: 10,
+          fontSize: 12.5, color: 'var(--neg)', lineHeight: 1.5,
+          display: 'flex', gap: 8, alignItems: 'flex-start',
         }}>
-          ⚠️ <strong>Settlement off by Rs.{Math.abs(res.imbalance).toLocaleString('en-IN')}</strong>. Cashouts don't balance against buyins.
+          <TriangleAlert size={14} strokeWidth={2.4} style={{ flexShrink: 0, marginTop: 2 }} />
+          <span><strong>Settlement off by {inr(Math.abs(res.imbalance))}</strong>. Cashouts don't balance against buyins.</span>
         </div>
       )}
 
       {res.txns.length > 0 && (
         <>
-          <div style={{ fontSize: 9, letterSpacing: '0.15em', textTransform: 'uppercase', color: 'var(--t3)', margin: '12px 0 7px', fontWeight: 600 }}>
-            Who Pays Who
+          <div className="label accent" style={{ margin: '12px 0 8px' }}>
+            Who pays who
           </div>
           {res.txns.map((t, i) => (
             <TxnRow key={i} from={name(t.from)} to={name(t.to)} amount={t.amount} />
@@ -70,18 +74,18 @@ export function Settlement({ results, players, households }: SettlementProps) {
 
 function TxnRow({ from, to, amount, dim }: { from: string; to: string; amount: number; dim?: boolean }) {
   return (
-    <div style={{
+    <div className="row" style={{
       display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-      background: 'rgba(0,0,0,.2)', borderRadius: 12, padding: '10px 14px', marginBottom: 6,
-      opacity: dim ? 0.8 : 1,
+      padding: '10px 14px', marginBottom: 6,
+      opacity: dim ? 0.75 : 1,
     }}>
-      <span>
-        <span style={{ color: 'var(--red)', fontWeight: 700 }}>{from}</span>
-        <span style={{ color: 'var(--t3)', margin: '0 7px' }}>→</span>
-        <span style={{ color: 'var(--green)', fontWeight: 700 }}>{to}</span>
+      <span style={{ display: 'inline-flex', alignItems: 'center', gap: 8, fontSize: 13.5 }}>
+        <span style={{ color: 'var(--neg)', fontWeight: 600 }}>{from}</span>
+        <ArrowRight size={13} strokeWidth={2.4} style={{ color: 'var(--ink-4)' }} />
+        <span style={{ color: 'var(--pos)', fontWeight: 600 }}>{to}</span>
       </span>
-      <span style={{ color: 'var(--gold)', fontWeight: 700, fontStyle: dim ? 'italic' : 'normal' }}>
-        Rs.{amount.toLocaleString('en-IN')}
+      <span className="mono" style={{ color: 'var(--ink)', fontWeight: 700, fontSize: 13.5 }}>
+        {inr(amount)}
       </span>
     </div>
   )

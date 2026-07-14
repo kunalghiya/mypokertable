@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { motion } from 'framer-motion'
+import { Spade } from 'lucide-react'
 import { Modal } from './Modal'
 import { Button } from './Button'
 import { useStore } from '../store'
@@ -27,22 +28,21 @@ export function CardPickerModal({ open, target, onClose }: CardPickerModalProps)
   }
 
   return (
-    <Modal open={open} onClose={() => { setSuit(null); onClose() }} title="Pick Card">
-      <div style={{ fontSize: 9, letterSpacing: '0.18em', textTransform: 'uppercase', color: 'var(--gold)', marginBottom: 10, fontWeight: 600 }}>Suit</div>
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gap: 8, marginBottom: 16 }}>
+    <Modal open={open} onClose={() => { setSuit(null); onClose() }} title="Pick card" icon={<Spade size={18} strokeWidth={2.2} fill="currentColor" />}>
+      <div className="label accent" style={{ marginBottom: 10 }}>Suit</div>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gap: 8, marginBottom: 18 }}>
         {SUITS.map(su => (
           <motion.button
             key={su.s}
             whileTap={{ scale: 0.92 }}
             onClick={() => { setSuit(su); sfx.chip() }}
             style={{
-              height: 56, borderRadius: 12,
-              background: suit?.s === su.s ? 'rgba(212,168,67,.18)' : 'rgba(0,0,0,.3)',
-              border: `1px solid ${suit?.s === su.s ? 'var(--gold)' : 'var(--border)'}`,
+              height: 58, borderRadius: 13,
+              background: suit?.s === su.s ? 'var(--accent-dim)' : 'oklch(0% 0 0 / 25%)',
+              border: `1px solid ${suit?.s === su.s ? 'var(--accent-line)' : 'var(--border)'}`,
               fontSize: 26, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center',
-              color: su.r ? '#d42020' : 'var(--t1)',
-              boxShadow: suit?.s === su.s ? '0 0 12px rgba(212,168,67,.2)' : 'none',
-              transition: 'all .15s',
+              color: su.r ? 'oklch(65% 0.19 25)' : 'var(--ink)',
+              transition: 'background .15s, border-color .15s',
             }}
           >
             {su.s}
@@ -50,21 +50,22 @@ export function CardPickerModal({ open, target, onClose }: CardPickerModalProps)
         ))}
       </div>
 
-      <div style={{ fontSize: 9, letterSpacing: '0.18em', textTransform: 'uppercase', color: 'var(--gold)', marginBottom: 10, fontWeight: 600 }}>Value</div>
+      <div className="label accent" style={{ marginBottom: 10 }}>Value</div>
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7,1fr)', gap: 6 }}>
         {CVALS.map(v => (
           <motion.button
             key={v}
             whileTap={{ scale: 0.9 }}
             onClick={() => pickVal(v)}
+            className="mono"
             style={{
-              height: 44, borderRadius: 10,
-              background: 'rgba(0,0,0,.3)',
+              height: 46, borderRadius: 11,
+              background: 'oklch(0% 0 0 / 25%)',
               border: '1px solid var(--border)',
-              fontSize: 13, fontWeight: 700, cursor: 'pointer',
+              fontSize: 13.5, fontWeight: 700, cursor: 'pointer',
               display: 'flex', alignItems: 'center', justifyContent: 'center',
-              color: suit ? (suit.r ? '#d42020' : 'var(--t1)') : 'var(--t2)',
-              transition: '.15s',
+              color: suit ? (suit.r ? 'oklch(65% 0.19 25)' : 'var(--ink)') : 'var(--ink-3)',
+              transition: 'color .15s',
             }}
           >
             {v}
@@ -72,7 +73,7 @@ export function CardPickerModal({ open, target, onClose }: CardPickerModalProps)
         ))}
       </div>
 
-      <div style={{ marginTop: 14 }}>
+      <div style={{ marginTop: 16 }}>
         <Button variant="ghost" full onClick={() => { setSuit(null); onClose() }}>Cancel</Button>
       </div>
     </Modal>

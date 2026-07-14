@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { AnimatePresence, motion } from 'framer-motion'
+import { AnimatePresence, motion, MotionConfig } from 'framer-motion'
 import { useStore } from './store'
 import { initSounds } from './lib/sounds'
 
@@ -51,10 +51,10 @@ export default function App() {
   // Setup screen
   if (!fbConfig || !ready) {
     return (
-      <>
+      <MotionConfig reducedMotion="user">
         <Setup onConnect={handleConnect} />
         <ToastContainer />
-      </>
+      </MotionConfig>
     )
   }
 
@@ -75,7 +75,7 @@ export default function App() {
   }
 
   return (
-    <>
+    <MotionConfig reducedMotion="user">
       <div style={{ maxWidth: 430, margin: '0 auto', minHeight: '100dvh' }}>
         <Header onNewSession={() => setShowStart(true)} />
 
@@ -111,6 +111,6 @@ export default function App() {
       <CardPickerModal open={!!cardTarget} target={cardTarget} onClose={() => setCardTarget(null)} />
       <CashoutModal open={!!cashoutSessId} onClose={() => setCashoutSessId(null)} forceSessId={cashoutSessId} />
       <ToastContainer />
-    </>
+    </MotionConfig>
   )
 }

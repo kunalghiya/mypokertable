@@ -15,6 +15,7 @@ function lsSet(k: string, v: unknown) {
 
 // Guard against duplicate listener registration on HMR / StrictMode double-invoke
 let _listenersStarted = false
+let _householdsSeeded = false
 let _unsubscribers: (() => void)[] = []
 
 const freshHand = (count = 0): LiveHandState => ({
@@ -114,6 +115,8 @@ export const useStore = create<AppState>((set, get) => ({
   setHouseholds: pairs => {
     lsSet('pkl-households', JSON.stringify(pairs))
     set({ households: pairs })
+    // Firestore rejects nested arrays, so persist as a JSON string
+    saveMeta('households', JSON.stringify(pairs)).catch(e => console.error('households:', e))
   },
   setSync: (syncState, syncMsg) => set({
     syncState,
@@ -221,12 +224,28 @@ export const useStore = create<AppState>((set, get) => ({
         onSnapshot(collection(db, 'meta'), snap => {
           const notes: Record<string, string> = {}
           const aiProfiles: Record<string, string> = {}
+          let households: [string, string][] | null = null
           snap.docs.forEach(d => {
             const key = d.id, val = d.data().value
             if (key.startsWith('note_')) notes[key.slice(5)] = val
             else if (key.startsWith('aiProfile_')) aiProfiles[key.slice(10)] = val
+            else if (key === 'households') {
+              try { households = JSON.parse(val) } catch { /* ignore malformed */ }
+            }
           })
-          set({ notes, aiProfiles, listenerFired: true })
+          if (households && (households as [string, string][]).length) {
+            lsSet('pkl-households', JSON.stringify(households))
+            set({ notes, aiProfiles, households, listenerFired: true })
+          } else {
+            set({ notes, aiProfiles, listenerFired: true })
+            // Firestore has no pairs yet (or an empty list): never wipe local
+            // pairs — upload them instead so no device ever loses this config
+            const local = get().households
+            if (local.length && !_householdsSeeded) {
+              _householdsSeeded = true
+              saveMeta('households', JSON.stringify(local)).catch(e => console.error('households:', e))
+            }
+          }
         }, e => console.error('meta:', e))
       )
     }

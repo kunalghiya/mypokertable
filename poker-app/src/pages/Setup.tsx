@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
+import { Spade, Flame, Sparkles, ArrowRight } from 'lucide-react'
 import { parseConfig } from '../lib/firebase'
 import { Button } from '../components/Button'
 
@@ -32,17 +33,12 @@ export function Setup({ onConnect }: SetupProps) {
   return (
     <div style={{ minHeight: '100dvh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '40px 20px', textAlign: 'center', background: 'var(--bg)', overflow: 'hidden' }}>
 
-      {/* Ambient orbs */}
+      {/* Ambient glow */}
       <div style={{ position: 'fixed', inset: 0, pointerEvents: 'none', overflow: 'hidden' }}>
         <motion.div
-          animate={{ scale: [1, 1.15, 1], opacity: [0.6, 1, 0.6] }}
-          transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut' }}
-          style={{ position: 'absolute', top: '15%', left: '50%', transform: 'translateX(-50%)', width: 500, height: 500, background: 'radial-gradient(circle,rgba(155,93,229,.1) 0%,transparent 70%)', borderRadius: '50%' }}
-        />
-        <motion.div
-          animate={{ scale: [1, 1.2, 1], opacity: [0.4, 0.8, 0.4] }}
-          transition={{ duration: 8, repeat: Infinity, ease: 'easeInOut', delay: 2 }}
-          style={{ position: 'absolute', bottom: '5%', right: '5%', width: 340, height: 340, background: 'radial-gradient(circle,rgba(212,168,67,.08) 0%,transparent 70%)', borderRadius: '50%' }}
+          animate={{ scale: [1, 1.12, 1], opacity: [0.5, 0.9, 0.5] }}
+          transition={{ duration: 7, repeat: Infinity, ease: 'easeInOut' }}
+          style={{ position: 'absolute', top: '12%', left: '50%', transform: 'translateX(-50%)', width: 480, height: 480, background: 'radial-gradient(circle, oklch(82% 0.16 163 / 6%) 0%, transparent 70%)', borderRadius: '50%' }}
         />
       </div>
 
@@ -51,62 +47,43 @@ export function Setup({ onConnect }: SetupProps) {
           /* ── Loading screen ── */
           <motion.div
             key="loading"
-            initial={{ opacity: 0, scale: 0.9 }}
+            initial={{ opacity: 0, scale: 0.94 }}
             animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0, scale: 1.05 }}
+            exit={{ opacity: 0, scale: 1.04 }}
             transition={{ type: 'spring', stiffness: 260, damping: 22 }}
-            style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 28 }}
+            style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 26 }}
           >
-            {/* Spinning card suits */}
-            <div style={{ position: 'relative', width: 120, height: 120 }}>
+            {/* Dealing cards animation */}
+            <div style={{ display: 'flex', gap: 8 }}>
               {SUITS.map((suit, i) => (
                 <motion.div
                   key={suit}
-                  animate={{ rotate: 360 }}
-                  transition={{ duration: 3 + i * 0.4, repeat: Infinity, ease: 'linear' }}
+                  initial={{ y: 24, opacity: 0, rotate: -8 }}
+                  animate={{ y: [24, 0, 0, -6, 0], opacity: 1, rotate: 0 }}
+                  transition={{ duration: 1.8, delay: i * 0.15, repeat: Infinity, repeatDelay: 1.2, ease: 'easeOut' }}
                   style={{
-                    position: 'absolute', inset: 0,
+                    width: 42, height: 58, borderRadius: 8,
+                    background: 'oklch(96% 0.005 90)',
                     display: 'flex', alignItems: 'center', justifyContent: 'center',
-                    fontSize: 32 + i * 4,
-                    color: i % 2 === 0 ? 'var(--gold)' : 'var(--violet)',
-                    opacity: 0.3 + i * 0.18,
-                    filter: `blur(${i * 0.5}px)`,
+                    fontSize: 22,
+                    color: suit === '♥' || suit === '♦' ? 'oklch(52% 0.2 25)' : 'oklch(20% 0.01 260)',
+                    boxShadow: '0 4px 16px oklch(0% 0 0 / 45%)',
                   }}
                 >
                   {suit}
                 </motion.div>
               ))}
-              {/* Center spade */}
-              <motion.div
-                animate={{ scale: [0.9, 1.1, 0.9] }}
-                transition={{ duration: 1.4, repeat: Infinity, ease: 'easeInOut' }}
-                style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 52, color: 'var(--gold)' }}
-              >
-                ♠
-              </motion.div>
             </div>
 
             <div>
               <motion.div
-                animate={{ opacity: [0.5, 1, 0.5] }}
+                animate={{ opacity: [0.6, 1, 0.6] }}
                 transition={{ duration: 1.6, repeat: Infinity, ease: 'easeInOut' }}
-                style={{ fontFamily: 'var(--fs)', fontSize: 20, fontWeight: 700, color: 'var(--t1)', letterSpacing: '-0.3px', marginBottom: 8 }}
+                style={{ fontSize: 18, fontWeight: 700, color: 'var(--ink)', letterSpacing: '-0.02em', marginBottom: 8 }}
               >
                 Connecting to Firebase…
               </motion.div>
-              <div style={{ fontSize: 12, color: 'var(--t3)' }}>Setting up your table</div>
-            </div>
-
-            {/* Animated progress dots */}
-            <div style={{ display: 'flex', gap: 8 }}>
-              {[0, 1, 2, 3].map(i => (
-                <motion.div
-                  key={i}
-                  animate={{ y: [0, -10, 0], opacity: [0.3, 1, 0.3] }}
-                  transition={{ duration: 0.9, repeat: Infinity, ease: 'easeInOut', delay: i * 0.15 }}
-                  style={{ width: 8, height: 8, borderRadius: '50%', background: i % 2 === 0 ? 'var(--gold)' : 'var(--violet)' }}
-                />
-              ))}
+              <div style={{ fontSize: 13, color: 'var(--ink-3)' }}>Setting up your table</div>
             </div>
           </motion.div>
         ) : (
@@ -120,17 +97,22 @@ export function Setup({ onConnect }: SetupProps) {
             style={{ width: '100%', maxWidth: 400, position: 'relative' }}
           >
             <motion.div
-              animate={{ rotate: [0, 5, -5, 0], scale: [1, 1.05, 1] }}
-              transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
-              style={{ fontSize: 64, marginBottom: 12, color: 'var(--gold)', display: 'block' }}
+              animate={{ y: [0, -6, 0] }}
+              transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
+              style={{
+                width: 68, height: 68, borderRadius: 22, margin: '0 auto 16px',
+                background: 'var(--accent-dim)', border: '1px solid var(--accent-line)',
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                color: 'var(--accent)',
+              }}
             >
-              ♠
+              <Spade size={30} strokeWidth={2} fill="currentColor" />
             </motion.div>
 
-            <div style={{ fontFamily: 'var(--fs)', fontSize: 30, fontWeight: 900, color: 'var(--t1)', marginBottom: 6, letterSpacing: '-0.5px' }}>
-              MyPokerTable
+            <div style={{ fontSize: 26, fontWeight: 800, color: 'var(--ink)', marginBottom: 6, letterSpacing: '-0.035em' }}>
+              My Poker Table
             </div>
-            <div style={{ fontSize: 13, color: 'var(--t3)', lineHeight: 1.7, marginBottom: 32 }}>
+            <div style={{ fontSize: 13, color: 'var(--ink-3)', lineHeight: 1.7, marginBottom: 30 }}>
               Paste your Firebase config once.<br />Saved in this browser forever.
             </div>
 
@@ -139,22 +121,24 @@ export function Setup({ onConnect }: SetupProps) {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.15 }}
-              style={{ background: 'var(--card)', border: '1px solid var(--border)', borderRadius: 20, padding: 22, marginBottom: 14, textAlign: 'left', boxShadow: '0 8px 40px rgba(0,0,0,.4)' }}
+              className="panel"
+              style={{ padding: 22, marginBottom: 14, textAlign: 'left', boxShadow: '0 8px 40px oklch(0% 0 0 / 35%)' }}
             >
-              <div style={{ fontSize: 9, letterSpacing: '0.18em', textTransform: 'uppercase', color: 'var(--gold)', marginBottom: 10, fontWeight: 600 }}>Step 1 — Firebase Config</div>
-              <p style={{ fontSize: 12, color: 'var(--t2)', lineHeight: 1.7, marginBottom: 12 }}>
-                Go to <strong style={{ color: 'var(--gold)' }}>console.firebase.google.com</strong><br />
+              <div className="label accent" style={{ marginBottom: 10 }}><Flame size={12} strokeWidth={2.4} /> Step 1 · Firebase config</div>
+              <p style={{ fontSize: 12.5, color: 'var(--ink-2)', lineHeight: 1.7, marginBottom: 12 }}>
+                Go to <strong style={{ color: 'var(--accent)' }}>console.firebase.google.com</strong><br />
                 Your project → Project Settings → Web app → Config
               </p>
               <textarea
                 value={raw} onChange={e => setRaw(e.target.value)}
-                style={{ height: 140, fontSize: 14, fontFamily: 'var(--fm)', marginBottom: 12, borderRadius: 12 }}
+                className="mono"
+                style={{ height: 140, fontSize: 13, marginBottom: 12, borderRadius: 12 }}
                 placeholder={'Paste the full firebaseConfig object:\n\n{\n  "apiKey": "AIza...",\n  "authDomain": "xxx.firebaseapp.com",\n  ...\n}'}
               />
-              <Button variant="gold" full onClick={handleConnect}>
-                Connect & Start →
+              <Button variant="primary" full onClick={handleConnect}>
+                Connect &amp; start <ArrowRight size={15} strokeWidth={2.4} />
               </Button>
-              {err && <div style={{ color: 'var(--red)', fontSize: 12, marginTop: 10, lineHeight: 1.5 }}>{err}</div>}
+              {err && <div style={{ color: 'var(--neg)', fontSize: 12.5, marginTop: 10, lineHeight: 1.5 }}>{err}</div>}
             </motion.div>
 
             {/* Step 2 */}
@@ -162,17 +146,18 @@ export function Setup({ onConnect }: SetupProps) {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.25 }}
-              style={{ background: 'var(--card)', border: '1px solid var(--border)', borderRadius: 20, padding: 22, textAlign: 'left', boxShadow: '0 8px 40px rgba(0,0,0,.4)' }}
+              className="panel"
+              style={{ padding: 22, textAlign: 'left', boxShadow: '0 8px 40px oklch(0% 0 0 / 35%)' }}
             >
-              <div style={{ fontSize: 9, letterSpacing: '0.18em', textTransform: 'uppercase', color: 'var(--violet)', marginBottom: 10, fontWeight: 600 }}>Step 2 — Claude AI Key (Optional)</div>
-              <p style={{ fontSize: 12, color: 'var(--t2)', lineHeight: 1.6, marginBottom: 10 }}>
+              <div className="label" style={{ color: 'oklch(80% 0.12 300)', marginBottom: 10 }}><Sparkles size={12} strokeWidth={2.4} /> Step 2 · Claude AI key (optional)</div>
+              <p style={{ fontSize: 12.5, color: 'var(--ink-2)', lineHeight: 1.6, marginBottom: 10 }}>
                 For automatic coaching after each session.<br />
-                Get a key at <strong style={{ color: 'var(--violet)' }}>console.anthropic.com</strong> → API Keys
+                Get a key at <strong style={{ color: 'oklch(80% 0.12 300)' }}>console.anthropic.com</strong> → API Keys
               </p>
               <input type="password" value={aiKey} onChange={e => setAiKey(e.target.value)} placeholder="sk-ant-…" />
             </motion.div>
 
-            <p style={{ fontSize: 11, color: 'var(--t4)', lineHeight: 1.6, marginTop: 16 }}>
+            <p style={{ fontSize: 11.5, color: 'var(--ink-4)', lineHeight: 1.6, marginTop: 16 }}>
               Your config is saved only in this browser.<br />On a new device, paste it once again.
             </p>
           </motion.div>

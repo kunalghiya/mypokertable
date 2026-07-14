@@ -1,10 +1,11 @@
 import { useState, useEffect } from 'react'
+import { Square, Check } from 'lucide-react'
 import { Modal } from './Modal'
 import { Avatar } from './Avatar'
 import { Button } from './Button'
 import { Settlement } from './Settlement'
 import { useStore } from '../store'
-import { rs } from '../lib/utils'
+import { rs, inr, fmtDate } from '../lib/utils'
 import { toast } from './Toast'
 import { sfx } from '../lib/sounds'
 
@@ -52,35 +53,34 @@ export function CashoutModal({ open, onClose, forceSessId }: CashoutModalProps) 
   const handleSave = async () => {
     if (!balanced) {
       const sign = totalOut > totalIn ? 'over' : 'under'
-      const msg = `⚠️ Cashouts are ${sign} by Rs.${Math.abs(totalOut - totalIn).toFixed(0)}.\n\nTotal buyins: Rs.${totalIn.toLocaleString('en-IN')}\nTotal cashouts: Rs.${totalOut.toLocaleString('en-IN')}\n\nSave anyway?`
+      const msg = `Cashouts are ${sign} by ₹${Math.abs(totalOut - totalIn).toFixed(0)}.\n\nTotal buyins: ${inr(totalIn)}\nTotal cashouts: ${inr(totalOut)}\n\nSave anyway?`
       if (!confirm(msg)) return
     }
     await endSession(cashouts, notes)
     sfx.ding()
-    toast('Session saved! Great game.', '✓')
+    toast('Session saved. Great game.')
     onClose()
   }
 
   return (
-    <Modal open={open} onClose={onClose} title="⏹ End Session">
-      <div style={{ fontSize: 12, color: 'var(--t3)', marginBottom: 14 }}>
-        {sess.date} · Rs.{buyinAmt}/buyin
+    <Modal open={open} onClose={onClose} title="End session" icon={<Square size={17} strokeWidth={2.4} />}>
+      <div style={{ fontSize: 12.5, color: 'var(--ink-3)', marginBottom: 14 }}>
+        {fmtDate(sess.date)} · {inr(buyinAmt)}/buyin
       </div>
 
       {/* Total on table */}
-      <div style={{
-        background: 'linear-gradient(135deg,rgba(26,16,64,.9),rgba(10,7,24,.9))',
-        border: '1px solid rgba(212,168,67,.2)', borderRadius: 14,
-        padding: '12px 16px', marginBottom: 14,
+      <div className="panel" style={{
+        borderColor: 'var(--accent-line)',
+        padding: '13px 16px', marginBottom: 16,
         display: 'flex', alignItems: 'center', justifyContent: 'space-between',
       }}>
-        <div style={{ fontSize: 11, color: 'var(--t3)', textTransform: 'uppercase', letterSpacing: '0.12em', fontWeight: 600 }}>Total on Table</div>
-        <div style={{ fontFamily: 'var(--fs)', fontSize: 24, fontWeight: 900, color: 'var(--gold)', fontVariantNumeric: 'tabular-nums' }}>
-          Rs.{totalIn.toLocaleString('en-IN')}
+        <div className="label">Total on table</div>
+        <div className="mono" style={{ fontSize: 22, fontWeight: 800, color: 'var(--ink)' }}>
+          {inr(totalIn)}
         </div>
       </div>
 
-      <div style={{ fontSize: 9, letterSpacing: '0.18em', textTransform: 'uppercase', color: 'var(--gold)', marginBottom: 10, fontWeight: 600 }}>Cashout Amounts</div>
+      <div className="label accent" style={{ marginBottom: 10 }}>Cashout amounts</div>
 
       {pl.map(p => {
         const cnt = buyins[p.id] || 1
@@ -88,19 +88,20 @@ export function CashoutModal({ open, onClose, forceSessId }: CashoutModalProps) 
         const co = cashouts[p.id] || ''
         const pnl = co !== '' ? (Number(co) || 0) - inv : null
         return (
-          <div key={p.id} style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '11px 12px', background: 'rgba(0,0,0,.2)', border: '1px solid var(--border)', borderRadius: 14, marginBottom: 8 }}>
+          <div key={p.id} className="row" style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '10px 12px', marginBottom: 8 }}>
             <Avatar player={p} size="sm" />
             <div style={{ flex: 1, minWidth: 0 }}>
-              <div style={{ fontSize: 13, fontWeight: 600, color: 'var(--t1)' }}>{p.name}</div>
-              <div style={{ fontSize: 11, color: 'var(--t3)', marginTop: 1 }}>{cnt}× · Rs.{inv.toLocaleString('en-IN')}</div>
+              <div style={{ fontSize: 13.5, fontWeight: 600, color: 'var(--ink)' }}>{p.name}</div>
+              <div className="mono" style={{ fontSize: 11, color: 'var(--ink-3)', marginTop: 2 }}>{cnt}× · {inr(inv)}</div>
             </div>
             <input
               type="number" inputMode="decimal" min="0" placeholder="0"
               value={co}
               onChange={e => setCashouts(prev => ({ ...prev, [p.id]: e.target.value }))}
-              style={{ width: 90, textAlign: 'center', fontSize: 14, fontWeight: 700, fontVariantNumeric: 'tabular-nums' }}
+              className="mono"
+              style={{ width: 88, textAlign: 'center', fontSize: 14, fontWeight: 700 }}
             />
-            <div style={{ fontSize: 13, fontWeight: 700, minWidth: 70, textAlign: 'right', color: pnl === null ? 'var(--t3)' : pnl >= 0 ? 'var(--green)' : 'var(--red)', fontVariantNumeric: 'tabular-nums' }}>
+            <div className="mono" style={{ fontSize: 13, fontWeight: 700, minWidth: 68, textAlign: 'right', color: pnl === null ? 'var(--ink-3)' : pnl >= 0 ? 'var(--pos)' : 'var(--neg)' }}>
               {pnl !== null ? rs(pnl) : ''}
             </div>
           </div>
@@ -112,25 +113,25 @@ export function CashoutModal({ open, onClose, forceSessId }: CashoutModalProps) 
         borderRadius: 12, padding: '11px 14px',
         display: 'flex', justifyContent: 'space-between', alignItems: 'center',
         fontSize: 13, marginBottom: 10,
-        background: balanced ? 'rgba(0,232,122,.08)' : 'rgba(255,51,85,.08)',
-        border: `1px solid ${balanced ? 'rgba(0,232,122,.25)' : 'rgba(255,51,85,.25)'}`,
+        background: balanced ? 'var(--accent-dim)' : 'var(--neg-dim)',
+        border: `1px solid ${balanced ? 'var(--accent-line)' : 'var(--neg-line)'}`,
       }}>
-        <span style={{ color: 'var(--t2)' }}>Balance Check</span>
-        <span style={{ color: balanced ? 'var(--green)' : 'var(--red)', fontWeight: 700 }}>
-          {balanced ? '✓ Balanced' : `Off by Rs.${diff.toFixed(0)}`}
+        <span style={{ color: 'var(--ink-2)', fontWeight: 500 }}>Balance check</span>
+        <span style={{ display: 'inline-flex', alignItems: 'center', gap: 5, color: balanced ? 'var(--pos)' : 'var(--neg)', fontWeight: 700 }}>
+          {balanced ? (<><Check size={14} strokeWidth={2.6} /> Balanced</>) : `Off by ₹${diff.toFixed(0)}`}
         </span>
       </div>
 
       <Settlement results={results} players={pl} households={households} />
 
-      <div style={{ marginTop: 14 }}>
-        <label style={{ fontSize: 9, letterSpacing: '0.15em', textTransform: 'uppercase', color: 'var(--t3)', display: 'block', marginBottom: 6, fontWeight: 600 }}>Session Notes</label>
+      <div style={{ marginTop: 16 }}>
+        <label className="label" style={{ marginBottom: 7 }}>Session notes</label>
         <textarea value={notes} onChange={e => setNotes(e.target.value)} placeholder="Key observations…" style={{ height: 60 }} />
       </div>
 
-      <div style={{ display: 'flex', gap: 10, marginTop: 14 }}>
+      <div style={{ display: 'flex', gap: 10, marginTop: 16 }}>
         <Button variant="ghost" full onClick={onClose}>Cancel</Button>
-        <Button variant="gold" style={{ flex: 2 }} onClick={handleSave}>Save & End Session</Button>
+        <Button variant="primary" style={{ flex: 2 }} onClick={handleSave}>Save &amp; end session</Button>
       </div>
     </Modal>
   )

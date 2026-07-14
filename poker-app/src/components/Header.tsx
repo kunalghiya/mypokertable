@@ -1,5 +1,6 @@
+import { Plus, Spade } from 'lucide-react'
+import { motion } from 'framer-motion'
 import { useStore } from '../store'
-import { Button } from './Button'
 
 interface HeaderProps {
   onNewSession: () => void
@@ -9,33 +10,60 @@ export function Header({ onNewSession }: HeaderProps) {
   const syncState = useStore(s => s.syncState)
   const syncMsg = useStore(s => s.syncMsg)
 
-  const dotColor = syncState === 'ok' ? 'var(--green)' : syncState === 'saving' ? 'var(--gold)' : 'var(--red)'
+  const dotColor = syncState === 'ok' ? 'var(--accent)' : syncState === 'saving' ? 'var(--live)' : 'var(--neg)'
 
   return (
     <header style={{
-      background: 'rgba(12,9,23,.96)',
+      background: 'oklch(15% 0.012 170 / 88%)',
       backdropFilter: 'blur(20px) saturate(160%)',
       WebkitBackdropFilter: 'blur(20px) saturate(160%)',
-      borderBottom: '1px solid rgba(212,168,67,.07)',
-      padding: 'calc(env(safe-area-inset-top) + 14px) 16px 0',
-      position: 'sticky', top: 0, zIndex: 50,
+      borderBottom: '1px solid var(--border)',
+      padding: 'calc(env(safe-area-inset-top) + 12px) 16px 12px',
+      position: 'sticky', top: 0,
+      zIndex: 'var(--z-header)' as any,
+      display: 'flex', alignItems: 'center', justifyContent: 'space-between',
     }}>
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 10 }}>
-        <div style={{ fontFamily: 'var(--fs)', fontSize: 20, fontWeight: 900, color: 'var(--t1)', letterSpacing: '-0.5px' }}>
-          My<span style={{ color: 'var(--gold)' }}>Poker</span>Table
+      <div style={{ display: 'flex', alignItems: 'center', gap: 9 }}>
+        <div style={{
+          width: 30, height: 30, borderRadius: 9,
+          background: 'var(--accent-dim)',
+          border: '1px solid var(--accent-line)',
+          display: 'flex', alignItems: 'center', justifyContent: 'center',
+          color: 'var(--accent)',
+        }}>
+          <Spade size={15} strokeWidth={2.2} fill="currentColor" />
         </div>
-        <Button variant="gold" size="sm" onClick={onNewSession}>
-          + Session
-        </Button>
+        <div>
+          <div style={{ fontSize: 16, fontWeight: 800, color: 'var(--ink)', letterSpacing: '-0.03em', lineHeight: 1.1 }}>
+            My Poker Table
+          </div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 5, marginTop: 2 }}>
+            <span style={{
+              width: 5, height: 5, borderRadius: '50%', flexShrink: 0, background: dotColor,
+              animation: syncState === 'saving' ? 'saveBlink .8s infinite' : 'none',
+            }} />
+            <span style={{ fontSize: 10, fontWeight: 500, letterSpacing: '0.06em', textTransform: 'uppercase', color: 'var(--ink-3)' }}>
+              {syncMsg}
+            </span>
+          </div>
+        </div>
       </div>
-      <div style={{ display: 'flex', alignItems: 'center', gap: 5, fontSize: 10, letterSpacing: '0.1em', textTransform: 'uppercase', color: 'var(--t3)', paddingBottom: 8, fontWeight: 500 }}>
-        <span style={{
-          width: 6, height: 6, borderRadius: '50%', flexShrink: 0, background: dotColor,
-          animation: syncState === 'saving' ? 'saveBlink .8s infinite' : 'none',
-          boxShadow: syncState === 'ok' ? '0 0 6px var(--green)' : 'none',
-        }} />
-        <span>{syncMsg}</span>
-      </div>
+
+      <motion.button
+        onClick={onNewSession}
+        whileTap={{ scale: 0.94 }}
+        transition={{ type: 'spring', stiffness: 500, damping: 30 }}
+        style={{
+          display: 'inline-flex', alignItems: 'center', gap: 5,
+          background: 'var(--accent-strong)', color: 'var(--accent-ink)',
+          border: 'none', borderRadius: 12, padding: '9px 14px',
+          fontSize: 13, fontWeight: 700, cursor: 'pointer',
+          fontFamily: 'var(--fb)', letterSpacing: '-0.01em',
+          boxShadow: '0 2px 14px oklch(74% 0.155 163 / 22%)',
+        }}
+      >
+        <Plus size={15} strokeWidth={2.6} /> Session
+      </motion.button>
     </header>
   )
 }

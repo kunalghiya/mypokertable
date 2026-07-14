@@ -4,16 +4,32 @@ export function uid(): string {
   return 'p' + Math.random().toString(36).slice(2, 8)
 }
 
-// yyyy-mm-dd → dd-mm-yyyy
+const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+
+// yyyy-mm-dd → "26 Jun 2026"
 export function fmtDate(d: string): string {
   if (!d) return ''
   const [y, m, day] = d.split('-')
-  return day && m && y ? `${day}-${m}-${y}` : d
+  const mi = Number(m) - 1
+  return day && MONTHS[mi] && y ? `${Number(day)} ${MONTHS[mi]} ${y}` : d
+}
+
+// yyyy-mm-dd → "26 Jun"
+export function fmtDateShort(d: string): string {
+  if (!d) return ''
+  const [, m, day] = d.split('-')
+  const mi = Number(m) - 1
+  return day && MONTHS[mi] ? `${Number(day)} ${MONTHS[mi]}` : d
 }
 
 export function rs(n: number): string {
   n = Math.round(Number(n) || 0)
-  return (n >= 0 ? '+' : '-') + 'Rs.' + Math.abs(n).toLocaleString('en-IN')
+  return (n >= 0 ? '+' : '-') + '₹' + Math.abs(n).toLocaleString('en-IN')
+}
+
+// Plain amount: "₹1,500"
+export function inr(n: number): string {
+  return '₹' + Math.round(Number(n) || 0).toLocaleString('en-IN')
 }
 
 export function ini(name: string): string {

@@ -1,8 +1,9 @@
 import { useState } from 'react'
 import { motion } from 'framer-motion'
+import { Pencil, NotebookPen, Sparkles, Trash2, UserPlus, X } from 'lucide-react'
 import { useStore } from '../store'
 import { Avatar } from '../components/Avatar'
-import { Card } from '../components/Card'
+import { Card, SectionLabel } from '../components/Card'
 import { Button } from '../components/Button'
 import { Modal } from '../components/Modal'
 import { callClaude } from '../lib/claude'
@@ -11,14 +12,14 @@ import { toast } from '../components/Toast'
 import { sfx } from '../lib/sounds'
 
 const TAGS: Record<string, { l: string; c: string }> = {
-  p1: { l: 'Hero', c: '#c9a84c' },
-  p2: { l: 'Tight-Passive', c: '#60a5fa' },
-  p3: { l: 'Loose-Aggressive', c: '#f87171' },
-  p4: { l: 'Calling Station', c: '#c084fc' },
-  p5: { l: 'Pair Hunter', c: '#4ade80' },
+  p1: { l: 'Hero',             c: 'oklch(85% 0.14 90)' },
+  p2: { l: 'Tight-Passive',    c: 'oklch(75% 0.1 240)' },
+  p3: { l: 'Loose-Aggressive', c: 'oklch(72% 0.14 22)' },
+  p4: { l: 'Calling Station',  c: 'oklch(78% 0.12 300)' },
+  p5: { l: 'Pair Hunter',      c: 'oklch(82% 0.14 150)' },
 }
 
-const container = { hidden: {}, show: { transition: { staggerChildren: 0.07 } } }
+const container = { hidden: {}, show: { transition: { staggerChildren: 0.06 } } }
 const item = { hidden: { opacity: 0, y: 14 }, show: { opacity: 1, y: 0, transition: { type: 'spring' as const, stiffness: 340, damping: 28 } } }
 
 export function Players() {
@@ -75,69 +76,68 @@ export function Players() {
 
         return (
           <motion.div key={p.id} variants={item}>
-            <Card glow={i === 0 ? 'gold' : 'none'}>
+            <Card glow={i === 0 ? 'accent' : 'none'}>
               <div style={{ display: 'flex', alignItems: 'flex-start', gap: 12, marginBottom: 10 }}>
                 <Avatar player={p} size="lg" />
                 <div style={{ flex: 1, minWidth: 0 }}>
                   {editId === p.id ? (
                     <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
                       <input value={editVal} onChange={e => setEditVal(e.target.value)}
-                        style={{ flex: 1, fontSize: 16, padding: '7px 10px' }} autoFocus
+                        style={{ flex: 1, fontSize: 16, padding: '8px 11px' }} autoFocus
                         onKeyDown={async e => { if (e.key === 'Enter' && editVal.trim()) { await renamePlayer(p.id, editVal.trim()); setEditId(null) } }}
                       />
-                      <button onClick={async () => { await renamePlayer(p.id, editVal.trim()); setEditId(null) }}
-                        style={{ background: 'var(--gold)', color: '#07050f', border: 'none', borderRadius: 8, padding: '7px 12px', fontSize: 11, fontWeight: 700, cursor: 'pointer', fontFamily: 'var(--fb)' }}>
+                      <Button variant="primary" size="sm" style={{ minHeight: 38 }} onClick={async () => { await renamePlayer(p.id, editVal.trim()); setEditId(null) }}>
                         Save
-                      </button>
-                      <button onClick={() => setEditId(null)}
-                        style={{ background: 'none', border: 'none', color: 'var(--t3)', cursor: 'pointer', fontSize: 14 }}>✕</button>
+                      </Button>
+                      <button onClick={() => setEditId(null)} aria-label="Cancel rename"
+                        style={{ background: 'none', border: 'none', color: 'var(--ink-3)', cursor: 'pointer', display: 'flex' }}><X size={16} strokeWidth={2.2} /></button>
                     </div>
                   ) : (
                     <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                      <div style={{ fontFamily: 'var(--fs)', fontSize: 17, fontWeight: 700, color: 'var(--t1)', letterSpacing: '-0.2px' }}>{p.name}</div>
-                      {i === 0 && <div style={{ fontSize: 9, color: 'var(--gold)', fontWeight: 700, letterSpacing: '0.08em', background: 'rgba(212,168,67,.12)', padding: '2px 7px', borderRadius: 20, border: '1px solid rgba(212,168,67,.25)' }}>YOU</div>}
+                      <div style={{ fontSize: 16.5, fontWeight: 700, color: 'var(--ink)', letterSpacing: '-0.02em' }}>{p.name}</div>
+                      {i === 0 && <div style={{ fontSize: 9, color: 'var(--accent)', fontWeight: 700, letterSpacing: '0.07em', background: 'var(--accent-dim)', padding: '3px 8px', borderRadius: 20 }}>YOU</div>}
                     </div>
                   )}
                   {tag && (
-                    <span style={{ display: 'inline-flex', fontSize: 9, border: '1px solid', borderRadius: 20, padding: '2px 8px', marginTop: 5, letterSpacing: '0.05em', fontWeight: 500, color: tag.c, borderColor: tag.c }}>
+                    <span style={{ display: 'inline-flex', fontSize: 9.5, border: `1px solid ${tag.c.replace(')', ' / 40%)')}`, borderRadius: 20, padding: '2px 9px', marginTop: 6, letterSpacing: '0.04em', fontWeight: 600, color: tag.c }}>
                       {tag.l}
                     </span>
                   )}
-                  <div style={{ display: 'flex', gap: 10, marginTop: 4 }}>
-                    <span style={{ fontSize: 10, color: 'var(--t3)' }}>{cnt} sessions</span>
+                  <div style={{ display: 'flex', gap: 10, marginTop: 6 }}>
+                    <span style={{ fontSize: 11, color: 'var(--ink-3)' }}>{cnt} sessions</span>
                     {cnt > 0 && (
-                      <span style={{ fontSize: 10, fontWeight: 700, color: totalPnl >= 0 ? 'var(--green)' : 'var(--red)' }}>
-                        {totalPnl >= 0 ? '+' : ''}Rs.{totalPnl.toLocaleString('en-IN')}
+                      <span className="mono" style={{ fontSize: 11, fontWeight: 700, color: totalPnl >= 0 ? 'var(--pos)' : 'var(--neg)' }}>
+                        {totalPnl >= 0 ? '+' : '-'}₹{Math.abs(totalPnl).toLocaleString('en-IN')}
                       </span>
                     )}
                   </div>
                 </div>
               </div>
 
-              <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', marginTop: 8, marginBottom: 12 }}>
-                <ActionBtn color="gold" onClick={() => { setEditId(p.id); setEditVal(p.name) }}>✏ Rename</ActionBtn>
-                <ActionBtn color="gold" onClick={() => openNote(p.id)}>📝 Notes</ActionBtn>
+              <div style={{ display: 'flex', gap: 7, flexWrap: 'wrap', marginTop: 8, marginBottom: 12 }}>
+                <ActionBtn onClick={() => { setEditId(p.id); setEditVal(p.name) }}><Pencil size={12} strokeWidth={2.2} /> Rename</ActionBtn>
+                <ActionBtn onClick={() => openNote(p.id)}><NotebookPen size={12} strokeWidth={2.2} /> Notes</ActionBtn>
                 {apiKey && cnt > 0 && (
-                  <ActionBtn color="violet" onClick={() => runPlayerAI(p.id)}>⚡ AI Profile</ActionBtn>
+                  <ActionBtn tone="ai" onClick={() => runPlayerAI(p.id)}><Sparkles size={12} strokeWidth={2.2} /> AI profile</ActionBtn>
                 )}
                 {i > 0 && (
-                  <ActionBtn color="red" onClick={() => { if (confirm('Remove ' + p.name + '?')) removePlayer(p.id) }}>Remove</ActionBtn>
+                  <ActionBtn tone="danger" onClick={() => { if (confirm('Remove ' + p.name + '?')) removePlayer(p.id) }}><Trash2 size={12} strokeWidth={2.2} /> Remove</ActionBtn>
                 )}
               </div>
 
-              <div style={{ fontSize: 13, color: note ? 'var(--t2)' : 'var(--t4)', lineHeight: 1.65, fontStyle: note ? 'normal' : 'italic' }}>
+              <div style={{ fontSize: 13, color: note ? 'var(--ink-2)' : 'var(--ink-4)', lineHeight: 1.65 }}>
                 {note || 'No notes yet. Tap Notes to add your reads.'}
               </div>
 
               {(aiProfile || isLoading) && (
-                <div style={{ background: 'linear-gradient(135deg,rgba(40,20,120,.1),transparent)', border: '1px solid rgba(155,93,229,.18)', borderRadius: 12, padding: 12, marginTop: 10 }}>
-                  <div style={{ fontSize: 9, letterSpacing: '0.15em', textTransform: 'uppercase', color: 'var(--violet)', marginBottom: 6, fontWeight: 600 }}>⚡ AI Profile</div>
+                <div style={{ background: 'oklch(75% 0.14 300 / 7%)', border: '1px solid oklch(75% 0.14 300 / 22%)', borderRadius: 13, padding: 13, marginTop: 12 }}>
+                  <div className="label" style={{ color: 'oklch(80% 0.12 300)', marginBottom: 7 }}><Sparkles size={12} strokeWidth={2.4} /> AI profile</div>
                   {isLoading && !aiProfile ? (
-                    <div style={{ display: 'flex', alignItems: 'center', gap: 8, color: 'var(--violet)', fontSize: 12, fontStyle: 'italic' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 8, color: 'oklch(80% 0.12 300)', fontSize: 12.5 }}>
                       <span className="dot-loader"><span/><span/><span/></span> Building…
                     </div>
                   ) : (
-                    <div style={{ fontSize: 12, color: 'var(--t2)', lineHeight: 1.7, whiteSpace: 'pre-wrap' }}>{aiProfile}</div>
+                    <div style={{ fontSize: 12.5, color: 'var(--ink-2)', lineHeight: 1.7, whiteSpace: 'pre-wrap' }}>{aiProfile}</div>
                   )}
                 </div>
               )}
@@ -149,24 +149,24 @@ export function Players() {
       {/* Add player */}
       <motion.div variants={item}>
         <Card>
-          <div style={{ fontSize: 9, letterSpacing: '0.18em', textTransform: 'uppercase', color: 'var(--gold)', marginBottom: 12, fontWeight: 600 }}>Add Permanent Player</div>
+          <SectionLabel accent><UserPlus size={13} strokeWidth={2.4} /> Add permanent player</SectionLabel>
           <div style={{ display: 'flex', gap: 8 }}>
             <input value={newName} onChange={e => setNewName(e.target.value)} placeholder="Player name…"
               onKeyDown={async e => {
                 if (e.key === 'Enter' && newName.trim()) {
-                  await addPlayer(newName.trim()); toast(newName + ' added!', '♠'); sfx.chip(); setNewName('')
+                  await addPlayer(newName.trim()); toast(newName + ' added'); sfx.chip(); setNewName('')
                 }
               }}
             />
-            <Button variant="gold" onClick={async () => {
-              if (newName.trim()) { await addPlayer(newName.trim()); toast(newName + ' added!', '♠'); sfx.chip(); setNewName('') }
+            <Button variant="primary" onClick={async () => {
+              if (newName.trim()) { await addPlayer(newName.trim()); toast(newName + ' added'); sfx.chip(); setNewName('') }
             }} style={{ whiteSpace: 'nowrap' }}>Add</Button>
           </div>
         </Card>
       </motion.div>
 
       {/* Note modal */}
-      <Modal open={!!noteModal} onClose={() => setNoteModal(null)} title="📝 Notes">
+      <Modal open={!!noteModal} onClose={() => setNoteModal(null)} title="Player notes" icon={<NotebookPen size={18} strokeWidth={2.2} />}>
         {noteModal && (() => {
           const p = players.find(x => x.id === noteModal)
           return (
@@ -174,8 +174,8 @@ export function Players() {
               <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 14 }}>
                 {p && <Avatar player={p} size="md" />}
                 <div>
-                  <div style={{ fontSize: 15, fontWeight: 700, color: 'var(--t1)' }}>{p?.name}</div>
-                  <div style={{ fontSize: 11, color: 'var(--t3)' }}>Player reads & notes</div>
+                  <div style={{ fontSize: 15, fontWeight: 700, color: 'var(--ink)' }}>{p?.name}</div>
+                  <div style={{ fontSize: 11.5, color: 'var(--ink-3)' }}>Reads, tells and exploits</div>
                 </div>
               </div>
               <textarea value={noteVal} onChange={e => setNoteVal(e.target.value)}
@@ -183,7 +183,7 @@ export function Players() {
                 style={{ height: 140, marginBottom: 14 }} />
               <div style={{ display: 'flex', gap: 10 }}>
                 <Button variant="ghost" full onClick={() => setNoteModal(null)}>Cancel</Button>
-                <Button variant="gold" full onClick={async () => { await saveNote(noteModal, noteVal); setNoteModal(null) }}>Save</Button>
+                <Button variant="primary" full onClick={async () => { await saveNote(noteModal, noteVal); setNoteModal(null) }}>Save notes</Button>
               </div>
             </>
           )
@@ -193,20 +193,21 @@ export function Players() {
   )
 }
 
-function ActionBtn({ children, color, onClick }: { children: React.ReactNode; color: 'gold' | 'violet' | 'red'; onClick: () => void }) {
-  const colors = {
-    gold:   { color: 'var(--gold)',   border: 'rgba(212,168,67,.25)' },
-    violet: { color: '#a78bfa',       border: 'rgba(155,93,229,.25)' },
-    red:    { color: 'var(--red)',    border: 'rgba(255,51,85,.25)'  },
+function ActionBtn({ children, tone, onClick }: { children: React.ReactNode; tone?: 'ai' | 'danger'; onClick: () => void }) {
+  const tones = {
+    default: { color: 'var(--ink-2)',            border: 'var(--border-2)',                 bg: 'oklch(100% 0 0 / 4%)' },
+    ai:      { color: 'oklch(80% 0.12 300)',     border: 'oklch(75% 0.14 300 / 30%)',       bg: 'oklch(75% 0.14 300 / 10%)' },
+    danger:  { color: 'var(--neg)',              border: 'var(--neg-line)',                 bg: 'var(--neg-dim)' },
   }
-  const c = colors[color]
+  const c = tones[tone || 'default']
   return (
-    <button onClick={onClick} style={{
-      background: 'rgba(0,0,0,.2)', border: `1px solid ${c.border}`, borderRadius: 8,
-      padding: '5px 10px', cursor: 'pointer', fontFamily: 'var(--fb)',
-      fontSize: 11, color: c.color, fontWeight: 500, transition: '.15s',
+    <motion.button onClick={onClick} whileTap={{ scale: 0.94 }} style={{
+      display: 'inline-flex', alignItems: 'center', gap: 5,
+      background: c.bg, border: `1px solid ${c.border}`, borderRadius: 9,
+      padding: '7px 11px', cursor: 'pointer', fontFamily: 'var(--fb)',
+      fontSize: 11.5, color: c.color, fontWeight: 600,
     }}>
       {children}
-    </button>
+    </motion.button>
   )
 }

@@ -1,9 +1,11 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
+import { Spade, X, UserPlus, ArrowRight, Play } from 'lucide-react'
 import { Modal } from './Modal'
 import { Avatar } from './Avatar'
 import { Button } from './Button'
 import { useStore } from '../store'
+import { fmtDate } from '../lib/utils'
 import { sfx } from '../lib/sounds'
 
 interface StartSessionModalProps {
@@ -26,6 +28,14 @@ export function StartSessionModal({ open, onClose }: StartSessionModalProps) {
   const [guestInput, setGuestInput] = useState('')
   const [showGuestInput, setShowGuestInput] = useState(false)
 
+  // Re-seed defaults each time the sheet opens (players load async)
+  useEffect(() => {
+    if (open) {
+      setSelectedIds(players.map(p => p.id))
+      setDate(new Date().toISOString().split('T')[0])
+    }
+  }, [open])
+
   const toggle = (id: string) => {
     setSelectedIds(prev => prev.includes(id) ? prev.filter(x => x !== id) : [...prev, id])
     sfx.rebuy()
@@ -47,32 +57,32 @@ export function StartSessionModal({ open, onClose }: StartSessionModalProps) {
   if (activeSessId) {
     const existing = sessions.find(s => s.id === activeSessId)
     return (
-      <Modal open={open} onClose={onClose} title="♠ Active Session">
-        <p style={{ fontSize: 13, color: 'var(--t2)', lineHeight: 1.6, marginBottom: 20 }}>
-          A session from {existing?.date} is already in progress.
+      <Modal open={open} onClose={onClose} title="Active session" icon={<Spade size={18} strokeWidth={2.2} fill="currentColor" />}>
+        <p style={{ fontSize: 13.5, color: 'var(--ink-2)', lineHeight: 1.6, marginBottom: 20 }}>
+          A session from {fmtDate(existing?.date || '')} is already in progress.
         </p>
         <div style={{ display: 'flex', gap: 10 }}>
           <Button variant="ghost" full onClick={onClose}>Cancel</Button>
-          <Button variant="gold" full onClick={() => { setTab('live'); onClose() }}>Go to Live →</Button>
+          <Button variant="primary" full onClick={() => { setTab('live'); onClose() }}>Go to live <ArrowRight size={15} strokeWidth={2.4} /></Button>
         </div>
       </Modal>
     )
   }
 
   return (
-    <Modal open={open} onClose={onClose} title="♠ Start Session">
+    <Modal open={open} onClose={onClose} title="Start session" icon={<Spade size={18} strokeWidth={2.2} fill="currentColor" />}>
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10, marginBottom: 16 }}>
         <div>
-          <label style={{ fontSize: 9, letterSpacing: '0.15em', textTransform: 'uppercase', color: 'var(--t3)', display: 'block', marginBottom: 6, fontWeight: 600 }}>Date</label>
+          <label className="label" style={{ marginBottom: 7 }}>Date</label>
           <input type="date" value={date} onChange={e => setDate(e.target.value)} />
         </div>
         <div>
-          <label style={{ fontSize: 9, letterSpacing: '0.15em', textTransform: 'uppercase', color: 'var(--t3)', display: 'block', marginBottom: 6, fontWeight: 600 }}>Buyin Rs.</label>
-          <input type="number" value={buyinAmt} onChange={e => setBuyinAmt(Number(e.target.value) || 500)} />
+          <label className="label" style={{ marginBottom: 7 }}>Buyin ₹</label>
+          <input type="number" inputMode="numeric" value={buyinAmt} onChange={e => setBuyinAmt(Number(e.target.value) || 500)} className="mono" />
         </div>
       </div>
 
-      <div style={{ fontSize: 9, letterSpacing: '0.18em', textTransform: 'uppercase', color: 'var(--gold)', marginBottom: 10, fontWeight: 600 }}>Who is playing today?</div>
+      <div className="label accent" style={{ marginBottom: 10 }}>Who is playing today?</div>
 
       {players.map(p => {
         const on = selectedIds.includes(p.id)
@@ -81,18 +91,19 @@ export function StartSessionModal({ open, onClose }: StartSessionModalProps) {
             key={p.id}
             onClick={() => toggle(p.id)}
             whileTap={{ scale: 0.97 }}
+            className="row"
             style={{
               display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-              padding: '11px 14px', border: `1px solid ${on ? 'rgba(212,168,67,.35)' : 'var(--border)'}`,
-              borderRadius: 12, marginBottom: 8, cursor: 'pointer',
-              background: on ? 'rgba(212,168,67,.07)' : 'rgba(0,0,0,.2)',
-              transition: 'background .18s, border-color .18s',
+              padding: '10px 13px', marginBottom: 8, cursor: 'pointer',
+              borderColor: on ? 'var(--accent-line)' : 'var(--border)',
+              background: on ? 'var(--accent-dim)' : 'oklch(0% 0 0 / 18%)',
+              transition: 'background .18s, border-color .18s, opacity .18s',
               opacity: on ? 1 : 0.55,
             }}
           >
             <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
               <Avatar player={p} size="sm" />
-              <span style={{ fontSize: 13, fontWeight: 700, color: 'var(--t1)' }}>{p.name}</span>
+              <span style={{ fontSize: 13.5, fontWeight: 600, color: 'var(--ink)' }}>{p.name}</span>
             </div>
             <div className={`toggle ${on ? 'on' : ''}`} />
           </motion.div>
@@ -100,33 +111,30 @@ export function StartSessionModal({ open, onClose }: StartSessionModalProps) {
       })}
 
       {guests.map((g, i) => (
-        <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 6, background: 'rgba(155,93,229,.07)', border: '1px solid rgba(155,93,229,.2)', borderRadius: 10, padding: '8px 12px' }}>
-          <span style={{ fontSize: 13, color: 'var(--t1)', flex: 1 }}>{g}</span>
-          <button onClick={() => setGuests(prev => prev.filter((_, idx) => idx !== i))} style={{ background: 'none', border: 'none', color: 'var(--t3)', cursor: 'pointer', fontSize: 14 }}>✕</button>
+        <div key={i} className="row" style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 6, padding: '9px 13px', borderColor: 'oklch(75% 0.14 300 / 25%)', background: 'oklch(75% 0.14 300 / 7%)' }}>
+          <span style={{ fontSize: 13, color: 'var(--ink)', flex: 1, fontWeight: 500 }}>{g} <span style={{ color: 'var(--ink-3)', fontWeight: 400 }}>(guest)</span></span>
+          <button onClick={() => setGuests(prev => prev.filter((_, idx) => idx !== i))} aria-label={`Remove ${g}`}
+            style={{ background: 'none', border: 'none', color: 'var(--ink-3)', cursor: 'pointer', display: 'flex' }}><X size={15} strokeWidth={2.2} /></button>
         </div>
       ))}
 
-      <div style={{ marginTop: 8, marginBottom: 14 }}>
+      <div style={{ marginTop: 8, marginBottom: 18 }}>
         {showGuestInput ? (
           <div style={{ display: 'flex', gap: 8 }}>
             <input type="text" value={guestInput} onChange={e => setGuestInput(e.target.value)} placeholder="Guest name…" autoFocus onKeyDown={e => e.key === 'Enter' && addGuest()} style={{ flex: 1 }} />
-            <Button variant="gold" onClick={addGuest} style={{ whiteSpace: 'nowrap' }}>Add</Button>
-            <Button variant="ghost" onClick={() => setShowGuestInput(false)}>✕</Button>
+            <Button variant="primary" onClick={addGuest} style={{ whiteSpace: 'nowrap' }}>Add</Button>
+            <Button variant="ghost" onClick={() => setShowGuestInput(false)} aria-label="Cancel guest"><X size={15} strokeWidth={2.2} /></Button>
           </div>
         ) : (
-          <button onClick={() => setShowGuestInput(true)} style={{ background: 'none', border: '1.5px dashed var(--border)', color: 'var(--t3)', width: '100%', padding: 11, fontSize: 13, borderRadius: 12, fontFamily: 'var(--fb)', cursor: 'pointer', transition: '.18s' }}>
-            + Add Guest Player
-          </button>
+          <Button variant="dashed" onClick={() => setShowGuestInput(true)} style={{ borderRadius: 12 }}>
+            <UserPlus size={15} strokeWidth={2.2} /> Add guest player
+          </Button>
         )}
-      </div>
-
-      <div style={{ background: 'rgba(212,168,67,.07)', border: '1px solid rgba(212,168,67,.18)', borderRadius: 10, padding: 12, marginBottom: 16, fontSize: 12, color: 'var(--t2)', lineHeight: 1.6 }}>
-        ℹ After starting go to <strong style={{ color: 'var(--gold)' }}>Live tab</strong> to log hands & rebuys.
       </div>
 
       <div style={{ display: 'flex', gap: 10 }}>
         <Button variant="ghost" style={{ flex: 1 }} onClick={onClose}>Cancel</Button>
-        <Button variant="gold" style={{ flex: 2 }} onClick={handleStart}>🎯 Start Session</Button>
+        <Button variant="primary" style={{ flex: 2 }} onClick={handleStart}><Play size={15} strokeWidth={2.4} /> Start session</Button>
       </div>
     </Modal>
   )

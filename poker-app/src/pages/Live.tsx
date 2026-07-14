@@ -1,12 +1,16 @@
 import { useState, useEffect, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
+import {
+  Spade, Timer, X, Plus, ArrowLeft, ArrowRight, Trophy, Sparkles,
+  ChevronDown, NotebookPen, ClipboardList, Square, UserPlus, History, Minus,
+} from 'lucide-react'
 import { useStore } from '../store'
 import { Avatar } from '../components/Avatar'
 import { Card, SectionLabel } from '../components/Card'
 import { Button } from '../components/Button'
 import { Settlement } from '../components/Settlement'
 import { callClaude } from '../lib/claude'
-import { buildSessPrompt, rs, fmtDate } from '../lib/utils'
+import { buildSessPrompt, rs, inr, fmtDate } from '../lib/utils'
 import { sfx } from '../lib/sounds'
 import type { CardObj, Player, Session, StreetData } from '../lib/types'
 
@@ -18,7 +22,6 @@ const ACT_CLS: Record<string, string> = {
   Fold: 'fold', Call: 'call', Check: 'check', Raise: 'raise', Bet: 'bet', 'All-In': 'allin',
 }
 
-// Safe street-data key
 function streetKey(street: string) {
   return street === 'preflop' ? 'pre' : street
 }
@@ -107,25 +110,33 @@ export function Live({
     )
   }
 
-  // ── No active session — show empty state + past sessions ───────
+  // ── No active session — empty state + past sessions ───────
   if (!activeSessId || !sess) {
     return (
       <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} style={{ padding: '14px 14px 0' }}>
-        {/* Empty state when no game running */}
         {!activeSessId && (
-          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '40px 28px 28px', textAlign: 'center' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '38px 28px 26px', textAlign: 'center' }}>
             <motion.div
-              animate={{ rotate: [0, 8, -8, 0], scale: [1, 1.08, 1] }}
-              transition={{ duration: 3.5, repeat: Infinity, ease: 'easeInOut' }}
-              style={{ fontSize: 56, marginBottom: 14, color: 'var(--gold)', opacity: 0.7, lineHeight: 1 }}
-            >♠</motion.div>
-            <div style={{ fontFamily: 'var(--fs)', fontSize: 20, fontWeight: 800, color: 'var(--t1)', marginBottom: 8 }}>No active game</div>
-            <div style={{ fontSize: 13, color: 'var(--t3)', lineHeight: 1.7 }}>
-              Tap <strong style={{ color: 'var(--gold)' }}>+</strong> in the header to start a session
+              animate={{ y: [0, -6, 0] }}
+              transition={{ duration: 2.8, repeat: Infinity, ease: 'easeInOut' }}
+              style={{
+                width: 64, height: 64, borderRadius: 20, marginBottom: 16,
+                background: 'var(--accent-dim)', border: '1px solid var(--accent-line)',
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                color: 'var(--accent)',
+              }}
+            >
+              <Spade size={28} strokeWidth={2} fill="currentColor" />
+            </motion.div>
+            <div style={{ fontSize: 18, fontWeight: 700, color: 'var(--ink)', marginBottom: 7, letterSpacing: '-0.02em' }}>No active game</div>
+            <div style={{ fontSize: 13, color: 'var(--ink-3)', lineHeight: 1.7 }}>
+              Tap <strong style={{ color: 'var(--accent)' }}>+ Session</strong> in the header to start
             </div>
           </div>
         )}
-        {/* Past sessions */}
+        {pastSessions.length > 0 && (
+          <div className="label" style={{ padding: '4px 2px 10px' }}><History size={12} strokeWidth={2.4} /> Past sessions</div>
+        )}
         <PastSessions
           sessions={pastSessions}
           hands={hands}
@@ -146,7 +157,6 @@ export function Live({
   const sessHands = hands.filter(h => h.sessionId === activeSessId)
   const stepIdx = STEPS.indexOf(lh.step as typeof STEPS[number])
 
-  // Safe lh field accessors
   const lhPre   = lh.pre   || {} as StreetData
   const lhFlop  = lh.flop  || {} as StreetData
   const lhTurn  = lh.turn  || {} as StreetData
@@ -185,6 +195,8 @@ export function Live({
     setTimeout(async () => { await logHand(); sfx.shuffle() }, 400)
   }
 
+  const onTable = Object.values(liveBuyins).reduce((sum, cnt) => sum + cnt * (sess.buyinAmt || 500), 0)
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 10 }}
@@ -193,69 +205,66 @@ export function Live({
       style={{ padding: '14px 14px 0' }}
     >
       {/* ── Session header ── */}
-      <div style={{
-        background: 'linear-gradient(135deg,rgba(26,16,64,.9),rgba(10,7,24,.9))',
-        border: '1px solid rgba(212,168,67,.18)', borderRadius: 18,
+      <div className="panel" style={{
+        borderColor: 'var(--live-line)',
         padding: 16, marginBottom: 12,
+        boxShadow: '0 8px 32px oklch(0% 0 0 / 30%)',
       }}>
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-          <div>
-            <div style={{ fontSize: 11, color: 'var(--t3)', marginBottom: 2 }}>
-              <span className="live-dot" style={{ marginRight: 5 }} />
-              LIVE · {sess.date}
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12 }}>
+          <div style={{ minWidth: 0 }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 11, letterSpacing: '0.08em', textTransform: 'uppercase', color: 'var(--live)', fontWeight: 700, marginBottom: 5 }}>
+              <span className="live-dot" /> Live
             </div>
-            <div style={{ fontSize: 13, color: 'var(--t2)' }}>
-              Rs.{sess.buyinAmt || 500}/buyin · {pl.length} players
+            <div style={{ fontSize: 14, fontWeight: 700, color: 'var(--ink)' }}>{fmtDate(sess.date)}</div>
+            <div style={{ fontSize: 12, color: 'var(--ink-3)', marginTop: 2 }}>
+              {inr(sess.buyinAmt || 500)}/buyin · {pl.length} players
             </div>
             {sess.startedAt && (
-              <div style={{ fontSize: 12, color: 'var(--gold)', marginTop: 4, fontVariantNumeric: 'tabular-nums', fontWeight: 600 }}>
-                ⏱ {liveDuration}
+              <div className="mono" style={{ display: 'flex', alignItems: 'center', gap: 5, fontSize: 12, color: 'var(--live)', marginTop: 6, fontWeight: 600 }}>
+                <Timer size={13} strokeWidth={2.4} /> {liveDuration}
               </div>
             )}
           </div>
-          <div style={{ textAlign: 'right' }}>
-            <div style={{ fontFamily: 'var(--fs)', fontSize: 28, fontWeight: 900, color: 'var(--gold)', lineHeight: 1 }}>
-              Rs.{Object.values(liveBuyins).reduce((sum, cnt) => sum + cnt * (sess.buyinAmt || 500), 0).toLocaleString('en-IN')}
+          <div style={{ textAlign: 'right', flexShrink: 0 }}>
+            <div className="mono" style={{ fontSize: 24, fontWeight: 800, color: 'var(--ink)', lineHeight: 1 }}>
+              {inr(onTable)}
             </div>
-            <div style={{ fontSize: 10, color: 'var(--t3)', letterSpacing: '0.1em', textTransform: 'uppercase', marginTop: 2 }}>On Table</div>
-            <div style={{ fontFamily: 'var(--fs)', fontSize: 18, fontWeight: 700, color: 'var(--t2)', marginTop: 6, lineHeight: 1 }}>
+            <div style={{ fontSize: 10, color: 'var(--ink-3)', letterSpacing: '0.08em', textTransform: 'uppercase', marginTop: 3, fontWeight: 600 }}>On table</div>
+            <div className="mono" style={{ fontSize: 16, fontWeight: 700, color: 'var(--accent)', marginTop: 8, lineHeight: 1 }}>
               #{(lh.count ?? 0) + 1}
             </div>
-            <div style={{ fontSize: 10, color: 'var(--t3)', letterSpacing: '0.1em', textTransform: 'uppercase', marginTop: 1 }}>Hand</div>
+            <div style={{ fontSize: 10, color: 'var(--ink-3)', letterSpacing: '0.08em', textTransform: 'uppercase', marginTop: 2, fontWeight: 600 }}>Hand</div>
           </div>
         </div>
       </div>
 
-      {/* ── Rebuy Tracker ── */}
+      {/* ── Rebuy tracker ── */}
       <Card>
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 14 }}>
-          <SectionLabel gold>♻ Rebuy Tracker</SectionLabel>
-        </div>
+        <SectionLabel accent><Plus size={13} strokeWidth={2.6} /> Rebuy tracker</SectionLabel>
         {pl.map(p => {
           const cnt = liveBuyins[p.id] || 1
           const inv = cnt * (sess.buyinAmt || 500)
           return (
-            <div key={p.id} style={{
+            <div key={p.id} className="row" style={{
               display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-              padding: '12px 14px',
-              background: 'rgba(0,0,0,.2)', border: '1px solid var(--border)',
-              borderRadius: 14, marginBottom: 8,
+              padding: '11px 13px', marginBottom: 8,
             }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: 10, flex: 1, minWidth: 0 }}>
                 <Avatar player={p} size="sm" />
                 <div>
-                  <div style={{ fontSize: 14, fontWeight: 600, color: 'var(--t1)' }}>{p.name}</div>
-                  <div style={{ fontSize: 11, color: 'var(--t3)', marginTop: 2 }}>
-                    {cnt}× · Rs.{inv.toLocaleString('en-IN')}
+                  <div style={{ fontSize: 14, fontWeight: 600, color: 'var(--ink)' }}>{p.name}</div>
+                  <div className="mono" style={{ fontSize: 11, color: 'var(--ink-3)', marginTop: 2 }}>
+                    {cnt}× · {inr(inv)}
                   </div>
                 </div>
               </div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
                 <Stepper value={cnt} onDec={() => handleRebuy(p.id, -1)} onInc={() => handleRebuy(p.id, 1)} />
                 <button
                   onClick={() => removePlayerFromLive(p.id)}
-                  style={{ width: 28, height: 34, borderRadius: 8, background: 'transparent', border: 'none', color: 'var(--t4)', cursor: 'pointer', fontSize: 14 }}
-                >✕</button>
+                  aria-label={`Remove ${p.name}`}
+                  style={{ width: 30, height: 36, borderRadius: 8, background: 'transparent', border: 'none', color: 'var(--ink-4)', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+                ><X size={15} strokeWidth={2.2} /></button>
               </div>
             </div>
           )
@@ -263,26 +272,19 @@ export function Live({
 
         {/* Add late player */}
         {!showAddPlayer ? (
-          <button onClick={() => setShowAddPlayer(true)} style={{
-            width: '100%', marginTop: 6, padding: '10px 0', borderRadius: 12,
-            background: 'none', border: '1.5px dashed var(--border)',
-            color: 'var(--t3)', fontSize: 13, fontFamily: 'var(--fb)',
-            cursor: 'pointer', transition: '.15s',
-          }}>
-            + Add Player
-          </button>
+          <Button variant="dashed" size="md" onClick={() => setShowAddPlayer(true)} style={{ marginTop: 4, borderRadius: 12 }}>
+            <UserPlus size={15} strokeWidth={2.2} /> Add player
+          </Button>
         ) : (
-          <div style={{ marginTop: 8, background: 'rgba(0,0,0,.2)', border: '1px solid var(--border)', borderRadius: 14, padding: 12 }}>
-            <div style={{ fontSize: 10, letterSpacing: '0.15em', textTransform: 'uppercase', color: 'var(--gold)', fontWeight: 600, marginBottom: 10 }}>Add to Session</div>
-            {/* Existing players not yet in session */}
+          <div className="row" style={{ marginTop: 8, padding: 12 }}>
+            <div className="label accent" style={{ marginBottom: 10 }}>Add to session</div>
             {allPlayers.filter(p => !pl.find(sp => sp.id === p.id)).map(p => (
               <button key={p.id} onClick={async () => { await addPlayerToLive(p.id, null); sfx.chip(); setShowAddPlayer(false) }}
-                style={{ display: 'flex', alignItems: 'center', gap: 10, width: '100%', background: 'none', border: 'none', cursor: 'pointer', padding: '7px 4px', borderRadius: 10 }}>
+                style={{ display: 'flex', alignItems: 'center', gap: 10, width: '100%', background: 'none', border: 'none', cursor: 'pointer', padding: '7px 4px', borderRadius: 10, fontFamily: 'var(--fb)' }}>
                 <Avatar player={p} size="sm" />
-                <span style={{ fontSize: 13, fontWeight: 600, color: 'var(--t1)' }}>{p.name}</span>
+                <span style={{ fontSize: 13.5, fontWeight: 600, color: 'var(--ink)' }}>{p.name}</span>
               </button>
             ))}
-            {/* Guest player input */}
             <div style={{ display: 'flex', gap: 8, marginTop: 8 }}>
               <input
                 value={guestInput}
@@ -291,21 +293,21 @@ export function Live({
                 onKeyDown={async e => { if (e.key === 'Enter' && guestInput.trim()) { await addPlayerToLive(null, guestInput.trim()); sfx.chip(); setGuestInput(''); setShowAddPlayer(false) }}}
                 style={{ flex: 1 }}
               />
-              <Button variant="gold" size="sm" onClick={async () => { if (guestInput.trim()) { await addPlayerToLive(null, guestInput.trim()); sfx.chip(); setGuestInput(''); setShowAddPlayer(false) }}}>Add</Button>
+              <Button variant="primary" size="sm" style={{ minHeight: 44 }} onClick={async () => { if (guestInput.trim()) { await addPlayerToLive(null, guestInput.trim()); sfx.chip(); setGuestInput(''); setShowAddPlayer(false) }}}>Add</Button>
             </div>
-            <button onClick={() => { setShowAddPlayer(false); setGuestInput('') }} style={{ width: '100%', marginTop: 8, background: 'none', border: 'none', color: 'var(--t3)', fontSize: 12, cursor: 'pointer', fontFamily: 'var(--fb)' }}>Cancel</button>
+            <button onClick={() => { setShowAddPlayer(false); setGuestInput('') }} style={{ width: '100%', marginTop: 10, background: 'none', border: 'none', color: 'var(--ink-3)', fontSize: 12.5, cursor: 'pointer', fontFamily: 'var(--fb)', fontWeight: 500 }}>Cancel</button>
           </div>
         )}
       </Card>
 
-      {/* ── Hand Logger ── */}
+      {/* ── Hand logger ── */}
       <Card>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 14 }}>
-          <SectionLabel gold>Hand Logger</SectionLabel>
-          <Button variant="ghost" size="sm" onClick={() => { skipHand(); sfx.shuffle() }}>Skip Hand</Button>
+          <SectionLabel accent><Spade size={13} strokeWidth={2.4} /> Hand logger</SectionLabel>
+          <Button variant="ghost" size="sm" onClick={() => { skipHand(); sfx.shuffle() }}>Skip hand</Button>
         </div>
 
-        {/* Progress bar */}
+        {/* Street progress */}
         <div style={{ display: 'flex', gap: 4, marginBottom: 16 }}>
           {STEPS.map((s, i) => (
             <div key={s} className={`street-segment ${i < stepIdx ? 'done' : i === stepIdx ? 'active' : ''}`} />
@@ -318,7 +320,7 @@ export function Live({
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: -20 }}
-            transition={{ duration: 0.15 }}
+            transition={{ duration: 0.16, ease: 'easeOut' }}
           >
             {lh.step === 'dealer' && (
               <StepDealer pl={pl} dealer={lh.dealer}
@@ -370,18 +372,18 @@ export function Live({
 
       {/* ── End session ── */}
       <Button variant="danger" full onClick={onEndSession} style={{ marginBottom: 12 }}>
-        ⏹ End Session &amp; Enter Cashouts
+        <Square size={14} strokeWidth={2.4} /> End session &amp; enter cashouts
       </Button>
 
       {/* ── Logged hands ── */}
       {sessHands.length > 0 && (
         <Card>
-          <SectionLabel gold>📝 Logged Hands ({sessHands.length})</SectionLabel>
+          <SectionLabel accent><ClipboardList size={13} strokeWidth={2.4} /> Logged hands ({sessHands.length})</SectionLabel>
           {sessHands.slice(0, 8).map((hand, idx) => (
             <HandLog key={hand.id || idx} hand={hand} idx={idx} pl={pl} />
           ))}
           {sessHands.length > 8 && (
-            <div style={{ fontSize: 11, color: 'var(--t3)', textAlign: 'center', padding: 6 }}>
+            <div style={{ fontSize: 11.5, color: 'var(--ink-3)', textAlign: 'center', padding: 6 }}>
               + {sessHands.length - 8} more
             </div>
           )}
@@ -391,7 +393,7 @@ export function Live({
       {/* ── Past sessions ── */}
       {pastSessions.length > 0 && (
         <div style={{ marginTop: 4 }}>
-          <div style={{ fontSize: 10, letterSpacing: '0.15em', textTransform: 'uppercase', color: 'var(--t3)', fontWeight: 600, padding: '8px 2px 6px' }}>Past Sessions</div>
+          <div className="label" style={{ padding: '8px 2px 10px' }}><History size={12} strokeWidth={2.4} /> Past sessions</div>
           <PastSessions
             sessions={pastSessions}
             hands={hands}
@@ -441,32 +443,38 @@ function PastSessions({
         const duration = fmtDuration(s.startedAt, s.endedAt)
 
         return (
-          <div key={s.id || i} style={{
-            background: 'var(--card)', border: '1px solid var(--border)',
-            borderRadius: 18, marginBottom: 10, overflow: 'hidden',
-            boxShadow: '0 2px 12px rgba(0,0,0,.3)',
-          }}>
+          <div key={s.id || i} className="panel" style={{ marginBottom: 10, overflow: 'hidden' }}>
             <div
               onClick={() => setOpenSess(isOpen ? null : (s.id || null))}
-              style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '14px 16px', cursor: 'pointer' }}
+              style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '13px 15px', cursor: 'pointer' }}
             >
-              <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 9, minWidth: 0 }}>
                 {myP && <Avatar player={myP} size="sm" />}
-                <div>
-                  <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--t1)' }}>{fmtDate(s.date || '')}</div>
-                  <div style={{ fontSize: 11, color: 'var(--t3)' }}>
-                    Rs.{s.buyinAmt || 500}/buyin · {pl.length} players
+                <div style={{ minWidth: 0 }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                    <span style={{ fontSize: 13.5, fontWeight: 600, color: 'var(--ink)' }}>{fmtDate(s.date || '')}</span>
+                    {aiText && (
+                      <span style={{ display: 'inline-flex', alignItems: 'center', gap: 3, fontSize: 9, fontWeight: 700, color: 'oklch(80% 0.12 300)', background: 'oklch(75% 0.14 300 / 12%)', padding: '2px 7px', borderRadius: 10 }}>
+                        <Sparkles size={9} strokeWidth={2.4} /> AI
+                      </span>
+                    )}
+                  </div>
+                  <div style={{ fontSize: 11, color: 'var(--ink-3)', marginTop: 2, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                    {inr(s.buyinAmt || 500)}/buyin · {pl.length} players
                     {sessHands.length ? ` · ${sessHands.length} hands` : ''}
                     {duration ? ` · ${duration}` : ''}
                   </div>
                 </div>
-                {aiText && <span style={{ fontSize: 9, color: 'var(--violet)', background: 'rgba(155,93,229,.15)', padding: '2px 7px', borderRadius: 10 }}>AI</span>}
               </div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                <span style={{ color: r >= 0 ? 'var(--green)' : 'var(--red)', fontWeight: 700, fontSize: 15 }}>{rs(r)}</span>
-                <span style={{ color: 'var(--t3)', fontSize: 12 }}>{isOpen ? '▲' : '▼'}</span>
-                <button onClick={e => { e.stopPropagation(); if (confirm('Delete this session?')) onDelete(s.id!) }}
-                  style={{ background: 'none', border: 'none', color: 'var(--t3)', cursor: 'pointer', fontSize: 14, padding: '4px 6px' }}>✕</button>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 6, flexShrink: 0 }}>
+                <span className="mono" style={{ color: r >= 0 ? 'var(--pos)' : 'var(--neg)', fontWeight: 700, fontSize: 14 }}>{rs(r)}</span>
+                <motion.span
+                  animate={{ rotate: isOpen ? 180 : 0 }}
+                  transition={{ duration: 0.2 }}
+                  style={{ color: 'var(--ink-3)', display: 'flex' }}
+                >
+                  <ChevronDown size={15} strokeWidth={2.2} />
+                </motion.span>
               </div>
             </div>
 
@@ -477,42 +485,48 @@ function PastSessions({
                   exit={{ height: 0, opacity: 0 }} transition={{ duration: 0.22, ease: 'easeInOut' }}
                   style={{ overflow: 'hidden' }}
                 >
-                  <div style={{ padding: '14px 16px', borderTop: '1px solid var(--border)' }}>
+                  <div style={{ padding: '14px 15px', borderTop: '1px solid var(--border)' }}>
                     {pl.map(p => {
                       const pr = (s.results && s.results[p.id]) || 0
                       const note = s.sessionNotes?.[p.id]
                       return (
-                        <div key={p.id} style={{ background: 'rgba(0,0,0,.2)', borderRadius: 12, padding: '10px 12px', marginBottom: 8 }}>
+                        <div key={p.id} className="row" style={{ padding: '10px 12px', marginBottom: 8 }}>
                           <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
                             <Avatar player={p} size="sm" />
                             <div style={{ flex: 1, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                              <span style={{ fontSize: 13, fontWeight: 700, color: 'var(--t1)' }}>{p.name}{p.isGuest ? ' 👤' : ''}</span>
+                              <span style={{ fontSize: 13.5, fontWeight: 600, color: 'var(--ink)' }}>{p.name}{p.isGuest ? ' (guest)' : ''}</span>
                               <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                                <span style={{ fontSize: 11, color: 'var(--t3)' }}>{(s.buyins && s.buyins[p.id]) || 1}×</span>
-                                <span style={{ color: pr >= 0 ? 'var(--green)' : 'var(--red)', fontWeight: 700, fontSize: 14 }}>{rs(pr)}</span>
+                                <span className="mono" style={{ fontSize: 11, color: 'var(--ink-3)' }}>{(s.buyins && s.buyins[p.id]) || 1}×</span>
+                                <span className="mono" style={{ color: pr >= 0 ? 'var(--pos)' : 'var(--neg)', fontWeight: 700, fontSize: 13.5 }}>{rs(pr)}</span>
                               </div>
                             </div>
                           </div>
-                          {note && <div style={{ fontSize: 11, color: 'var(--t3)', fontStyle: 'italic', marginTop: 7, paddingTop: 7, borderTop: '1px solid var(--border)' }}>📝 {note}</div>}
+                          {note && <div style={{ display: 'flex', gap: 6, fontSize: 11.5, color: 'var(--ink-3)', marginTop: 8, paddingTop: 8, borderTop: '1px solid var(--border)', lineHeight: 1.5 }}><NotebookPen size={12} strokeWidth={2} style={{ flexShrink: 0, marginTop: 1 }} /> {note}</div>}
                         </div>
                       )
                     })}
                     <Settlement results={s.results || {}} players={pl} households={households} />
-                    {s.notes && <div style={{ background: 'rgba(0,0,0,.2)', borderRadius: 12, padding: '10px 12px', fontSize: 11, fontStyle: 'italic', color: 'var(--t3)', marginTop: 8 }}>📋 {s.notes}</div>}
+                    {s.notes && <div className="row" style={{ display: 'flex', gap: 6, padding: '10px 12px', fontSize: 11.5, color: 'var(--ink-3)', marginTop: 8, lineHeight: 1.5 }}><ClipboardList size={12} strokeWidth={2} style={{ flexShrink: 0, marginTop: 1 }} /> {s.notes}</div>}
                     {aiText ? (
-                      <div style={{ background: 'linear-gradient(135deg,rgba(40,20,120,.12),rgba(100,30,10,.08))', border: '1px solid rgba(155,93,229,.2)', borderRadius: 14, padding: 14, marginTop: 10 }}>
-                        <div style={{ fontSize: 9, letterSpacing: '0.15em', textTransform: 'uppercase', color: 'var(--violet)', marginBottom: 8, fontWeight: 600 }}>⚡ AI Coaching</div>
-                        <div style={{ fontSize: 13, color: 'var(--t2)', lineHeight: 1.75, whiteSpace: 'pre-wrap' }}>{aiText}</div>
+                      <div style={{ background: 'oklch(75% 0.14 300 / 7%)', border: '1px solid oklch(75% 0.14 300 / 22%)', borderRadius: 14, padding: 14, marginTop: 10 }}>
+                        <div className="label" style={{ color: 'oklch(80% 0.12 300)', marginBottom: 8 }}><Sparkles size={12} strokeWidth={2.4} /> AI coaching</div>
+                        <div style={{ fontSize: 13, color: 'var(--ink-2)', lineHeight: 1.7, whiteSpace: 'pre-wrap' }}>{aiText}</div>
                       </div>
                     ) : apiKey && (
                       <Button variant="ai" full onClick={() => onRunAI(s)} style={{ marginTop: 10 }}>
                         {isAiLoading ? (
-                          <span style={{ display: 'flex', alignItems: 'center', gap: 8, color: 'var(--violet)', fontSize: 12, fontStyle: 'italic' }}>
+                          <span style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 12.5 }}>
                             <span className="dot-loader"><span/><span/><span/></span> Analysing…
                           </span>
-                        ) : '⚡ Generate AI Coaching'}
+                        ) : (<><Sparkles size={14} strokeWidth={2.2} /> Generate AI coaching</>)}
                       </Button>
                     )}
+                    <button
+                      onClick={e => { e.stopPropagation(); if (confirm('Delete this session?')) onDelete(s.id!) }}
+                      style={{ width: '100%', marginTop: 12, background: 'none', border: 'none', color: 'var(--neg)', opacity: 0.75, cursor: 'pointer', fontSize: 12, fontWeight: 600, fontFamily: 'var(--fb)', padding: 6 }}
+                    >
+                      Delete session
+                    </button>
                   </div>
                 </motion.div>
               )}
@@ -524,7 +538,15 @@ function PastSessions({
   )
 }
 
-/* ── Sub-steps — all receive plain props, no useStore calls ── */
+/* ── Sub-steps ── */
+
+function StepTitle({ children }: { children: React.ReactNode }) {
+  return (
+    <div style={{ fontSize: 16, fontWeight: 700, color: 'var(--ink)', marginBottom: 14, letterSpacing: '-0.02em' }}>
+      {children}
+    </div>
+  )
+}
 
 function StepDealer({ pl, dealer, onSelect, onNext }: {
   pl: Player[]; dealer: string | null
@@ -532,22 +554,19 @@ function StepDealer({ pl, dealer, onSelect, onNext }: {
 }) {
   return (
     <div>
-      <div style={{ fontFamily: 'var(--fs)', fontSize: 17, fontWeight: 700, color: 'var(--t1)', marginBottom: 14, fontStyle: 'italic' }}>
-        ♠ Who is dealing?
-      </div>
+      <StepTitle>Who is dealing?</StepTitle>
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(5,1fr)', gap: 6, marginBottom: 14 }}>
         {pl.map(p => (
-          <button key={p.id} onClick={() => onSelect(p.id)}
-            style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4, background: 'none', border: 'none', cursor: 'pointer', padding: '6px 2px', borderRadius: 12 }}>
+          <motion.button key={p.id} onClick={() => onSelect(p.id)} whileTap={{ scale: 0.92 }}
+            style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 5, background: 'none', border: 'none', cursor: 'pointer', padding: '6px 2px', borderRadius: 12, fontFamily: 'var(--fb)' }}>
             <Avatar player={p} size="md" selected={dealer === p.id} />
-            <span style={{ fontSize: 10, color: dealer === p.id ? 'var(--gold)' : 'var(--t3)', textAlign: 'center', lineHeight: 1.2, fontWeight: dealer === p.id ? 700 : 400 }}>
+            <span style={{ fontSize: 10.5, color: dealer === p.id ? 'var(--accent)' : 'var(--ink-3)', textAlign: 'center', lineHeight: 1.2, fontWeight: dealer === p.id ? 700 : 500 }}>
               {p.name.split(' ')[0]}
             </span>
-            {dealer === p.id && <span style={{ fontSize: 9, color: 'var(--gold)' }}>●</span>}
-          </button>
+          </motion.button>
         ))}
       </div>
-      <Button variant="gold" full onClick={onNext}>Preflop →</Button>
+      <Button variant="primary" full onClick={onNext}>Preflop <ArrowRight size={15} strokeWidth={2.4} /></Button>
     </div>
   )
 }
@@ -557,35 +576,36 @@ const BET_CHIPS = [10, 20, 50, 100]
 function AmountPicker({ value, onChange }: { value: string; onChange: (v: string) => void }) {
   const num = Number(value) || 0
   return (
-    <div style={{ marginTop: 6 }}>
-      <div style={{ display: 'flex', gap: 5, flexWrap: 'wrap', justifyContent: 'flex-end' }}>
+    <div style={{ marginTop: 8 }}>
+      <div style={{ display: 'flex', gap: 5, flexWrap: 'wrap', justifyContent: 'flex-end', alignItems: 'center' }}>
         {BET_CHIPS.map(chip => (
-          <button key={chip} onClick={() => onChange(String(num + chip))}
+          <motion.button key={chip} onClick={() => onChange(String(num + chip))} whileTap={{ scale: 0.92 }}
             style={{
-              fontSize: 11, fontWeight: 700, padding: '5px 10px', borderRadius: 8,
-              cursor: 'pointer', fontFamily: 'var(--fb)', transition: '.12s',
-              background: 'rgba(212,168,67,.1)',
-              border: '1px solid rgba(212,168,67,.3)',
-              color: 'var(--gold)',
+              fontSize: 11.5, fontWeight: 700, padding: '6px 11px', borderRadius: 9,
+              cursor: 'pointer', fontFamily: 'var(--fm)',
+              background: 'var(--accent-dim)',
+              border: '1px solid var(--accent-line)',
+              color: 'var(--accent)',
             }}>
             +{chip}
-          </button>
+          </motion.button>
         ))}
         {num > 0 && (
-          <button onClick={() => onChange('0')}
+          <motion.button onClick={() => onChange('0')} whileTap={{ scale: 0.92 }}
+            aria-label="Clear amount"
             style={{
-              fontSize: 11, fontWeight: 700, padding: '5px 8px', borderRadius: 8,
-              cursor: 'pointer', fontFamily: 'var(--fb)',
-              background: 'rgba(255,51,85,.08)', border: '1px solid rgba(255,51,85,.2)',
-              color: 'var(--red)',
+              padding: '6px 9px', borderRadius: 9,
+              cursor: 'pointer', display: 'flex', alignItems: 'center',
+              background: 'var(--neg-dim)', border: '1px solid var(--neg-line)',
+              color: 'var(--neg)',
             }}>
-            ✕
-          </button>
+            <X size={12} strokeWidth={2.6} />
+          </motion.button>
         )}
       </div>
       {num > 0 && (
-        <div style={{ textAlign: 'right', marginTop: 4, fontSize: 13, fontWeight: 800, color: 'var(--gold)', fontVariantNumeric: 'tabular-nums' }}>
-          Rs.{num}
+        <div className="mono" style={{ textAlign: 'right', marginTop: 6, fontSize: 13.5, fontWeight: 700, color: 'var(--accent)' }}>
+          ₹{num}
         </div>
       )}
     </div>
@@ -604,18 +624,16 @@ function StepActions({ street, label, acts, data, pl, preFolds, onAction, onAmou
 
   return (
     <div>
-      <div style={{ fontFamily: 'var(--fs)', fontSize: 17, fontWeight: 700, color: 'var(--t1)', marginBottom: 14, fontStyle: 'italic' }}>
-        {label}
-      </div>
+      <StepTitle>{label}</StepTitle>
       <div style={{ display: 'flex', flexDirection: 'column', gap: 8, marginBottom: 14 }}>
         {activePl.map(p => {
           const cur = data[p.id] || { action: isPre ? 'Call' : 'Check' }
           const showAmt = cur.action === 'Raise' || cur.action === 'Bet' || cur.action === 'All-In'
           return (
-            <div key={p.id} style={{ background: 'rgba(0,0,0,.2)', border: '1px solid var(--border)', borderRadius: 14, padding: '10px 12px' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: showAmt ? 4 : 0 }}>
+            <div key={p.id} className="row" style={{ padding: '10px 12px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 9 }}>
                 <Avatar player={p} size="sm" />
-                <span style={{ fontSize: 13, fontWeight: 600, color: 'var(--t1)', flex: 1, minWidth: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                <span style={{ fontSize: 13.5, fontWeight: 600, color: 'var(--ink)', flex: 1, minWidth: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                   {p.name.split(' ')[0]}
                 </span>
                 <div style={{ display: 'flex', gap: 4, flexWrap: 'wrap', justifyContent: 'flex-end' }}>
@@ -623,17 +641,17 @@ function StepActions({ street, label, acts, data, pl, preFolds, onAction, onAmou
                     const active = cur.action === a
                     const cls = ACT_CLS[a] || 'check'
                     return (
-                      <button key={a} onClick={() => onAction(street, p.id, a)}
+                      <motion.button key={a} onClick={() => onAction(street, p.id, a)} whileTap={{ scale: 0.9 }}
                         className={active ? `chip-${cls}` : ''}
                         style={{
-                          fontSize: 11, fontWeight: 600, padding: '6px 9px', borderRadius: 8,
-                          cursor: 'pointer', fontFamily: 'var(--fb)', transition: '.15s',
-                          background: active ? undefined : 'rgba(0,0,0,.3)',
+                          fontSize: 11.5, fontWeight: 600, padding: '7px 10px', borderRadius: 9,
+                          cursor: 'pointer', fontFamily: 'var(--fb)',
+                          background: active ? undefined : 'oklch(0% 0 0 / 25%)',
                           border: active ? undefined : '1px solid var(--border)',
-                          color: active ? undefined : 'var(--t3)',
+                          color: active ? undefined : 'var(--ink-3)',
                         }}>
                         {a}
-                      </button>
+                      </motion.button>
                     )
                   })}
                 </div>
@@ -649,9 +667,9 @@ function StepActions({ street, label, acts, data, pl, preFolds, onAction, onAmou
         })}
       </div>
       <div style={{ display: 'flex', gap: 8 }}>
-        <Button variant="ghost" style={{ flex: 1 }} onClick={onBack}>← Back</Button>
-        <Button variant="gold"  style={{ flex: 2 }} onClick={onNext}>
-          {street === 'river' ? 'Showdown' : 'Next'} →
+        <Button variant="ghost" style={{ flex: 1 }} onClick={onBack}><ArrowLeft size={15} strokeWidth={2.4} /> Back</Button>
+        <Button variant="primary" style={{ flex: 2 }} onClick={onNext}>
+          {street === 'river' ? 'Showdown' : 'Next'} <ArrowRight size={15} strokeWidth={2.4} />
         </Button>
       </div>
     </div>
@@ -668,13 +686,13 @@ function StepFlop({ pl, fc, flopData, preFolds, onAction, onAmount, onCardPick, 
 }) {
   return (
     <div>
-      <div style={{ fontFamily: 'var(--fs)', fontSize: 17, fontWeight: 700, color: 'var(--t1)', marginBottom: 14, fontStyle: 'italic' }}>Flop Cards</div>
-      <div style={{ display: 'flex', gap: 6, marginBottom: 14 }}>
+      <StepTitle>Flop cards</StepTitle>
+      <div style={{ display: 'flex', gap: 7, marginBottom: 16 }}>
         {[0, 1, 2].map(i => (
           <PlayingCard key={i} card={fc[i] ?? null} onClick={() => { onCardPick('flop-' + i); sfx.card() }} />
         ))}
       </div>
-      <StepActions street="flop" label="Flop Actions" acts={ACTS_POST}
+      <StepActions street="flop" label="Flop actions" acts={ACTS_POST}
         data={flopData} pl={pl} preFolds={preFolds}
         onAction={onAction} onAmount={onAmount} onBack={onBack} onNext={onNext}
       />
@@ -692,11 +710,11 @@ function StepStreet({ street, label, card, streetData, preFolds, pl, onAction, o
 }) {
   return (
     <div>
-      <div style={{ fontFamily: 'var(--fs)', fontSize: 17, fontWeight: 700, color: 'var(--t1)', marginBottom: 14, fontStyle: 'italic' }}>{label} Card</div>
-      <div style={{ display: 'flex', gap: 6, marginBottom: 14 }}>
+      <StepTitle>{label} card</StepTitle>
+      <div style={{ display: 'flex', gap: 7, marginBottom: 16 }}>
         <PlayingCard card={card} onClick={() => { onCardPick(street); sfx.card() }} />
       </div>
-      <StepActions street={street} label={`${label} Actions`} acts={ACTS_POST}
+      <StepActions street={street} label={`${label} actions`} acts={ACTS_POST}
         data={streetData} pl={pl} preFolds={preFolds}
         onAction={onAction} onAmount={onAmount} onBack={onBack} onNext={onNext}
       />
@@ -714,43 +732,40 @@ function StepShowdown({ pl, preFolds, winner, hcards, onWinner, onHcard, onBack 
   const activePl = pl.filter(p => !preFolds[p.id] || preFolds[p.id].action !== 'Fold')
   return (
     <div>
-      <div style={{ fontFamily: 'var(--fs)', fontSize: 17, fontWeight: 700, color: 'var(--t1)', marginBottom: 14, fontStyle: 'italic' }}>🏆 Who won?</div>
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(5,1fr)', gap: 6, marginBottom: 14 }}>
+      <StepTitle>Who won?</StepTitle>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(5,1fr)', gap: 6, marginBottom: 16 }}>
         {activePl.map(p => (
           <motion.button key={p.id} onClick={() => onWinner(p.id)} whileTap={{ scale: 0.93 }}
             style={{
-              display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4,
-              background: winner === p.id ? 'rgba(212,168,67,.12)' : 'rgba(0,0,0,.2)',
-              border: winner === p.id ? '1px solid var(--gold)' : '1px solid var(--border)',
-              borderRadius: 12, padding: '8px 4px', cursor: 'pointer',
-              boxShadow: winner === p.id ? '0 0 14px rgba(212,168,67,.25)' : 'none',
-              transition: 'all .18s',
+              display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 5,
+              background: winner === p.id ? 'var(--accent-dim)' : 'oklch(0% 0 0 / 18%)',
+              border: winner === p.id ? '1px solid var(--accent-line)' : '1px solid var(--border)',
+              borderRadius: 12, padding: '9px 4px', cursor: 'pointer', fontFamily: 'var(--fb)',
+              transition: 'background .18s, border-color .18s',
             }}>
             <Avatar player={p} size="sm" selected={winner === p.id} />
-            <span style={{ fontSize: 10, color: winner === p.id ? 'var(--gold)' : 'var(--t3)', textAlign: 'center' }}>
+            <span style={{ fontSize: 10.5, color: winner === p.id ? 'var(--accent)' : 'var(--ink-3)', textAlign: 'center', fontWeight: winner === p.id ? 700 : 500 }}>
               {p.name.split(' ')[0]}
             </span>
-            {winner === p.id && <span style={{ fontSize: 10 }}>🏆</span>}
+            {winner === p.id && <Trophy size={11} strokeWidth={2.4} style={{ color: 'var(--accent)' }} />}
           </motion.button>
         ))}
       </div>
-      <div style={{ fontSize: 9, letterSpacing: '0.15em', textTransform: 'uppercase', color: 'var(--gold)', marginBottom: 8, fontWeight: 600 }}>
-        Hole cards (optional)
-      </div>
+      <div className="label accent" style={{ marginBottom: 9 }}>Hole cards (optional)</div>
       {pl.map(p => (
-        <div key={p.id} style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 7, padding: '8px 10px', background: 'rgba(0,0,0,.2)', border: '1px solid var(--border)', borderRadius: 12 }}>
+        <div key={p.id} className="row" style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 7, padding: '8px 10px' }}>
           <Avatar player={p} size="sm" />
-          <span style={{ fontSize: 12, fontWeight: 600, color: 'var(--t2)', flex: 1 }}>{p.name.split(' ')[0]}</span>
-          <input style={{ width: 110, fontSize: 12, padding: '6px 8px' }}
+          <span style={{ fontSize: 12.5, fontWeight: 600, color: 'var(--ink-2)', flex: 1 }}>{p.name.split(' ')[0]}</span>
+          <input className="mono" style={{ width: 110, fontSize: 13, padding: '7px 9px' }}
             placeholder="A♠ K♥" defaultValue={hcards[p.id] || ''}
             onChange={e => onHcard(p.id, e.target.value)} />
         </div>
       ))}
       <div style={{ display: 'flex', gap: 8, marginTop: 14 }}>
-        <Button variant="ghost" style={{ flex: 1 }} onClick={onBack}>←</Button>
+        <Button variant="ghost" style={{ flex: 1 }} onClick={onBack}><ArrowLeft size={15} strokeWidth={2.4} /> Back</Button>
       </div>
-      <div style={{ fontSize: 11, color: 'var(--t3)', textAlign: 'center', marginTop: 10, fontStyle: 'italic' }}>
-        Tap a player above to log winner &amp; auto-save
+      <div style={{ fontSize: 11.5, color: 'var(--ink-3)', textAlign: 'center', marginTop: 12 }}>
+        Tap a player above to log the winner and save the hand
       </div>
     </div>
   )
@@ -764,20 +779,25 @@ function PlayingCard({ card, onClick }: { card: CardObj | null; onClick: () => v
     >
       {card ? (
         <>
-          <div style={{ fontSize: 14, fontWeight: 900, lineHeight: 1 }}>{card.v}</div>
-          <div style={{ fontSize: 11, lineHeight: 1 }}>{card.s}</div>
+          <div style={{ fontSize: 15, fontWeight: 800, lineHeight: 1, fontFamily: 'var(--fm)' }}>{card.v}</div>
+          <div style={{ fontSize: 13, lineHeight: 1.3 }}>{card.s}</div>
         </>
-      ) : '+'}
+      ) : <Plus size={18} strokeWidth={2} />}
     </div>
   )
 }
 
 function Stepper({ value, onDec, onInc }: { value: number; onDec: () => void; onInc: () => void }) {
+  const btn: React.CSSProperties = {
+    width: 34, height: 34, borderRadius: 9,
+    background: 'var(--accent-dim)', border: 'none', color: 'var(--accent)',
+    cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center',
+  }
   return (
-    <div style={{ display: 'flex', alignItems: 'center', gap: 4, background: 'rgba(0,0,0,.3)', border: '1px solid var(--border)', borderRadius: 10, padding: 3 }}>
-      <button onClick={onDec} style={{ width: 32, height: 32, borderRadius: 7, background: 'rgba(212,168,67,.12)', border: 'none', color: 'var(--gold)', fontSize: 20, fontWeight: 900, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>−</button>
-      <span style={{ width: 26, textAlign: 'center', fontSize: 15, fontWeight: 700, color: 'var(--t1)', fontVariantNumeric: 'tabular-nums' }}>{value}</span>
-      <button onClick={onInc} style={{ width: 32, height: 32, borderRadius: 7, background: 'rgba(212,168,67,.12)', border: 'none', color: 'var(--gold)', fontSize: 20, fontWeight: 900, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>+</button>
+    <div style={{ display: 'flex', alignItems: 'center', gap: 4, background: 'oklch(0% 0 0 / 28%)', border: '1px solid var(--border)', borderRadius: 11, padding: 3 }}>
+      <motion.button whileTap={{ scale: 0.88 }} onClick={onDec} style={btn} aria-label="Remove buyin"><Minus size={16} strokeWidth={2.6} /></motion.button>
+      <span className="mono" style={{ width: 26, textAlign: 'center', fontSize: 14.5, fontWeight: 700, color: 'var(--ink)' }}>{value}</span>
+      <motion.button whileTap={{ scale: 0.88 }} onClick={onInc} style={btn} aria-label="Add buyin"><Plus size={16} strokeWidth={2.6} /></motion.button>
     </div>
   )
 }
@@ -785,19 +805,19 @@ function Stepper({ value, onDec, onInc }: { value: number; onDec: () => void; on
 function HandLog({ hand, idx, pl }: { hand: any; idx: number; pl: Player[] }) {
   const name = (id: string) => pl.find(p => p.id === id)?.name || id
   const allCards = [...(hand.fc || []).filter(Boolean), hand.tc, hand.rc].filter(Boolean) as CardObj[]
-  const streets: [string, string][] = [['pre', 'PREFLOP'], ['flop', 'FLOP'], ['turn', 'TURN'], ['river', 'RIVER']]
+  const streets: [string, string][] = [['pre', 'Preflop'], ['flop', 'Flop'], ['turn', 'Turn'], ['river', 'River']]
   const actCls: Record<string, string> = { fold: 'chip-fold', call: 'chip-call', check: 'chip-check', raise: 'chip-raise', bet: 'chip-bet', allin: 'chip-allin' }
 
   return (
-    <div style={{ background: 'rgba(0,0,0,.15)', borderRadius: 12, padding: '10px 12px', marginBottom: 6, fontSize: 12 }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 5, fontSize: 11, color: 'var(--t3)' }}>
-        <span>Hand #{hand.handNumber || idx + 1}</span>
+    <div className="row" style={{ padding: '10px 12px', marginBottom: 6, fontSize: 12 }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 5, fontSize: 11, color: 'var(--ink-3)' }}>
+        <span className="mono">Hand #{hand.handNumber || idx + 1}</span>
         {hand.dealer && <span>{name(hand.dealer)} deals</span>}
       </div>
       {allCards.length > 0 && (
         <div style={{ display: 'flex', gap: 3, margin: '3px 0' }}>
           {allCards.map((c, i) => (
-            <span key={i} style={{ padding: '2px 5px', borderRadius: 4, fontSize: 11, fontWeight: 700, background: '#f5f0e8', color: c.r ? '#d42020' : '#0d0c18', display: 'inline-block' }}>
+            <span key={i} className="mono" style={{ padding: '2px 6px', borderRadius: 5, fontSize: 11, fontWeight: 700, background: 'oklch(96% 0.005 90)', color: c.r ? 'oklch(52% 0.2 25)' : 'oklch(20% 0.01 260)', display: 'inline-block' }}>
               {c.v}{c.s}
             </span>
           ))}
@@ -808,15 +828,15 @@ function HandLog({ hand, idx, pl }: { hand: any; idx: number; pl: Player[] }) {
         if (!sd || !Object.keys(sd).length) return null
         return (
           <div key={k}>
-            <div style={{ fontSize: 9, letterSpacing: '0.12em', textTransform: 'uppercase', color: 'var(--gold)', margin: '5px 0 2px', fontWeight: 600 }}>{lbl}</div>
+            <div style={{ fontSize: 9.5, letterSpacing: '0.1em', textTransform: 'uppercase', color: 'var(--ink-4)', margin: '6px 0 3px', fontWeight: 700 }}>{lbl}</div>
             {Object.keys(sd).map(pid => {
               const act = sd[pid]
               if (!act?.action) return null
               const a = act.action.toLowerCase().replace(/-/g, '')
               return (
                 <span key={pid} className={actCls[a] || 'chip-check'}
-                  style={{ display: 'inline-flex', alignItems: 'center', fontSize: 10, padding: '2px 7px', borderRadius: 8, margin: '2px 2px 0 0', fontWeight: 500 }}>
-                  {name(pid).split(' ')[0]} {act.action}{act.amount ? ' Rs.' + act.amount : ''}
+                  style={{ display: 'inline-flex', alignItems: 'center', fontSize: 10.5, padding: '2px 8px', borderRadius: 8, margin: '2px 3px 0 0', fontWeight: 500 }}>
+                  {name(pid).split(' ')[0]} {act.action}{act.amount ? ' ₹' + act.amount : ''}
                 </span>
               )
             })}
@@ -824,8 +844,8 @@ function HandLog({ hand, idx, pl }: { hand: any; idx: number; pl: Player[] }) {
         )
       })}
       {hand.winner && (
-        <div style={{ background: 'rgba(212,168,67,.16)', color: 'var(--gold)', fontSize: 10, padding: '3px 8px', borderRadius: 8, fontWeight: 600, display: 'inline-block', marginTop: 4 }}>
-          🏆 {name(hand.winner)} won{hand.hcards?.[hand.winner] ? ` (${hand.hcards[hand.winner]})` : ''}
+        <div style={{ display: 'inline-flex', alignItems: 'center', gap: 5, background: 'var(--accent-dim)', color: 'var(--accent)', fontSize: 10.5, padding: '3px 9px', borderRadius: 8, fontWeight: 600, marginTop: 6 }}>
+          <Trophy size={11} strokeWidth={2.4} /> {name(hand.winner)} won{hand.hcards?.[hand.winner] ? ` (${hand.hcards[hand.winner]})` : ''}
         </div>
       )}
     </div>

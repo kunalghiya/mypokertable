@@ -1,12 +1,20 @@
 import { useEffect, useRef } from 'react'
 import { motion } from 'framer-motion'
 import gsap from 'gsap'
+import { Trophy, Crown, Table2 } from 'lucide-react'
 import { useStore } from '../store'
 import { Avatar } from '../components/Avatar'
-import { rs, fmtDate } from '../lib/utils'
+import { Card, SectionLabel } from '../components/Card'
+import { rs, fmtDateShort } from '../lib/utils'
 
 const container = { hidden: {}, show: { transition: { staggerChildren: 0.06 } } }
 const item = { hidden: { opacity: 0, y: 14 }, show: { opacity: 1, y: 0, transition: { type: 'spring' as const, stiffness: 340, damping: 28 } } }
+
+const METALS = [
+  'oklch(85% 0.14 90)',   // gold
+  'oklch(80% 0.015 260)', // silver
+  'oklch(70% 0.1 55)',    // bronze
+]
 
 export function Leaderboard() {
   const players = useStore(s => s.players)
@@ -36,12 +44,7 @@ export function Leaderboard() {
   // Podium order: [2nd, 1st, 3rd]
   const top3 = totals.slice(0, 3)
   const podOrder = [top3[1], top3[0], top3[2]].filter(Boolean) as typeof totals[0][]
-  const podHeights = [80, 120, 60]
-  const podMeta = [
-    { medal: '🥈', color: '#b8bec7', glow: 'rgba(184,190,199,.15)', border: 'rgba(184,190,199,.3)' },
-    { medal: '🥇', color: '#d4a843', glow: 'rgba(212,168,67,.25)', border: 'rgba(212,168,67,.5)' },
-    { medal: '🥉', color: '#cd7f32', glow: 'rgba(205,127,50,.15)', border: 'rgba(205,127,50,.3)' },
-  ]
+  const podHeights = podOrder.length === 3 ? [72, 108, 54] : podOrder.length === 2 ? [72, 108] : [108]
 
   const depKey = totals.map(t => t.tot).join(',')
 
@@ -50,7 +53,7 @@ export function Leaderboard() {
       if (!el) return
       gsap.fromTo(el,
         { height: 0, opacity: 0 },
-        { height: podHeights[i], opacity: 1, duration: 0.7, delay: 0.1 + i * 0.12, ease: 'back.out(1.4)' }
+        { height: podHeights[i], opacity: 1, duration: 0.65, delay: 0.1 + i * 0.1, ease: 'power3.out' }
       )
     })
   }, [depKey])
@@ -59,16 +62,16 @@ export function Leaderboard() {
     barRefs.current.forEach((el, i) => {
       if (!el) return
       const target = el.dataset.w || '0'
-      gsap.fromTo(el, { width: 0 }, { width: target + '%', duration: 0.8, delay: 0.35 + i * 0.05, ease: 'power2.out' })
+      gsap.fromTo(el, { width: 0 }, { width: target + '%', duration: 0.8, delay: 0.3 + i * 0.05, ease: 'power2.out' })
     })
     numRefs.current.forEach((el, i) => {
       if (!el) return
       const val = parseInt(el.dataset.v || '0')
       const obj = { n: 0 }
       gsap.to(obj, {
-        n: Math.abs(val), duration: 1, delay: 0.35 + i * 0.05, ease: 'power2.out',
+        n: Math.abs(val), duration: 1, delay: 0.3 + i * 0.05, ease: 'power2.out',
         onUpdate: () => {
-          if (el) el.textContent = (val >= 0 ? '+' : '-') + 'Rs.' + Math.round(obj.n).toLocaleString('en-IN')
+          if (el) el.textContent = (val >= 0 ? '+' : '-') + '₹' + Math.round(obj.n).toLocaleString('en-IN')
         }
       })
     })
@@ -82,9 +85,9 @@ export function Leaderboard() {
         transition={{ type: 'spring', stiffness: 300, damping: 26 }}
         style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '80px 28px', textAlign: 'center' }}
       >
-        <div style={{ fontSize: 64, marginBottom: 16, opacity: 0.4 }}>🏆</div>
-        <div style={{ fontFamily: 'var(--fs)', fontSize: 20, fontWeight: 700, color: 'var(--t1)', marginBottom: 8 }}>No rankings yet</div>
-        <div style={{ fontSize: 13, color: 'var(--t3)' }}>Play some sessions to see the leaderboard.</div>
+        <Trophy size={48} strokeWidth={1.4} style={{ color: 'var(--ink-4)', marginBottom: 16 }} />
+        <div style={{ fontSize: 18, fontWeight: 700, color: 'var(--ink)', marginBottom: 8, letterSpacing: '-0.02em' }}>No rankings yet</div>
+        <div style={{ fontSize: 13, color: 'var(--ink-3)' }}>Play some sessions to see the leaderboard.</div>
       </motion.div>
     )
   }
@@ -94,131 +97,126 @@ export function Leaderboard() {
 
       {/* ── Podium ── */}
       <motion.div variants={item}>
-        <div style={{
-          background: 'linear-gradient(160deg,#130c2a 0%,#0a0718 60%,#14082a 100%)',
-          border: '1px solid rgba(212,168,67,.12)',
-          borderRadius: 24, padding: '28px 20px 20px',
-          marginBottom: 14,
-          boxShadow: '0 8px 48px rgba(0,0,0,.5), inset 0 1px 0 rgba(212,168,67,.08)',
+        <div className="panel" style={{
+          padding: '24px 20px 0',
+          marginBottom: 12,
           position: 'relative', overflow: 'hidden',
+          boxShadow: '0 12px 40px oklch(0% 0 0 / 35%)',
         }}>
-          {/* Glow bg */}
-          <div style={{ position: 'absolute', top: -40, left: '50%', transform: 'translateX(-50%)', width: 300, height: 300, background: 'radial-gradient(circle,rgba(212,168,67,.07) 0%,transparent 70%)', pointerEvents: 'none' }} />
+          <div style={{ position: 'absolute', top: -50, left: '50%', transform: 'translateX(-50%)', width: 300, height: 300, background: 'radial-gradient(circle, oklch(85% 0.14 90 / 6%) 0%, transparent 70%)', pointerEvents: 'none' }} />
 
-          <div style={{ fontSize: 10, letterSpacing: '0.2em', textTransform: 'uppercase', color: 'var(--gold)', fontWeight: 700, marginBottom: 24, textAlign: 'center' }}>
-            ♣ All-Time Rankings
+          <div className="label accent" style={{ justifyContent: 'center', marginBottom: 22 }}>
+            <Crown size={13} strokeWidth={2.4} /> All-time rankings
           </div>
 
-          {/* Podium columns */}
           <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'center', gap: 10 }}>
             {podOrder.map((p, i) => {
               const pl = players.find(x => x.id === p.id)
               const realRank = totals.indexOf(p)
-              const m = podMeta[i]
+              const metal = METALS[realRank] || 'var(--ink-3)'
+              const isFirst = realRank === 0
               return (
                 <div key={p.id} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', flex: 1, maxWidth: 120 }}>
-                  {/* Avatar + medal */}
                   <div style={{ position: 'relative', marginBottom: 8 }}>
-                    {pl && <Avatar player={pl} size={i === 1 ? 'lg' : 'md'} />}
-                    <div style={{ position: 'absolute', bottom: -4, right: -4, fontSize: 16, lineHeight: 1 }}>{m.medal}</div>
+                    {pl && <Avatar player={pl} size={isFirst ? 'lg' : 'md'} />}
+                    {isFirst && (
+                      <motion.div
+                        initial={{ scale: 0, rotate: -20 }}
+                        animate={{ scale: 1, rotate: 0 }}
+                        transition={{ delay: 0.5, type: 'spring', stiffness: 300, damping: 16 }}
+                        style={{ position: 'absolute', top: -13, left: '50%', transform: 'translateX(-50%)', color: METALS[0] }}
+                      >
+                        <Crown size={17} strokeWidth={2.2} fill="currentColor" />
+                      </motion.div>
+                    )}
                   </div>
-                  <div style={{ fontSize: i === 1 ? 13 : 11, fontWeight: 700, color: 'var(--t1)', textAlign: 'center', marginBottom: 2 }}>{p.name.split(' ')[0]}</div>
-                  <div style={{ fontSize: i === 1 ? 13 : 11, fontWeight: 800, color: p.tot >= 0 ? 'var(--green)' : 'var(--red)', fontVariantNumeric: 'tabular-nums', marginBottom: 6 }}>{rs(p.tot)}</div>
+                  <div style={{ fontSize: isFirst ? 13.5 : 12, fontWeight: 700, color: 'var(--ink)', textAlign: 'center', marginBottom: 2 }}>{p.name.split(' ')[0]}</div>
+                  <div className="mono" style={{ fontSize: isFirst ? 13 : 11.5, fontWeight: 700, color: p.tot >= 0 ? 'var(--pos)' : 'var(--neg)', marginBottom: 8 }}>{rs(p.tot)}</div>
 
-                  {/* Podium bar */}
                   <div
                     ref={el => { podRefs.current[i] = el }}
                     style={{
                       width: '100%', height: podHeights[i],
-                      borderRadius: '10px 10px 0 0',
-                      background: `linear-gradient(180deg,${m.glow.replace('.', '0.')},${m.glow})`.replace('rgba','rgba'),
-                      backgroundColor: `rgba(${i === 1 ? '212,168,67' : i === 0 ? '184,190,199' : '205,127,50'},.08)`,
-                      border: `1px solid ${m.border}`,
+                      borderRadius: '12px 12px 0 0',
+                      background: `linear-gradient(180deg, ${metal.replace(')', ' / 14%)').replace('oklch(', 'oklch(')} 0%, transparent 100%)`,
+                      border: '1px solid oklch(100% 0 0 / 8%)',
                       borderBottom: 'none',
-                      boxShadow: i === 1 ? `0 -8px 30px ${m.glow}` : 'none',
-                      display: 'flex', alignItems: 'center', justifyContent: 'center',
+                      display: 'flex', alignItems: 'flex-start', justifyContent: 'center',
+                      paddingTop: 10,
                     }}
                   >
-                    <span style={{ fontSize: 22, fontWeight: 900, color: m.color, opacity: 0.6 }}>{realRank + 1}</span>
+                    <span className="mono" style={{ fontSize: 20, fontWeight: 800, color: metal, opacity: 0.85 }}>{realRank + 1}</span>
                   </div>
                 </div>
               )
             })}
           </div>
-
-          {/* Podium floor line */}
-          <div style={{ height: 2, background: 'linear-gradient(90deg,transparent,rgba(212,168,67,.25),transparent)', borderRadius: 2 }} />
         </div>
       </motion.div>
 
-      {/* ── Full rank list ── */}
+      {/* ── Full standings ── */}
       <motion.div variants={item}>
-        <div style={{ background: 'var(--card)', border: '1px solid var(--border)', borderRadius: 20, padding: '18px 16px', marginBottom: 14, boxShadow: '0 4px 24px rgba(0,0,0,.3)' }}>
-          <div style={{ fontSize: 10, letterSpacing: '0.2em', textTransform: 'uppercase', color: 'var(--gold)', fontWeight: 700, marginBottom: 16 }}>♠ Full Standings</div>
+        <Card>
+          <SectionLabel accent><Trophy size={13} strokeWidth={2.4} /> Full standings</SectionLabel>
           {totals.map((p, i) => {
             const pl = players.find(x => x.id === p.id)
             const barW = Math.round(Math.abs(p.tot) / maxAbs * 100)
-            const rankColors = ['#d4a843', '#b8bec7', '#cd7f32']
-            const rankColor = rankColors[i] || 'rgba(255,255,255,.2)'
+            const rankColor = METALS[i] || 'var(--ink-4)'
             const isPos = p.tot >= 0
             return (
-              <div key={p.id} style={{ marginBottom: i < totals.length - 1 ? 14 : 0 }}>
+              <div key={p.id} style={{ marginBottom: i < totals.length - 1 ? 15 : 0 }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 6 }}>
-                  <span style={{ fontSize: 14, fontWeight: 900, width: 22, flexShrink: 0, color: rankColor, fontVariantNumeric: 'tabular-nums' }}>
+                  <span className="mono" style={{ fontSize: 13, fontWeight: 800, width: 20, flexShrink: 0, color: rankColor }}>
                     {i + 1}
                   </span>
                   {pl && <Avatar player={pl} size="sm" />}
-                  <div style={{ flex: 1, minWidth: 0 }}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline' }}>
-                      <span style={{ fontSize: 13, fontWeight: 700, color: 'var(--t1)' }}>{p.name}</span>
-                      <span
-                        ref={el => { numRefs.current[i] = el }}
-                        data-v={String(p.tot)}
-                        style={{ fontSize: 14, fontWeight: 800, color: isPos ? 'var(--green)' : 'var(--red)', fontVariantNumeric: 'tabular-nums' }}
-                      >
-                        {rs(p.tot)}
-                      </span>
-                    </div>
+                  <div style={{ flex: 1, minWidth: 0, display: 'flex', justifyContent: 'space-between', alignItems: 'baseline' }}>
+                    <span style={{ fontSize: 13.5, fontWeight: 600, color: 'var(--ink)' }}>{p.name}</span>
+                    <span
+                      ref={el => { numRefs.current[i] = el }}
+                      data-v={String(p.tot)}
+                      className="mono"
+                      style={{ fontSize: 14, fontWeight: 700, color: isPos ? 'var(--pos)' : 'var(--neg)' }}
+                    >
+                      {rs(p.tot)}
+                    </span>
                   </div>
                 </div>
-                {/* Bar */}
-                <div style={{ marginLeft: 32, display: 'flex', alignItems: 'center', gap: 8 }}>
-                  <div style={{ flex: 1, height: 5, background: 'rgba(255,255,255,.05)', borderRadius: 3, overflow: 'hidden' }}>
+                <div style={{ marginLeft: 30, display: 'flex', alignItems: 'center', gap: 8 }}>
+                  <div style={{ flex: 1, height: 4, background: 'oklch(100% 0 0 / 6%)', borderRadius: 2, overflow: 'hidden' }}>
                     <div
                       ref={el => { barRefs.current[i] = el }}
                       data-w={String(barW)}
                       style={{
-                        height: '100%', width: barW + '%', borderRadius: 3,
-                        background: isPos
-                          ? 'linear-gradient(90deg,rgba(0,232,122,.5),var(--green))'
-                          : 'linear-gradient(90deg,rgba(255,51,85,.5),var(--red))',
-                        boxShadow: isPos ? '0 0 8px rgba(0,232,122,.4)' : '0 0 8px rgba(255,51,85,.4)',
+                        height: '100%', width: barW + '%', borderRadius: 2,
+                        background: isPos ? 'var(--pos)' : 'var(--neg)',
+                        opacity: 0.85,
                       }}
                     />
                   </div>
                   <div style={{ display: 'flex', gap: 8, flexShrink: 0 }}>
-                    <span style={{ fontSize: 10, color: 'var(--t3)' }}>{p.cnt} games</span>
-                    <span style={{ fontSize: 10, color: p.wr >= 50 ? 'var(--green)' : 'var(--t3)' }}>{p.wr}% WR</span>
+                    <span className="mono" style={{ fontSize: 10.5, color: 'var(--ink-3)' }}>{p.cnt} games</span>
+                    <span className="mono" style={{ fontSize: 10.5, color: p.wr >= 50 ? 'var(--pos)' : 'var(--ink-3)' }}>{p.wr}% WR</span>
                   </div>
                 </div>
               </div>
             )
           })}
-        </div>
+        </Card>
       </motion.div>
 
       {/* ── Session table ── */}
       <motion.div variants={item}>
-        <div style={{ background: 'var(--card)', border: '1px solid var(--border)', borderRadius: 20, padding: '18px 16px', marginBottom: 14, boxShadow: '0 4px 24px rgba(0,0,0,.3)', overflowX: 'auto' }}>
-          <div style={{ fontSize: 10, letterSpacing: '0.2em', textTransform: 'uppercase', color: 'var(--gold)', fontWeight: 700, marginBottom: 16 }}>♦ Session History</div>
+        <Card style={{ overflowX: 'auto' }}>
+          <SectionLabel accent><Table2 size={13} strokeWidth={2.4} /> Session history</SectionLabel>
           <table style={{ width: '100%', borderCollapse: 'collapse', minWidth: 280 }}>
             <thead>
               <tr>
-                <th style={{ color: 'var(--t4)', fontWeight: 600, paddingBottom: 10, textAlign: 'left', fontSize: 10, letterSpacing: '0.08em', textTransform: 'uppercase', borderBottom: '1px solid var(--border)' }}>
+                <th style={{ color: 'var(--ink-4)', fontWeight: 600, paddingBottom: 10, textAlign: 'left', fontSize: 10, letterSpacing: '0.07em', textTransform: 'uppercase', borderBottom: '1px solid var(--border)', position: 'sticky', left: 0, background: 'var(--surface)', zIndex: 1 }}>
                   Date
                 </th>
                 {players.map(p => (
-                  <th key={p.id} style={{ color: 'var(--t4)', fontWeight: 600, paddingBottom: 10, textAlign: 'right', fontSize: 10, letterSpacing: '0.06em', textTransform: 'uppercase', borderBottom: '1px solid var(--border)', paddingLeft: 6 }}>
+                  <th key={p.id} style={{ color: 'var(--ink-4)', fontWeight: 600, paddingBottom: 10, textAlign: 'right', fontSize: 10, letterSpacing: '0.05em', textTransform: 'uppercase', borderBottom: '1px solid var(--border)', paddingLeft: 6 }}>
                     {p.name.split(' ')[0]}
                   </th>
                 ))}
@@ -227,43 +225,35 @@ export function Leaderboard() {
             <tbody>
               {done.map((s, i) => (
                 <tr key={s.id || i}>
-                  <td style={{ padding: '9px 3px', color: 'var(--t3)', textAlign: 'left', fontSize: 12, borderBottom: '1px solid rgba(255,255,255,.04)', whiteSpace: 'nowrap' }}>
-                    {fmtDate(s.date || '').slice(0, 5)}
+                  <td style={{ padding: '9px 8px 9px 3px', color: 'var(--ink-3)', textAlign: 'left', fontSize: 12, borderBottom: '1px solid var(--border)', whiteSpace: 'nowrap', position: 'sticky', left: 0, background: 'var(--surface)', zIndex: 1 }}>
+                    {fmtDateShort(s.date || '')}
                   </td>
                   {players.map(p => {
                     const r = s.results && s.results[p.id]
                     if (r === undefined) {
-                      return <td key={p.id} style={{ padding: '9px 3px 9px 6px', textAlign: 'right', color: 'rgba(255,255,255,.1)', fontSize: 12, borderBottom: '1px solid rgba(255,255,255,.04)', fontWeight: 600 }}>—</td>
+                      return <td key={p.id} className="mono" style={{ padding: '9px 3px 9px 6px', textAlign: 'right', color: 'var(--ink-4)', fontSize: 12, borderBottom: '1px solid var(--border)' }}>—</td>
                     }
                     const isPos = r >= 0
                     return (
-                      <td key={p.id} style={{
+                      <td key={p.id} className="mono" style={{
                         padding: '9px 3px 9px 6px', textAlign: 'right',
-                        fontWeight: 700, fontSize: 12,
-                        color: isPos ? 'var(--green)' : 'var(--red)',
-                        fontVariantNumeric: 'tabular-nums',
-                        borderBottom: '1px solid rgba(255,255,255,.04)',
+                        fontWeight: 600, fontSize: 12,
+                        color: isPos ? 'var(--pos)' : 'var(--neg)',
+                        borderBottom: '1px solid var(--border)',
                       }}>
-                        <span style={{
-                          background: isPos ? 'rgba(0,232,122,.08)' : 'rgba(255,51,85,.08)',
-                          padding: '2px 6px', borderRadius: 6,
-                          display: 'inline-block',
-                        }}>
-                          {r >= 0 ? '+' : ''}{r.toLocaleString('en-IN')}
-                        </span>
+                        {r >= 0 ? '+' : ''}{r.toLocaleString('en-IN')}
                       </td>
                     )
                   })}
                 </tr>
               ))}
-              {/* Totals row */}
               <tr>
-                <td style={{ padding: '10px 3px 4px', color: 'var(--gold)', fontWeight: 700, fontSize: 11, letterSpacing: '0.06em', textTransform: 'uppercase' }}>Total</td>
+                <td style={{ padding: '11px 3px 4px', color: 'var(--accent)', fontWeight: 700, fontSize: 10.5, letterSpacing: '0.06em', textTransform: 'uppercase', position: 'sticky', left: 0, background: 'var(--surface)', zIndex: 1 }}>Total</td>
                 {players.map(p => {
                   const t = done.reduce((sum, s) => sum + ((s.results && s.results[p.id]) || 0), 0)
                   const isPos = t >= 0
                   return (
-                    <td key={p.id} style={{ padding: '10px 3px 4px 6px', textAlign: 'right', fontWeight: 800, fontSize: 13, color: isPos ? 'var(--green)' : 'var(--red)', fontVariantNumeric: 'tabular-nums' }}>
+                    <td key={p.id} className="mono" style={{ padding: '11px 3px 4px 6px', textAlign: 'right', fontWeight: 800, fontSize: 12.5, color: isPos ? 'var(--pos)' : 'var(--neg)' }}>
                       {t >= 0 ? '+' : ''}{t.toLocaleString('en-IN')}
                     </td>
                   )
@@ -271,7 +261,7 @@ export function Leaderboard() {
               </tr>
             </tbody>
           </table>
-        </div>
+        </Card>
       </motion.div>
 
     </motion.div>
