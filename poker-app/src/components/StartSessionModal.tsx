@@ -118,7 +118,7 @@ export function StartSessionModal({ open, onClose }: StartSessionModalProps) {
         </div>
       ))}
 
-      <div style={{ marginTop: 8, marginBottom: 18 }}>
+      <div style={{ marginTop: 8, marginBottom: 8 }}>
         {showGuestInput ? (
           <div style={{ display: 'flex', gap: 8 }}>
             <input type="text" value={guestInput} onChange={e => setGuestInput(e.target.value)} placeholder="Guest name…" autoFocus onKeyDown={e => e.key === 'Enter' && addGuest()} style={{ flex: 1 }} />
@@ -132,9 +132,18 @@ export function StartSessionModal({ open, onClose }: StartSessionModalProps) {
         )}
       </div>
 
-      <div style={{ display: 'flex', gap: 10 }}>
-        <Button variant="ghost" style={{ flex: 1 }} onClick={onClose}>Cancel</Button>
-        <Button variant="primary" style={{ flex: 2 }} onClick={handleStart}><Play size={15} strokeWidth={2.4} /> Start session</Button>
+      {/* Sticky footer — always visible regardless of scroll position */}
+      <div style={{
+        position: 'sticky', bottom: 0,
+        background: 'var(--sheet)',
+        paddingTop: 12, paddingBottom: 4,
+        marginTop: 10,
+        borderTop: '1px solid var(--border)',
+      }}>
+        <div style={{ display: 'flex', gap: 10 }}>
+          <Button variant="ghost" style={{ flex: 1 }} onClick={onClose}>Cancel</Button>
+          <Button variant="primary" style={{ flex: 2 }} onClick={handleStart}><Play size={15} strokeWidth={2.4} /> Start session</Button>
+        </div>
       </div>
     </Modal>
   )
