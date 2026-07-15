@@ -7,9 +7,10 @@ interface ModalProps {
   children: ReactNode
   title?: string
   icon?: ReactNode
+  footer?: ReactNode
 }
 
-export function Modal({ open, onClose, children, title, icon }: ModalProps) {
+export function Modal({ open, onClose, children, title, icon, footer }: ModalProps) {
   return (
     <AnimatePresence>
       {open && (
@@ -44,30 +45,51 @@ export function Modal({ open, onClose, children, title, icon }: ModalProps) {
               borderTop: '1px solid var(--border-2)',
               borderRadius: '24px 24px 0 0',
               width: '100%', maxWidth: 430,
-              maxHeight: '93dvh', overflowY: 'auto',
-              padding: '10px 18px calc(env(safe-area-inset-bottom) + 28px)',
-              WebkitOverflowScrolling: 'touch',
+              maxHeight: '93dvh',
+              display: 'flex', flexDirection: 'column',
               boxShadow: '0 -12px 60px oklch(0% 0 0 / 55%)',
               zIndex: 'var(--z-sheet)' as any,
+              overflow: 'hidden',
             }}
           >
             {/* Grab handle */}
-            <div style={{ display: 'flex', justifyContent: 'center', paddingBottom: 14 }}>
+            <div style={{ display: 'flex', justifyContent: 'center', paddingTop: 10, paddingBottom: 14, flexShrink: 0 }}>
               <div style={{ width: 38, height: 4, borderRadius: 2, background: 'var(--border-2)' }} />
             </div>
-            {title && (
+
+            {/* Scrollable body */}
+            <div style={{
+              overflowY: 'auto',
+              WebkitOverflowScrolling: 'touch',
+              padding: `0 18px ${footer ? '18px' : 'calc(env(safe-area-inset-bottom) + 18px)'}`,
+              minHeight: 0,
+            }}>
+              {title && (
+                <div style={{
+                  display: 'flex', alignItems: 'center', gap: 9,
+                  fontSize: 19, fontWeight: 700,
+                  color: 'var(--ink)',
+                  marginBottom: 18,
+                  letterSpacing: '-0.02em',
+                }}>
+                  {icon && <span style={{ display: 'inline-flex', color: 'var(--accent)' }}>{icon}</span>}
+                  {title}
+                </div>
+              )}
+              {children}
+            </div>
+
+            {/* Fixed footer — always visible, outside scroll area */}
+            {footer && (
               <div style={{
-                display: 'flex', alignItems: 'center', gap: 9,
-                fontSize: 19, fontWeight: 700,
-                color: 'var(--ink)',
-                marginBottom: 18,
-                letterSpacing: '-0.02em',
+                flexShrink: 0,
+                padding: '12px 18px calc(env(safe-area-inset-bottom) + 16px)',
+                borderTop: '1px solid var(--border)',
+                background: 'var(--sheet)',
               }}>
-                {icon && <span style={{ display: 'inline-flex', color: 'var(--accent)' }}>{icon}</span>}
-                {title}
+                {footer}
               </div>
             )}
-            {children}
           </motion.div>
         </motion.div>
       )}

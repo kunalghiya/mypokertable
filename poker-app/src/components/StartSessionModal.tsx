@@ -70,7 +70,18 @@ export function StartSessionModal({ open, onClose }: StartSessionModalProps) {
   }
 
   return (
-    <Modal open={open} onClose={onClose} title="Start session" icon={<Spade size={18} strokeWidth={2.2} fill="currentColor" />}>
+    <Modal
+      open={open}
+      onClose={onClose}
+      title="Start session"
+      icon={<Spade size={18} strokeWidth={2.2} fill="currentColor" />}
+      footer={
+        <div style={{ display: 'flex', gap: 10 }}>
+          <Button variant="ghost" style={{ flex: 1 }} onClick={onClose}>Cancel</Button>
+          <Button variant="primary" style={{ flex: 2 }} onClick={handleStart}><Play size={15} strokeWidth={2.4} /> Start session</Button>
+        </div>
+      }
+    >
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10, marginBottom: 16 }}>
         <div>
           <label className="label" style={{ marginBottom: 7 }}>Date</label>
@@ -130,20 +141,6 @@ export function StartSessionModal({ open, onClose }: StartSessionModalProps) {
             <UserPlus size={15} strokeWidth={2.2} /> Add guest player
           </Button>
         )}
-      </div>
-
-      {/* Sticky footer — always visible regardless of scroll position */}
-      <div style={{
-        position: 'sticky', bottom: 0,
-        background: 'var(--sheet)',
-        paddingTop: 12, paddingBottom: 4,
-        marginTop: 10,
-        borderTop: '1px solid var(--border)',
-      }}>
-        <div style={{ display: 'flex', gap: 10 }}>
-          <Button variant="ghost" style={{ flex: 1 }} onClick={onClose}>Cancel</Button>
-          <Button variant="primary" style={{ flex: 2 }} onClick={handleStart}><Play size={15} strokeWidth={2.4} /> Start session</Button>
-        </div>
       </div>
     </Modal>
   )

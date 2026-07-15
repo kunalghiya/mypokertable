@@ -63,7 +63,18 @@ export function CashoutModal({ open, onClose, forceSessId }: CashoutModalProps) 
   }
 
   return (
-    <Modal open={open} onClose={onClose} title="End session" icon={<Square size={17} strokeWidth={2.4} />}>
+    <Modal
+      open={open}
+      onClose={onClose}
+      title="End session"
+      icon={<Square size={17} strokeWidth={2.4} />}
+      footer={
+        <div style={{ display: 'flex', gap: 10 }}>
+          <Button variant="ghost" full onClick={onClose}>Cancel</Button>
+          <Button variant="primary" style={{ flex: 2 }} onClick={handleSave}>Save &amp; end session</Button>
+        </div>
+      }
+    >
       <div style={{ fontSize: 12.5, color: 'var(--ink-3)', marginBottom: 14 }}>
         {fmtDate(sess.date)} · {inr(buyinAmt)}/buyin
       </div>
@@ -127,11 +138,6 @@ export function CashoutModal({ open, onClose, forceSessId }: CashoutModalProps) 
       <div style={{ marginTop: 16 }}>
         <label className="label" style={{ marginBottom: 7 }}>Session notes</label>
         <textarea value={notes} onChange={e => setNotes(e.target.value)} placeholder="Key observations…" style={{ height: 60 }} />
-      </div>
-
-      <div style={{ display: 'flex', gap: 10, marginTop: 16 }}>
-        <Button variant="ghost" full onClick={onClose}>Cancel</Button>
-        <Button variant="primary" style={{ flex: 2 }} onClick={handleSave}>Save &amp; end session</Button>
       </div>
     </Modal>
   )
