@@ -56,7 +56,7 @@ export function CashoutModal({ open, onClose, forceSessId }: CashoutModalProps) 
       const msg = `Cashouts are ${sign} by ₹${Math.abs(totalOut - totalIn).toFixed(0)}.\n\nTotal buyins: ${inr(totalIn)}\nTotal cashouts: ${inr(totalOut)}\n\nSave anyway?`
       if (!confirm(msg)) return
     }
-    await endSession(cashouts, notes)
+    await endSession(cashouts, notes, buyins)
     sfx.ding()
     toast('Session saved. Great game.')
     onClose()

@@ -79,7 +79,7 @@ interface AppState {
   skipHand: () => void
   logHand: () => Promise<void>
 
-  endSession: (cashouts: Record<string, string>, notes: string) => Promise<void>
+  endSession: (cashouts: Record<string, string>, notes: string, buyinsSnapshot: Record<string, number>) => Promise<void>
   deleteSession: (id: string) => Promise<void>
   saveAiAnalysis: (sessId: string, text: string) => Promise<void>
 
@@ -385,16 +385,18 @@ export const useStore = create<AppState>((set, get) => ({
     set({ lh: freshHand(lh.count + 1) })
   },
 
-  endSession: async (cashouts, notes) => {
-    const { activeSessId, sessions, liveBuyins } = get()
+  endSession: async (cashouts, notes, buyinsSnapshot) => {
+    const { activeSessId, sessions } = get()
     if (!activeSessId) return
     const sess = sessions.find(s => s.id === activeSessId)
     if (!sess) return
     const pl = sess.players || []
     const buyinAmt = sess.buyinAmt || 500
+    // Use the exact buyins snapshot the user reviewed in the cashout modal —
+    // never re-read live store state, which may have changed since the modal opened.
     const finalResults: Record<string, number> = {}
     pl.forEach(p => {
-      finalResults[p.id] = (Number(cashouts[p.id]) || 0) - (liveBuyins[p.id] || 1) * buyinAmt
+      finalResults[p.id] = (Number(cashouts[p.id]) || 0) - (buyinsSnapshot[p.id] || 1) * buyinAmt
     })
     set({ syncState: 'saving', syncMsg: 'Saving…' })
     await saveSess({
@@ -402,7 +404,7 @@ export const useStore = create<AppState>((set, get) => ({
       date: sess.date,
       buyinAmt,
       players: pl,
-      buyins: { ...liveBuyins },
+      buyins: { ...buyinsSnapshot },
       cashouts: JSON.parse(JSON.stringify(cashouts)),
       sessionNotes: sess.sessionNotes || {},
       notes,
